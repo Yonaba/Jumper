@@ -11,20 +11,15 @@ __Jumper__ is written in pure [Lua][]. Thus, it is not __framework-related__ and
 <center><img src="http://ompldr.org/vZjltNQ" alt="" width="500" height="391" border="0" /></center>
 
 ##Installation
-
 The current repository can be retrieved locally on your computer running one of the following bash scripts:
 
+###Bash
 ```bash
 git clone git://github.com/Yonaba/Jumper.git
-cd Jumper
-git submodule update --init --recursive
 ````
 
-Or :
-
-```bash
-git clone git://github.com/Yonaba/Jumper.git --recursive
-````
+###Download
+You may also download these files as an archive : [zip](https://github.com/Yonaba/Jumper/zipball/master) or [tarball](https://github.com/Yonaba/Jumper/tarball/master)
 
 ##Examples of Use
 Find several examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](https://github.com/Yonaba/Jumper-Examples)
