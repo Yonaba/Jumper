@@ -1,0 +1,6 @@
+[submodule "core/third-party/30log"]
+	path = core/third-party/30log
+	url = git://github.com/Yonaba/30log.git
+[submodule "core/third-party/Binary-Heaps"]
+	path = core/third-party/Binary-Heaps
+	url = git://github.com/Yonaba/Binary-Heaps.git
