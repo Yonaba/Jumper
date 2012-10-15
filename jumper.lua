@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
-local _VERSION = "1.5.1"
+local _VERSION = "1.5.1.1"
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local insert = table.insert
@@ -67,7 +67,8 @@ if (...) then
         x,y = node.parent.x,node.parent.y
         insert(path,1,{x = x, y = y})
       else
-        return self.autoSmooth and self:smooth(path) or path
+		print('autoFill',self.autoFill)
+        return self.autoFill and self:fill(path) or path
       end
     end
 
@@ -281,15 +282,15 @@ end
   -- Jump Point Search Class
   local JPS = Class {
     allowDiagonal = true, -- By default, allows diagonal moves
-    autoSmooth = false -- Do not smooth returned paths by default
+    autoFill = false -- Will not fill paths by default
   }
 
-  -- Custom initializer (walkable, allowDiagonal,heuristic and autoSmooth are optional)
-  function JPS:__init(map,walkable,allowDiagonal,heuristicName,autoSmooth)
+  -- Custom initializer (walkable, allowDiagonal,heuristic and autoFill are optional)
+  function JPS:__init(map,walkable,allowDiagonal,heuristicName,autoFill)
     self.grid = Grid(map,walkable)
     self.allowDiagonal = allowDiagonal
     self:setHeuristic(heuristicName or 'MANHATTAN')
-    self.autoSmooth = autoSmooth or false
+    self.autoFill = autoFill or false
   end
 
   -- Changes the heuristic
@@ -317,16 +318,16 @@ end
     return self.allowDiagonal
   end
 
-  -- Enables or disables autoSmooth feature
-  function JPS:setAutoSmoothing(bool)
+  -- Enables or disables autoFill feature
+  function JPS:setAutoFill(bool)
     assert(type(bool) == 'boolean','Argument must be a boolean')
-    self.autoSmooth = bool
+    self.autoFill = bool
     return self
   end
 
-  -- Returns whether or not autoSmooth feature is activated
-  function JPS:getAutoSmoothing()
-    return self.autoSmooth
+  -- Returns whether or not autoFillfeature is activated
+  function JPS:getAutoFill()
+    return self.autoFill
   end
 
   --[[
@@ -362,11 +363,11 @@ end
   end
 
   --[[
-    Naive path smoother helper. As the path returned with JPS algorithm
+    Naive path filling helper. As the path returned with JPS algorithm
     consists of straight lines, they maybe some holes inside. This function
     alters the given path, inserting missing nodes.
   --]]
-  function JPS:smooth(path)
+  function JPS:fill(path)
     local i = 2
     local xi,yi,dx,dy
     local N = #path

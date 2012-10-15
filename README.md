@@ -81,7 +81,7 @@ To initialize the pathfinder, you will have to pass __five values__.
 ```lua
 local walkable = 0
 local allowDiagonal = true
-local pather = Jumper(map,walkable,allowDiagonal,heuristicName,autoSmooth)
+local pather = Jumper(map,walkable,allowDiagonal,heuristicName,autoFill)
 ```
 
 Only the first argument is __required__, the __others__ left are __optional__.
@@ -89,7 +89,7 @@ Only the first argument is __required__, the __others__ left are __optional__.
 * __walkable__ refers to the value representing walkable tiles. Will be considered as *0* if not given.
 * __allowDiagonal__ is a boolean saying whether or not diagonal moves are allowed. Will be considered as __true__ if not given.
 * __heuristicName__ is a predefined string constant representing the heuristic function to be used for path computation.
-* __autoSmooth__ is a feature for [automatic path smoothing](https://github.com/Yonaba/Jumper/#automatic-path-smoothing).
+* autoFill is a feature for [automatic path filling](https://github.com/Yonaba/Jumper/#automatic-path-filling).
 
 ##Distance heuristics##
 
@@ -175,18 +175,18 @@ Also returns a __second value__ representing __total cost of the move__ if a pat
 * __Returns:__ a path (regular Lua table) or nil
 * __Returns:__ the path cost (positive number) or nil
 
-####pather:smooth(Path)
+####pather:fill(Path)
 Polishes a path
 * __Argument Path__: a path (regular Lua table)
 * __Returns:__ a path (regular Lua table)
 
-####pather:setAutoSmoothing(bool)
-Turns on/off the __AutoSmooth__ feature. When on, paths returned with <tt>pather:getPath()</tt> will always be automatically polished.
+####pather:setAutoFill(bool)
+Turns on/off the __AutoFill__ feature. When on, paths returned with <tt>pather:getPath()</tt> will always be automatically polished.
 * __Argument bool__: a boolean
 * __Returns:__ Nothing
 
-####pather:getAutoSmoothing()
-Returns the status of the __AutoSmooth__ feature
+####pather:getAutoFill()
+Returns the status of the __AutoFill__ feature
 * __Argument bool__: Nothing
 * __Returns:__ a boolean
 
@@ -244,11 +244,11 @@ path = {
 You will have to make your own use of this to __route your entities__ on the 2D map along this path.<br/>
 Note that the path could contains some *holes* because of the algorithm used.<br/>
 However, this should not cause a serious issue as the move from one step to another along the path is always straight.
-You can accomodate of this by yourself, or use the __path smoother__.
+You can accomodate of this by yourself, or use the __path filling__ feature.
 
-###Using the path smoother###
+###Path filling###
 
-__Jumper__ provides a __path smoother__ that can be used to polish a path early computed, filling the holes it may contain.
+__Jumper__ provides a __path filling feature that can be used to polish a path early computed, filling the holes it may contain.
 As it directly alters the path given, both of these syntax works:
 
 ```lua
@@ -259,7 +259,7 @@ local Jumper = require('Jumper.init')
 local pather = Jumper(map,walkable,allowDiagonal)
 local path, length = pather:getPath(1,1,3,3)
 -- Capturing the returned value
-path = pather:smooth(path)
+path = pather:fill(path)
 ```
 
 ```lua  
@@ -269,12 +269,12 @@ local Jumper = require('Jumper.init')
 -- Assuming map is defined
 local pather = Jumper(map,walkable,allowDiagonal)
 local path, length = pather:getPath(1,1,3,3)
--- Just passing the path to the smoother.
-pather:smooth(path)
+-- Just pass the path to pather:fill().
+pather:fill(path)
 ```
 
-###Automatic path smoothing###
-This is a new feature that will trigger the __path smoother__ everytime <tt>getPath()</tt> will be called.<br/>
+###Automatic path filling###
+This feature will trigger the __path fill everytime <tt>getPath()</tt> will be called.<br/>
 Yet, it is very simple to use:
 
 ```lua  
@@ -283,9 +283,9 @@ local allowDiagonal = true
 local Jumper = require('Jumper.init')
 -- Assuming map is defined
 local pather = Jumper(map,walkable,allowDiagonal)
-pather:setAutoSmoothing(true)
+pather:setAutoFill(true)
 local path, length = pather:getPath(1,1,3,3)
--- No need to use path:smooth() now !
+-- No need to use path:fill() now !
 ```
 
 ##Chaining##
@@ -298,7 +298,7 @@ local Jumper = require ('Jumper.init')
 local pather = Jumper(map,0)
 -- some code
 -- calling the pather, reconfiguring it and yielding a new path
-local path,length = pather:setAutoSmoothing(true)
+local path,length = pather:setAutoFilltrue)
 				   :setHeuristic('EUCLIDIAN')
 				   :setDiagonalMoves(true)
 				   :getPath(1,1,4,3)

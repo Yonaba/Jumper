@@ -1,5 +1,8 @@
 #Version history#
 
+##1.5.1.1 (10/05/12)
+* Smoothing renamed to filling, self-explanatory (See Readme for public interface changes)
+
 ##1.5.1 (10/09/12)
 * Fix for pathfinding with no diagonal moves allowed : paths returned looks more "natural".
 
