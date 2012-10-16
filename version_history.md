@@ -1,6 +1,10 @@
 #Version history#
 
-##1.5.1.1 (10/05/12)
+##1.5.1.2 (10/16/12)
+* Fix on internal grid width calculation
+* Some cleaning
+
+##1.5.1.1 (10/15/12)
 * Smoothing renamed to filling, self-explanatory (See Readme for public interface changes)
 
 ##1.5.1 (10/09/12)

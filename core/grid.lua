@@ -42,7 +42,7 @@ if (...) then
           nodes[y][x] = Node(x,y,(map[y][x] == walkable))
         end
       end
-    return nodes, map_width, map_height
+    return nodes, map_width/map_height, map_height
   end
 
   -- Checks if a value is within interval [lowerBound,upperBound]
@@ -63,7 +63,6 @@ if (...) then
     width = 0, height = 0,
     walkable = 0,
     map = {}, nodes = {},
-    shift_x = 0, shift_y = 0,
   }
 
   -- Custom initializer

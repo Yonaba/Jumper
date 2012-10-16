@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
-local _VERSION = "1.5.1.1"
+local _VERSION = "1.5.1.2"
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local insert = table.insert
@@ -67,7 +67,6 @@ if (...) then
         x,y = node.parent.x,node.parent.y
         insert(path,1,{x = x, y = y})
       else
-		print('autoFill',self.autoFill)
         return self.autoFill and self:fill(path) or path
       end
     end
