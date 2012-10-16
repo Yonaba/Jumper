@@ -23,5 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 if (...) then
   local _path = (...):gsub("%.init", "")
+  package.path = _path..'\\core\\third-party\\30log\\?.lua'..package.path
+  print(package.path)
   return require (_path..'.jumper')
 end

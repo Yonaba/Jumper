@@ -15,7 +15,7 @@ The current repository can be retrieved locally on your computer running one of 
 
 ###Bash
 ```bash
-git clone git://github.com/Yonaba/Jumper.git
+git clone git://github.com/Yonaba/Jumper.git --recursive
 ````
 
 ###Download
@@ -47,7 +47,7 @@ local Jumper = require('Jumper')
 ###Setting your collision map
 The collision map is a regular Lua table where each cell holds a value, representing whether or not the corresponding tile in the 2D world is walkable
 or not.<br/>
-__Caution__ : *All cells in your collision maps must be indexing with consecutive integers*.
+__Caution__ : *All cells in your collision maps must be indexed with consecutive integers*.
 
 ```lua
 local map = {
@@ -89,7 +89,7 @@ Only the first argument is __required__, the __others__ left are __optional__.
 * __walkable__ refers to the value representing walkable tiles. Will be considered as *0* if not given.
 * __allowDiagonal__ is a boolean saying whether or not diagonal moves are allowed. Will be considered as __true__ if not given.
 * __heuristicName__ is a predefined string constant representing the heuristic function to be used for path computation.
-* autoFill is a feature for [automatic path filling](https://github.com/Yonaba/Jumper/#automatic-path-filling).
+* __autoFill__ is a feature for [automatic path filling](https://github.com/Yonaba/Jumper/#automatic-path-filling).
 
 ##Distance heuristics##
 
@@ -248,7 +248,7 @@ You can accomodate of this by yourself, or use the __path filling__ feature.
 
 ###Path filling###
 
-__Jumper__ provides a __path filling feature that can be used to polish a path early computed, filling the holes it may contain.
+__Jumper__ provides a __path filling__ feature that can be used to polish a path early computed, filling the holes it may contain.
 As it directly alters the path given, both of these syntax works:
 
 ```lua
@@ -274,7 +274,7 @@ pather:fill(path)
 ```
 
 ###Automatic path filling###
-This feature will trigger the __path fill everytime <tt>getPath()</tt> will be called.<br/>
+This feature will trigger <tt>pather:fill()</tt> everytime <tt>pather:getPath()</tt> will be called.<br/>
 Yet, it is very simple to use:
 
 ```lua  
@@ -305,6 +305,16 @@ local path,length = pather:setAutoFilltrue)
 -- That's it!				   
 ```
 
+##Object-orientation
+__Jumper__ uses [30log][] a light-weight object-orientation framework.<br/>
+*When loading* Jumper, the path to this third-party library is automatically added to Lua's <tt>package.path</tt>.
+So that you can *require* it very easily.
+
+```lua
+local Jumper = require 'Jumper.init'
+local Class = require '30log'
+```
+
 ##Participating Libraries##
 
 * [30log][]
@@ -313,7 +323,7 @@ local path,length = pather:setAutoFilltrue)
 ##Credits and Thanks##
 
 * [Daniel Harabor][], [Alban Grastien][] : for [technical papers][].<br/>
-* [XueXiao Xu][], [Nathan Witmer][]: for their amazing [port][] in Javascript<br/>
+* [XueXiao Xu][], [Nathan Witmer][]: for the JavaScript [port][] or Jump Point Search.<br/>
 
 ##License##
 
