@@ -1,5 +1,8 @@
 #Version history#
 
+##1.5.1.2 (10/17/12) - Fix 
+* Bugfix with the previous commit (requiring third-party would not work with Löve2D, now fixed)
+
 ##1.5.1.2 (10/16/12)
 * Fix on internal grid width calculation
 * Added path to 30log in package.path
