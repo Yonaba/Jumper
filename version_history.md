@@ -1,7 +1,7 @@
 #Version history#
 
 ##1.5.1.3 (10/18/12)
-* Third-parties requiring enhanced
+* Third-party 30log requiring enhanced
 * Huge documentation update (See Readme)
 
 ##1.5.1.2 (10/17/12) - Fix 
