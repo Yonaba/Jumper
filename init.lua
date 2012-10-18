@@ -27,12 +27,11 @@ if (...) then
   local pcall = pcall
   local old_require = require
   require = function(p)
-    local _call,result1 = pcall(old_require,p)
-    if _call then return result1 end
-    local _call,result2 = pcall(old_require,_path..'.core.third-party.30log.'..p)
-    if _call then return result2 end
-    return result1
+    if pcall(old_require,p) then return old_require(p) end
+    local inner_path = _path..'.core.third-party.30log.'..p
+    if pcall(old_require,inner_path) then return old_require(inner_path) end
+    return old_require(p)
   end
   
-  return require (_path..'.jumper')
+  return require(_path..'.jumper')
 end

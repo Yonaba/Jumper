@@ -11,7 +11,7 @@ __Jumper__ is written in pure [Lua][]. Thus, it is not __framework-related__ and
 <center><img src="http://ompldr.org/vZjltNQ" alt="" width="500" height="391" border="0" /></center>
 
 ##Installation
-The current repository can be retrieved locally on your computer running one of the following bash scripts:
+The current repository can be retrieved locally on your computer via:
 
 ###Bash
 ```bash
@@ -25,8 +25,8 @@ You may also download these files as an archive : [zip](https://github.com/Yonab
 Find several examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](https://github.com/Yonaba/Jumper-Examples)
 
 ##Usage##
-###Calling Jumper###
-Clone the repository in a folder named __Jumper__ inside your projet. Use *require* function to call the library.
+###Adding Jumper to your project###
+Copy this repository contents in a folder named __Jumper__ and put it inside your projet. Use *require* function to call the library.
 
 ```lua
 local Jumper = require('Jumper.init')
@@ -39,11 +39,12 @@ package.path = package.path .. ';.\\?\\init.lua'
 local Jumper = require ('Jumper')
 ```
 	
-**Note** : Some frameworks, like [Löve][] already includes  __.\init.lua__ in their <tt>package.path</tt>. In this case, just use :
+**Note** : Some frameworks, like [Löve][] already includes  __.\init.lua__ in their <tt>package.path</tt>. In this case, you can just use :
 
 ```lua
 local Jumper = require('Jumper')
 ```
+
 ###Setting your collision map
 The collision map is a regular Lua table where each cell holds a value, representing whether or not the corresponding tile in the 2D world is walkable
 or not.<br/>
@@ -59,14 +60,14 @@ local map = {
 }
 ```
 
-__Note__: Lua tables starts __indexing at 1__, by default. If you happened to use some dedicated librairies/map designing tools to export your collisions maps to Lua,
-the resulting tables might __start indexing at 0__. This is fairly legit in Lua, but not common, though.
+__Note__: Lua array lists starts __indexing at 1__, by default. If you happened to use some dedicated *librairies/map designing tools* to export your collisions maps to Lua,
+the resulting tables might __start indexing at 0__ or whatever else integer. This is fairly legit in Lua, but not common, though.
 __Jumper__ will accomodate such maps without any problems.
 
+
 ###Initializing Jumper###
-Now you must now setup a 2D matrix of __integers__ or __strings__ representing your world. Values stored in this matrix
-should represent whether or not a cell on the matrix is walkable or not.  If you choose for instance *0* for walkable tiles, 
-__any other value__ will be considered as non walkable.
+Once your collision map is set, you must specify what value in this collision map matches a __walkable__ tile. If you choose for instance *0* for *walkable tiles*, 
+__any other value__ will be considered as *non walkable*.
 
 ```lua
 local map = {
@@ -76,7 +77,7 @@ local map = {
     }
 ```
 
-To initialize the pathfinder, you will have to pass __five values__. 
+To initialize the pathfinder, you will have to pass __five values__ to Jumper.
 
 ```lua
 local walkable = 0
@@ -86,22 +87,22 @@ local pather = Jumper(map,walkable,allowDiagonal,heuristicName,autoFill)
 
 Only the first argument is __required__, the __others__ left are __optional__.
 * __map__ refers to the matrix representing the 2D world.
-* __walkable__ refers to the value representing walkable tiles. Will be considered as *0* if not given.
-* __allowDiagonal__ is a boolean saying whether or not diagonal moves are allowed. Will be considered as __true__ if not given.
-* __heuristicName__ is a predefined string constant representing the heuristic function to be used for path computation.
-* __autoFill__ is a feature for [automatic path filling](https://github.com/Yonaba/Jumper/#automatic-path-filling).
+* __walkable__ refers to the value representing walkable tiles. Will be considered as __0__ if not given.
+* __allowDiagonal__ is a boolean saying whether or not *diagonal moves* are allowed. Will be considered as __true__ if not given.
+* __heuristicName__ is a predefined string constant representing the *distance heuristic function* to be used for path computation.
+* __autoFill__ is a boolean to __enable or not__ for [automatic path filling](https://github.com/Yonaba/Jumper/#automatic-path-filling).
 
-##Distance heuristics##
+###Distance heuristics###
 
-*Jumper* features 3 types of distance heuristics.
+*Jumper* features three (3) distance heuristics.
 
-* MANHATTAN Distance : <em>|dx| + |dy|</em>
-* EUCLIDIAN Distance : <em>sqrt(dx*dx + dy*dy)</em>
-* DIAGONAL Distance : <em>max(|dx|, |dy|)</em>
+* MANHATTAN Distance : *|dx| + |dy|*
+* EUCLIDIAN Distance : *sqrt(dx*dx + dy*dy)*
+* DIAGONAL Distance : *max(|dx|, |dy|)*
 
-Each of these distance heuristics are packed inside Jumper's core. By default, when initializing  *Jumper*, __MANHATTAN__ Distance is used if 
+By default, when you init  *Jumper*, __MANHATTAN__ will be used by default if 
 no heuristic was specified.<br/>
-If you need to use __another distance heuristic__, you will have to pass one of the following predefined strings:
+If you want to use __another distance heuristic__, you will have to pass one of the following predefined strings:
 
 ```lua
 "MANHATTAN" -- for MANHATTAN Distance
@@ -119,116 +120,127 @@ local Jumper = require('Jumper.init')
 local pather = Jumper(map,walkable,allowDiagonal,'EUCLIDIAN')
 ```
 
-You can __alternatively__ use *setHeuristic(Name)* :
+You can __alternatively__ use <tt>pather:setHeuristic(Name)</tt>:
 
 ```lua
 local walkable = 0
 local allowDiagonal = true
 local Jumper = require('Jumper.init')
 local pather = Jumper(map,walkable,allowDiagonal)
-pather:setheuristic('EUCLIDIAN')
+pather:setHeuristic('EUCLIDIAN')
 ```
 
-##API##
+##Public interface##
 
-###Main Pathfinder Class API
+###Pathfinder class interface
 
-Once loaded and initialized properly, you can now used one of the following methods listed below.<br/>
-__Assuming *pather* represents an instance of *Jumper* class.__
+Once Jumper was loaded and initialized properly, you can now used one of the following methods listed below.<br/>
+__Assuming <tt>pather</tt> represents an instance of <tt>Jumper</tt> class.__
 	
-####pather:setHeuristic(NAME)
-Will change the heuristic to be used.<br/>
-__NAME__ must be passed as a string.<br/>
-Possible values are __"MANHATTAN"__,__"EUCLIDIAN"__,__"DIAGONAL"__ (case-sensitive!).
-* __Argument NAME__: a string
-* __Returns:__ Nothing
+#####pather:setHeuristic(NAME)
+Will change the *distance heuristic* used.<br/>
+__NAME__ must be passed as a string. Possible values are *MANHATTAN, EUCLIDIAN, DIAGONAL* (case-sensitive!).
 
-####pather:getHeuristic() 
-Will return a reference to the __heuristic function__ internally used.<br/>
-* __Argument__: Nothing
-* __Returns:__ a function
+* Argument __NAME__: *string*
+* Returns: *nil*
 
-####pather:setDiagonalMoves(Bool)
-Argument must be a boolean. __true__ will authorize __diagonal moves__, __false__ will allow __only straight-moves__.<br/>
-* __Argument Bool__: a boolean
-* __Returns:__ Nothing
+#####pather:getHeuristic() 
+Will return a reference to the *distance heuristic function* internally used.<br/>
 
-####pather:getDiagonalMoves()
-Returns __a boolean__ saying whether or not diagonal moves are allowed.
-* __Argument__: Nothing
-* __Returns:__ a boolean
+* Argument: *nil*
+* Returns: *function*
 
-####pather:getGrid()
-Returns a reference to the __internal grid__ used by the pathfinder.
+#####pather:setDiagonalMoves(Bool)
+Argument must be a *boolean*. *True* will allow diagonal moves, *false* will allow *only straight-moves*.<br/>
+
+* Argument __Bool__: *boolean*
+* Returns: *nil*
+
+#####pather:getDiagonalMoves()
+Returns a *boolean* saying whether or not diagonal moves are allowed.
+
+* Argument: *nil*
+* Returns: *boolean*
+
+#####pather:getGrid()
+Returns a reference to the *internal grid* used by the pathfinder.
 This grid is __not__ the map matrix given on initialization, but a __virtual representation__ used internally.
-* __Argument__: Nothing
-* __Returns:__ a grid (regular Lua table)
 
-####pather:getPath(startX,startY,endX,endY)
-Main function, returns a path from [startX,startY] to [endX,endY] as an __ordered array__ of locations ({x = ...,y = ...}).
-Otherwise returns __nil__ if there is __no valid path__.
-Also returns a __second value__ representing __total cost of the move__ if a path was found.
-* __Argument startX__: The X coordinate of the starting node (positive non zero integer)
-* __Argument startY__: The Y coordinate of the starting node (positive non zero integer)
-* __Argument endX__: The X coordinate of the goal node (positive non zero integer)
-* __Argument endY__: The Y coordinate of the goal node (positive non zero integer)
-* __Returns:__ a path (regular Lua table) or nil
-* __Returns:__ the path cost (positive number) or nil
+* Argument: *nil*
+* Returns: *grid* (regular Lua table)
 
-####pather:fill(Path)
+#####pather:getPath(startX,startY,endX,endY)
+Main function, returns a path from location *[startX,startY]* to location*[endX,endY]* as an __ordered array__ of tables (*{x = ...,y = ...}*).<br/>
+Otherwise returns *nil* if there is __no valid path__.<br/>
+Also returns a __second value__ representing the __total cost of the move__ when a path was found.
+
+* Argument __startX__: *integer*
+* Argument __startY__: *integer*
+* Argument __endX__: *integer*
+* Argument __endY__: *integer*
+* Returns: *path* (regular Lua table) or *nil*
+* Returns: *cost* or *nil*
+
+#####pather:fill(Path)
 Polishes a path
-* __Argument Path__: a path (regular Lua table)
-* __Returns:__ a path (regular Lua table)
 
-####pather:setAutoFill(bool)
-Turns on/off the __AutoFill__ feature. When on, paths returned with <tt>pather:getPath()</tt> will always be automatically polished.
-* __Argument bool__: a boolean
-* __Returns:__ Nothing
+* Argument __Path__: *path* (regular Lua table)
+* Returns: *path* (regular Lua table)
 
-####pather:getAutoFill()
-Returns the status of the __AutoFill__ feature
-* __Argument bool__: Nothing
-* __Returns:__ a boolean
+#####pather:setAutoFill(bool)
+Turns *on/off* the __autoFilling__ feature. When *on*, paths returned with <tt>pather:getPath()</tt> will always be automatically polished with <tt>pather:fill()</tt>
 
-###Grid Class API
+* Argument __bool__: *boolean*
+* Returns: *nil*
 
-Using *getGrid()* returns a reference to the internal grid used by the pathfinder.
+#####pather:getAutoFill()
+Returns the status of the __autoFilling__ feature
+
+* Argument __bool__: *nil*
+* Returns: *boolean*
+
+###Grid class interface
+
+<tt>pather:getGrid()</tt> returns a reference to the *internal grid* used by the pathfinder.
 On this reference, you can use one of the following methods.<br/>
-__Assuming *grid* holds the return value from *pather:getGrid()*__
+__Assuming *grid* holds the returned value from <tt>pather:getGrid()</tt>__
 
-####grid:getNodeAt(x,y)
-Returns a reference to the node (X,Y) on the grid.
+#####grid:getNodeAt(x,y)
+Returns a reference to *node (X,Y)* on the grid.
 
-* __Argument x__: the X coordinate of the requested node (positive non zero integer)
-* __Argument y__: the Y coordinate of the requested node (positive non zero integer)
-* __Returns:__ a node (regular Lua table)
+* Argument __x__: *integer*
+* Argument __y__: *integer*
+* Returns: *node* (regular Lua table)
 
 ####grid:isWalkableAt(x,y)
-Returns a boolean saying whether or not the node (X,Y) __exists on the grid and is walkable__.
-* __Argument x__: the X coordinate of the requested node (positive non zero integer)
-* __Argument y__: the Y coordinate of the requested node (positive non zero integer)
-* __Returns:__ a boolean
+Returns a boolean saying whether or not *node (X,Y)* __exists__ on the grid and __is walkable__.
 
-####grid:setWalkableAt(x,y,boolean)
-Sets the node (X,Y) __walkable or not__ depending on the boolean given.
+* Argument __x__: *integer*
+* Argument __y__: *integer*
+* Returns: *boolean*
+
+####grid:setWalkableAt(x,y,walkable)
+Sets *node (X,Y)* __walkable or not__ depending on the boolean *walkable* given as argument:
 __true__ makes the node walkable, while __false__ makes it unwalkable.
-* __Argument x__: the X coordinate of the requested node (positive non zero integer)
-* __Argument y__: the Y coordinate of the requested node (positive non zero integer)
-* __Argument boolean__: a boolean
-* __Returns:__ Nothing
 
-####grid:getNeighbours(node,allowDiagonal)
-Returns an array list of nodes __neighbouring location (X,Y)__.
-The list will include or not adjacent nodes regards to the boolean __allowDiagonal__.
-* __Argument node__: a node (regular Lua table)
-* __Argument allowDiagonal__: a boolean
-* __Returns:__ list of neighbours (regular Lua table)
+* Argument __x__: *integer*
+* Argument __y__: *integer*
+* Argument __walkable__: *boolean*
+* Returns: *nil*
+
+#####grid:getNeighbours(node,allowDiagonal)
+Returns an array list of *nodes neighbouring node (X,Y)*. 
+This list will include or not adjacent nodes regards to the boolean *allowDiagonal*.
+
+* Argument __node__: *node* (regular Lua table)
+* Argument __allowDiagonal__: *boolean*
+* Returns: *neighbours* (regular Lua table)
 
 ##Handling paths##
 
-###Using native *getPath()* method###
+###Using native <tt>pather:getPath()</tt>###
 
-Using *getPath()* will return a table representing a path from one node to another.<br/>
+Using <tt>pather:getPath()</tt> will return a table representing a path from one node to another.<br/>
 The path is stored in a table using the form given below:
 
 ```lua
@@ -243,24 +255,12 @@ path = {
 
 You will have to make your own use of this to __route your entities__ on the 2D map along this path.<br/>
 Note that the path could contains some *holes* because of the algorithm used.<br/>
-However, this should not cause a serious issue as the move from one step to another along the path is always straight.
+However, this __will not cause any issue__ as the move from one step to another along this path is __always straight__.<br/>
 You can accomodate of this by yourself, or use the __path filling__ feature.
 
 ###Path filling###
 
 __Jumper__ provides a __path filling__ feature that can be used to polish a path early computed, filling the holes it may contain.
-As it directly alters the path given, both of these syntax works:
-
-```lua
-local walkable = 0
-local allowDiagonal = true
-local Jumper = require('Jumper.init')
--- Assuming map is defined
-local pather = Jumper(map,walkable,allowDiagonal)
-local path, length = pather:getPath(1,1,3,3)
--- Capturing the returned value
-path = pather:fill(path)
-```
 
 ```lua  
 local walkable = 0
@@ -274,7 +274,7 @@ pather:fill(path)
 ```
 
 ###Automatic path filling###
-This feature will trigger <tt>pather:fill()</tt> everytime <tt>pather:getPath()</tt> will be called.<br/>
+This feature will trigger the <tt>pather:fill()</tt> everytime <tt>pather:getPath()</tt> will be called.<br/>
 Yet, it is very simple to use:
 
 ```lua  
@@ -289,7 +289,7 @@ local path, length = pather:getPath(1,1,3,3)
 ```
 
 ##Chaining##
-__Jumper's__ setters can be chained.<br/>
+All setters can be chained.<br/>
 This is convenient if you need to __reconfigure__ the pather instance in a __quick and elegant manner__.
 
 ```lua 
@@ -306,9 +306,8 @@ local path,length = pather:setAutoFilltrue)
 ```
 
 ##Object-orientation
-__Jumper__ uses [30log][] a light-weight object-orientation framework.<br/>
-*When loading* Jumper, the path to this third-party library is automatically added to Lua's <tt>package.path</tt>.
-So that you can *require* it very easily.
+__Jumper__ uses [30log][] as a lightweight *object-orientation* framework.<br/>
+*When loading* Jumper, the path to this third-party library is automatically added, so that you can *require* this third-party very easily if you need it.
 
 ```lua
 local Jumper = require 'Jumper.init'

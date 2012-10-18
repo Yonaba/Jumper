@@ -1,5 +1,9 @@
 #Version history#
 
+##1.5.1.3 (10/18/12)
+* Third-parties requiring enhanced
+* Huge documentation update (See Readme)
+
 ##1.5.1.2 (10/17/12) - Fix 
 * Bugfix with the previous commit (requiring third-party would not work with Löve2D, now fixed)
 
