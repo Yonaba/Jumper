@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
-local _VERSION = "1.5.1.3"
+local _VERSION = "1.5.2"
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local insert = table.insert
@@ -37,7 +37,26 @@ if (...) then
 
   -- Will keep track of all nodes expandes during the search
   local toClear = {}
-
+  
+  -- Check if a node is reachable in diagonal-search mode
+  -- Will prevent from "tuneling" issue
+  local step_first = false
+  local function testFirstStep(grid, jx,jy,x,y)
+    local is_reachable = true
+    local dx,dy = jx-x, jy-y
+    if dx <= -1 then
+      if not grid:isWalkableAt(jx+1,jy) then is_reachable = false end
+    elseif dx >= 1 then      
+      if not grid:isWalkableAt(jx-1,jy) then is_reachable = false end           
+    end
+    if dy <= -1 then          
+      if not grid:isWalkableAt(jx,jy+1) then is_reachable = false end
+    elseif dy >= 1 then          
+      if not grid:isWalkableAt(jx,jy-1) then is_reachable = false end
+    end
+    return not is_reachable
+ end
+      
   -- Local helpers, these routines will stay private
   -- As they are internally used by the main public class
 
@@ -248,12 +267,24 @@ end
     for i = #neighbours,1,-1 do
       local skip = false
       local neighbour = neighbours[i]
-
       jumpPointX, jumpPointY = jump(self,neighbour.x,neighbour.y,x,y)
-      -- Tweak : in case a diagonal jump point was found while diagonal moves are forbidden, skip it.
+      
+      -- Tweak : in case a diagonal jump point was found in straight mode, skip it.
       if jumpPointX and jumpPointY and not self.allowDiagonal then
         if ((jumpPointX ~= x) and (jumpPointY ~= y)) then skip = true end
+      end      
+      
+      -- Hacky trick to discard "tunneling" in diagonal mode for the first step
+      if self.allowDiagonal and not step_first then
+        if jumpPointX == self.endNode.x and jumpPointY == self.endNode.y then        
+          step_first = true
+          if not skip then 
+            skip = testFirstStep(self.grid, jumpPointX, jumpPointY, x, y)
+          end
+        end
       end
+      
+      -- Performs regular A-star
       if jumpPointX and jumpPointY and not skip then
         jumpNode = self.grid:getNodeAt(jumpPointX,jumpPointY)
         toClear[jumpNode] = true
@@ -341,6 +372,7 @@ end
     local node
 
     reset(toClear)
+    step_first = false
 
     -- Moves the start node in the openList
     self.startNode.g, self.startNode.f = 0,0
@@ -391,5 +423,6 @@ end
     return self.grid
   end
 
+  -- Returns pathfinder
   return JPS
 end

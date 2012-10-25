@@ -1,5 +1,8 @@
 #Version history#
 
+##1.5.2 (10/25/12)
+* Fixed "tunneling" issue in diagonal-mode
+
 ##1.5.1.3 (10/18/12)
 * Third-party 30log requiring enhanced
 * Huge documentation update (See Readme)
