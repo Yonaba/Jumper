@@ -1,5 +1,8 @@
 #Version history#
 
+##1.5.2.1 (10/27/12)
+* Bugfix (Thanks to Srdjan Marković)
+
 ##1.5.2 (10/25/12)
 * Fixed "tunneling" issue in diagonal-mode
 

@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
-local _VERSION = "1.5.2"
+local _VERSION = "1.5.2.1"
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local insert = table.insert
@@ -276,7 +276,7 @@ end
       
       -- Hacky trick to discard "tunneling" in diagonal mode for the first step
       if self.allowDiagonal and not step_first then
-        if jumpPointX == self.endNode.x and jumpPointY == self.endNode.y then        
+        if jumpPointX == self.endNode.x and jumpPointY == self.endNode.y then
           step_first = true
           if not skip then 
             skip = testFirstStep(self.grid, jumpPointX, jumpPointY, x, y)
@@ -299,6 +299,7 @@ end
             jumpNode.parent = node
             if not jumpNode.opened then
               self.openList:insert(jumpNode)
+              if not step_first then step_first = true end
               jumpNode.opened = true
             else
               self.openList:heap()
