@@ -2,6 +2,7 @@
 
 ##1.5.2.2 (11/02/12)
 * Bugfix on resetting nodes properties (Thanks to Srdjan Marković)
+* Bugfix on path cost return
 
 ##1.5.2.1 (10/27/12)
 * Bugfix (Thanks to Srdjan Marković)

@@ -37,7 +37,10 @@ if (...) then
 
   -- Will keep track of all nodes expandes during the search
   local toClear = {}
-
+  
+  -- Keeps track of the lastest computed path cost
+  local cost = 0
+  
   -- Check if a node is reachable in diagonal-search mode
   -- Will prevent from "tuneling" issue
   local step_first = false
@@ -86,12 +89,14 @@ if (...) then
         x,y = node.parent.x,node.parent.y
         insert(path,1,{x = x, y = y})
       else
-		reset()
+        cost = self.endNode.f
+        reset()
         return self.autoFill and self:fill(path) or path
       end
     end
-
-	reset()
+    
+    cost = 0
+    reset()
     return nil
   end
 
@@ -380,14 +385,14 @@ end
     self.startNode.g, self.startNode.f = 0,0
     self.openList:insert(self.startNode)
     self.startNode.opened = true
-	toClear[self.startNode] = true
+    toClear[self.startNode] = true
 
     while not self.openList:empty() do
       -- Pops the lowest-F node, moves it in the closed list
       node = self.openList:pop()
       node.closed = true
         -- If the popped node is the endNode, traceback and return the path and the path cost
-        if node == self.endNode then  return traceBackPath(self),self.endNode.f end
+        if node == self.endNode then  return traceBackPath(self),cost end
       -- Else, identify successors of the popped node
       identifySuccessors(self,node)
     end
