@@ -274,7 +274,7 @@ local pather = Jumper(map,walkable,allowDiagonal,heuristicName,autoFill,postProc
 ````
 
 In this case, the internal grid will consume __0 kB (no memory) at initialization__. But later on, this is likely to grow, as __Jumper__ will create and keep caching new nodes __on demand__.
-This is a better approach if you are working with huge maps and running out of memory resources. But it *also* has a little inconvience : 
+This *might be a better approach* if you are working with huge maps and running out of memory resources. But it *also* has a little inconvenience : 
 pathfinding requests __will take a bit longer being anwsered__ (about 10-30 extra-milliseconds on huge maps).
 
 Therefore, consider this a __tuning parameter__, and choose what suits the best.
