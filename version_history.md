@@ -1,5 +1,9 @@
 #Version history#
 
+## 1.6.0 (11/05/12)
+* Added specialized grids : preprocessed/postprocessed grids
+* Nodes walkability is no longer stored as an attribute, but computed on the fly with respect to the map passed to init Jumper
+
 ##1.5.2.2 (11/02/12)
 * Bugfix on resetting nodes properties (Thanks to Srdjan Marković)
 * Bugfix on path cost return

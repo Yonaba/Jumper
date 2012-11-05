@@ -19,7 +19,8 @@ git clone git://github.com/Yonaba/Jumper.git --recursive
 ````
 
 ###Download
-You may also download these files as an archive : [zip](https://github.com/Yonaba/Jumper/zipball/master) or [tarball](https://github.com/Yonaba/Jumper/tarball/master)
+You can also download these files as an archive : [zip](https://github.com/Yonaba/Jumper/zipball/master) or [tarball](https://github.com/Yonaba/Jumper/tarball/master).<br/>
+Therefore, in this case, you will to add manually all submodules ([30log](https://github.com/Yonaba/30log) and [Binary-Heaps](https://github.com/Yonaba/Binary-Heaps)).
 
 ##Examples of Use
 Find several examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](https://github.com/Yonaba/Jumper-Examples)
@@ -77,12 +78,10 @@ local map = {
     }
 ```
 
-To initialize the pathfinder, you will have to pass __five values__ to Jumper.
+To initialize the pathfinder, you will have to pass __six values__ to Jumper.
 
 ```lua
-local walkable = 0
-local allowDiagonal = true
-local pather = Jumper(map,walkable,allowDiagonal,heuristicName,autoFill)
+local pather = Jumper(map,walkable,allowDiagonal,heuristicName,autoFill,postProcess)
 ```
 
 Only the first argument is __required__, the __others__ left are __optional__.
@@ -91,6 +90,7 @@ Only the first argument is __required__, the __others__ left are __optional__.
 * __allowDiagonal__ is a boolean saying whether or not *diagonal moves* are allowed. Will be considered as __true__ if not given.
 * __heuristicName__ is a predefined string constant representing the *distance heuristic function* to be used for path computation.
 * __autoFill__ is a boolean to __enable or not__ for [automatic path filling](https://github.com/Yonaba/Jumper/#automatic-path-filling).
+* __postProcess__ is a boolean to __enable or not__ [post processing for the internal grid](https://github.com/Yonaba/Jumper/#grid-processing).
 
 ###Distance heuristics###
 
@@ -236,6 +236,49 @@ This list will include or not adjacent nodes regards to the boolean *allowDiagon
 * Argument __allowDiagonal__: *boolean*
 * Returns: *neighbours* (regular Lua table)
 
+##Grid processing
+###Map access
+When you init __Jumper__, passing it a 2D map (2-dimensional array), __Jumper__ keeps track of this map.<br/>
+Therefore, you can access it via <tt>(pather:getGrid()).map</tt>
+
+```lua
+local map = {
+  {0,0,0},
+  {0,0,0},
+  {0,0,0},
+}
+
+local Jumper = require 'Jumper.init'
+local pather = Jumper(map)
+local internalGrid = pather:getGrid()
+print(internalGrid.map == map) --> true
+````
+
+###Processing
+Besides this, __Jumper__ creates an *internal grid* (which is also a 2D dimensional array) that will be used __later on__ to answer your pathfinding calls. This
+internal array of nodes is accessible via <tt>pather:getGrid().nodes</tt>.<br/>
+__When initializing Jumper__, the map passed as an argument is __pre-preprocessed by default__. It just means that __Jumper__ caches all nodes with respect to the map passed at first and create some internal data needed for pathfinding operations.
+This will __faster__ a little further all pathfinding requests, but will __have a drawback in terms of memory consumed__.<br/>
+*As an example, a __500 x 650__ sized map will consume around __55 Mb__ of memory right after initializing Jumper, when using the pre-preprocesed mode.*
+
+You can __optionally__ choose to __post-processed__ the grid, setting the relevant argument to <tt>false</tt> when initializing __Jumper__.
+
+```lua
+local Jumper = require 'Jumper.init'
+local walkable = 0
+local allowDiagonal = false
+local heuristicName = 'MANHATTAN'
+local autoFill = false
+local postProcess = true
+local pather = Jumper(map,walkable,allowDiagonal,heuristicName,autoFill,postProcess)
+````
+
+In this case, the internal grid will consume __0 kB (no memory) at initialization__. But later on, this is likely to grow, as __Jumper__ will create and keep caching new nodes __on demand__.
+This is a better approach if you are working with huge maps and running out of memory resources. But it *also* has a little inconvience : 
+pathfinding requests __will take a bit longer being anwsered__ (about 10-30 extra-milliseconds on huge maps).
+
+Therefore, consider this a __tuning parameter__, and choose what suits the best.
+
 ##Handling paths##
 
 ###Using native <tt>pather:getPath()</tt>###
@@ -308,6 +351,7 @@ local path,length = pather:setAutoFilltrue)
 ##Object-orientation
 __Jumper__ uses [30log][] as a lightweight *object-orientation* framework.<br/>
 *When loading* Jumper, the path to this third-party library is automatically added, so that you can *require* this third-party very easily if you need it.
+
 
 ```lua
 local Jumper = require 'Jumper.init'
