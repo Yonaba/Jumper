@@ -28,13 +28,12 @@ if (...) then
   local Class = require (_PATH .. 'third-party.30log.30log')
 
   -- Internal Node Class
-  local Node = Class { walkable = true }
+  local Node = Class {}
 
   -- Custom initializer for nodes
-  function Node:__init(x,y,walkable)
+  function Node:__init(x,y)
     self.x = x
     self.y = y
-    self.walkable = walkable and true -- A node will be walkable by default
   end
 
   -- Enables the use of operator '<' to compare nodes.

@@ -31,7 +31,7 @@ if (...) then
 
   -- Private utilities
   -- Creates a list of nodes, given a 2D map
-  local function buildGrid(map, walkable)
+  local function buildGrid(map)
     local map_width, map_height = 0,0
     local nodes = {}
       for y in pairs(map) do
@@ -39,7 +39,7 @@ if (...) then
       nodes[y] = {}
         for x in pairs(map[y]) do
           map_width = map_width+1
-          nodes[y][x] = Node(x,y,(map[y][x] == walkable))
+          nodes[y][x] = Node(x,y)
         end
       end
     return nodes, map_width/map_height, map_height
@@ -69,7 +69,7 @@ if (...) then
   function Grid:__init(map,walkable)
     self.map = map
     self.walkable = walkable or 0
-    self.nodes, self.width, self.height = buildGrid(self.map,self.walkable)
+    self.nodes, self.width, self.height = buildGrid(self.map)
   end
 
   -- Returns the node at a given position
@@ -79,12 +79,12 @@ if (...) then
 
   -- Checks if node [x,y] exists and is walkable
   function Grid:isWalkableAt(x,y)
-    return self.nodes[y] and self.nodes[y][x] and self.nodes[y][x].walkable
+    return self.map[y] and self.map[y][x] and (self.map[y][x]==self.walkable)
   end
 
   -- Sets Node [x,y] as obstructed or not
   function Grid:setWalkableAt(x,y,walkable)
-    self.nodes[y][x].walkable = walkable
+    self.map[y][x] = walkable
   end
 
   -- Returns the neighbours of a given node on a grid
