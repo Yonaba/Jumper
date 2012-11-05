@@ -21,7 +21,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
-local _VERSION = "1.5.2.2"
+local _VERSION = "1.6.0"
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local insert = table.insert
