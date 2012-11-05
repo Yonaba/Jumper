@@ -261,7 +261,7 @@ __When initializing Jumper__, the map passed as an argument is __pre-preprocesse
 This will __faster__ a little further all pathfinding requests, but will __have a drawback in terms of memory consumed__.<br/>
 *As an example, a __500 x 650__ sized map will consume around __55 Mb__ of memory right after initializing Jumper, when using the pre-preprocesed mode.*
 
-You can __optionally__ choose to __post-processed__ the grid, setting the relevant argument to <tt>false</tt> when initializing __Jumper__.
+You can __optionally__ choose to __post-process__ the grid, setting the relevant argument to <tt>true</tt> when initializing __Jumper__.
 
 ```lua
 local Jumper = require 'Jumper.init'
