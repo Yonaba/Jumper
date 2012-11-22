@@ -1,5 +1,8 @@
 #Version history#
 
+## 1.6.1 (11/22/12)
+* Added Cardinal/Intercardinal heuristic
+
 ## 1.6.0 (11/05/12)
 * Added specialized grids : preprocessed/postprocessed grids
 * Nodes walkability is no longer stored as an attribute, but computed on the fly with respect to the map passed to init Jumper

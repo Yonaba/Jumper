@@ -108,6 +108,7 @@ If you want to use __another distance heuristic__, you will have to pass one of 
 "MANHATTAN" -- for MANHATTAN Distance
 "EUCLIDIAN" -- for EUCLIDIAN Distance
 "DIAGONAL" -- for DIAGONAL Distance
+"CARDINTCARD" -- for CARDINAL/INTERCARDINAL Distance
 ```
 
 As an example :
@@ -127,7 +128,7 @@ local walkable = 0
 local allowDiagonal = true
 local Jumper = require('Jumper.init')
 local pather = Jumper(map,walkable,allowDiagonal)
-pather:setHeuristic('EUCLIDIAN')
+pather:setHeuristic('CARDINTCARD')
 ```
 
 ##Public interface##
@@ -139,7 +140,7 @@ __Assuming <tt>pather</tt> represents an instance of <tt>Jumper</tt> class.__
 	
 #####pather:setHeuristic(NAME)
 Will change the *distance heuristic* used.<br/>
-__NAME__ must be passed as a string. Possible values are *MANHATTAN, EUCLIDIAN, DIAGONAL* (case-sensitive!).
+__NAME__ must be passed as a string. Possible values are *MANHATTAN, EUCLIDIAN, DIAGONAL, CARDINTCARD* (case-sensitive!).
 
 * Argument __NAME__: *string*
 * Returns: *nil*

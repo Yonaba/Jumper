@@ -28,13 +28,13 @@ if (...) then
   -- Loads dependancies
   local Class = require (_PATH .. 'third-party.30log.30log')
   local Node = require (_PATH .. 'node')
-  
+
   -- Private utilities
   -- Postprocessing
   local function getBounds(map)
     local min_bound_x, max_bound_x
     local min_bound_y, max_bound_y
-   
+
       for y in pairs(map) do
         min_bound_y = not min_bound_y and y or (y<min_bound_y and y or min_bound_y)
         max_bound_y = not max_bound_y and y or (y>max_bound_y and y or max_bound_y)
@@ -47,7 +47,7 @@ if (...) then
       end
     return min_bound_x,max_bound_x,min_bound_y,max_bound_y
   end
-  
+
   -- Preprocessing
   local function buildGrid(map, walkable)
     local map_width, map_height = 0,0
@@ -63,7 +63,7 @@ if (...) then
     return nodes, map_width/map_height, map_height
   end
 
-  -- Checks if a value is out of and interval [lowerBound,upperBound] 
+  -- Checks if a value is out of and interval [lowerBound,upperBound]
   -- Early exit approach, faster than checking "i inside [l,u]"
   local function outOfRange(i,lowerBound,upperBound)
     return (i< lowerBound or i > upperBound)
@@ -83,23 +83,23 @@ if (...) then
     walkable = 0,
     map = {}, nodes = {},
   }
-  
+
   local PreProcessGrid = Grid:extends()
   local PostProcessGrid = Grid:extends()
-  
+
   -- Returns a new grid
   function Grid:new(map,walkable,postProcess)
-    if postProcess then 
-      return PostProcessGrid(map,walkable) 
+    if postProcess then
+      return PostProcessGrid(map,walkable)
     end
     return PreProcessGrid(map,walkable)
   end
-  
+
   -- Checks if node [x,y] exists and is walkable
   function Grid:isWalkableAt(x,y)
     return self.map[y] and self.map[y][x] and (self.map[y][x]==self.walkable)
   end
-  
+
     -- Sets Node [x,y] as obstructed or not
   function Grid:setWalkableAt(x,y,walkable)
     self.map[y][x] = walkable
@@ -129,20 +129,18 @@ if (...) then
 
     return neighbours
   end
-  
+
   -- Specialization for derived classes
-  
+
   -- Inits a preprocessed grid
   function PreProcessGrid:__init(map,walkable)
-    print('PreProcessing')
     self.map = map
     self.walkable = walkable or 0
-    self.nodes, self.width, self.height = buildGrid(self.map,self.walkable)  
+    self.nodes, self.width, self.height = buildGrid(self.map,self.walkable)
   end
 
   -- Inits a postprocessed grid
   function PostProcessGrid:__init(map,walkable)
-    print('PostProcessing')
     self.map = map
     self.walkable = walkable or 0
     self.nodes = {}
@@ -155,7 +153,7 @@ if (...) then
   function PreProcessGrid:getNodeAt(x,y)
     return self.nodes[y] and self.nodes[y][x] or nil
   end
-  
+
   -- Gets the node at location <x,y> on a postprocessed grid
   function PostProcessGrid:getNodeAt(x,y)
     if outOfRange(x,self.min_bound_x,self.max_bound_x) then return end
