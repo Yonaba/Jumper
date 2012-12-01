@@ -14,7 +14,7 @@ The current repository can be retrieved locally on your computer via:
 
 ###Bash
 ```bash
-git clone git://github.com/Yonaba/Jumper.git --recursive
+git clone git://github.com/Yonaba/Jumper.git
 ````
 
 ###Download
