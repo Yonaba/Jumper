@@ -24,13 +24,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local pairs = pairs
-
-  -- Loads dependancies
-  local Class = require (_PATH .. 'third-party.30log.30log')
+  local assert = assert
   local Node = require (_PATH .. 'node')
 
+  ---------------------------------------------------------------------
   -- Private utilities
-  -- Postprocessing
+  -- Postprocessing : Get map bounds
   local function getBounds(map)
     local min_bound_x, max_bound_x
     local min_bound_y, max_bound_y
@@ -38,11 +37,9 @@ if (...) then
       for y in pairs(map) do
         min_bound_y = not min_bound_y and y or (y<min_bound_y and y or min_bound_y)
         max_bound_y = not max_bound_y and y or (y>max_bound_y and y or max_bound_y)
-        --nodes[y] = {}
         for x in pairs(map[y]) do
           min_bound_x = not min_bound_x and x or (x<min_bound_x and x or min_bound_x)
-          max_bound_x = not max_bound_x and x or (y>max_bound_x and y or max_bound_x)
-          --nodes[y][x] = Node(x,y)
+          max_bound_x = not max_bound_x and x or (x>max_bound_x and x or max_bound_x)
         end
       end
     return min_bound_x,max_bound_x,min_bound_y,max_bound_y
@@ -53,100 +50,117 @@ if (...) then
     local map_width, map_height = 0,0
     local nodes = {}
       for y in pairs(map) do
-      map_height = map_height+1
-      nodes[y] = {}
+        map_height = map_height+1
+        nodes[y] = {}
         for x in pairs(map[y]) do
           map_width = map_width+1
-          nodes[y][x] = Node(x,y)
+          nodes[y][x] = Node:new(x,y)
         end
       end
     return nodes, map_width/map_height, map_height
   end
 
   -- Checks if a value is out of and interval [lowerBound,upperBound]
-  -- Early exit approach, faster than checking "i inside [l,u]"
   local function outOfRange(i,lowerBound,upperBound)
     return (i< lowerBound or i > upperBound)
   end
 
-  -- Set of vectors used to identify neighbours of a given location <x,y> on a 2D grid
-  local xOffsets = {-1,0,1,0}
-  local yOffsets = {0,1,0,-1}
-  local xDiagonalOffsets = {-1,-1,1,1}
-  local yDiagonalOffsets = {-1,1,1,-1}
+  -- Offsets for straights moves
+  local straightOffsets = {
+    {x = 1, y = 0} --[[W]], {x = -1, y =  0}, --[[E]]
+    {x = 0, y = 1} --[[S]], {x =  0, y = -1}, --[[N]]
+  }
+  
+  -- Offsets for diagonal moves
+  local diagonalOffsets = {
+    {x = -1, y = -1} --[[NW]], {x = 1, y = -1}, --[[NE]]
+    {x = -1, y =  1} --[[SW]], {x = 1, y =  1}, --[[SE]]
+  }  
 
   ---------------------------------------------------------------------
 
   -- Creates a grid class
-  local Grid = Class {
+  local Grid = {
     width = 0, height = 0,
     walkable = 0,
     map = {}, nodes = {},
   }
+  
+  Grid.__index = Grid
 
-  local PreProcessGrid = Grid:extends()
-  local PostProcessGrid = Grid:extends()
-
+  local PreProcessGrid = setmetatable({},Grid)
+  local PostProcessGrid = setmetatable({},Grid)
+  PreProcessGrid.__index = PreProcessGrid
+  PostProcessGrid.__index = PostProcessGrid
+  
   -- Returns a new grid
   function Grid:new(map,walkable,postProcess)
     if postProcess then
-      return PostProcessGrid(map,walkable)
+      return PostProcessGrid:new(map,walkable)
     end
-    return PreProcessGrid(map,walkable)
+    return PreProcessGrid:new(map,walkable)
   end
 
   -- Checks if node [x,y] exists and is walkable
   function Grid:isWalkableAt(x,y)
-    return self.map[y] and self.map[y][x] and (self.map[y][x]==self.walkable)
+    return self.map[y] and self.map[y][x] and (self.map[y][x] == self.walkable)
   end
 
     -- Sets Node [x,y] as obstructed or not
   function Grid:setWalkableAt(x,y,walkable)
+    assert(self.map[y] and self.map[y][x], ('Location [%d,%d] is out of bounds!'):format(x,y))
     self.map[y][x] = walkable
   end
 
   -- Returns the neighbours of a given node on a grid
   function Grid:getNeighbours(node,allowDiagonal)
-    local x,y = node.x,node.y
-    local nx , ny
     local neighbours = {}
-
-    for i=1,#xOffsets do
-      nx, ny = x+xOffsets[i],y+yOffsets[i]
-      if self:isWalkableAt(nx,ny) then
-        neighbours[#neighbours+1] = {x = nx, y = ny}
+    
+    for i = 1,#straightOffsets do
+      local node = self:getNodeAt(
+        node.x + straightOffsets[i].x,
+        node.y + straightOffsets[i].y
+      )
+      if node and self:isWalkableAt(node.x, node.y) then 
+        neighbours[#neighbours+1] = node 
       end
     end
-
+    
     if not allowDiagonal then return neighbours end
 
-    for i=1,#xDiagonalOffsets do
-      nx, ny = x+xDiagonalOffsets[i],y+yDiagonalOffsets[i]
-      if self:isWalkableAt(nx,ny) then
-        neighbours[#neighbours+1] = {x = nx, y = ny}
+    for i = 1,#diagonalOffsets do
+      local node = self:getNodeAt(
+        node.x + diagonalOffsets[i].x,
+        node.y + diagonalOffsets[i].y
+      )
+      if node and self:isWalkableAt(node.x, node.y) then 
+        neighbours[#neighbours+1] = node 
       end
     end
-
+    
     return neighbours
   end
 
-  -- Specialization for derived classes
-
+  -- Specialized grids
   -- Inits a preprocessed grid
-  function PreProcessGrid:__init(map,walkable)
-    self.map = map
-    self.walkable = walkable or 0
-    self.nodes, self.width, self.height = buildGrid(self.map,self.walkable)
+  function PreProcessGrid:new(map,walkable)
+    local newGrid = {}
+    newGrid.map = map
+    newGrid.walkable = walkable or 0
+    newGrid.nodes, newGrid.width, newGrid.height = buildGrid(newGrid.map,newGrid.walkable)
+    return setmetatable(newGrid,PreProcessGrid)
   end
 
   -- Inits a postprocessed grid
-  function PostProcessGrid:__init(map,walkable)
-    self.map = map
-    self.walkable = walkable or 0
-    self.nodes = {}
-    self.min_bound_x, self.max_bound_x, self.min_bound_y, self.max_bound_y = getBounds(self.map,postProcess)
-    self.width = (self.max_bound_x-self.min_bound_x)+1
-    self.height = (self.max_bound_y-self.min_bound_y)+1
+  function PostProcessGrid:new(map,walkable)
+    local newGrid = {}
+    newGrid.map = map
+    newGrid.walkable = walkable or 0
+    newGrid.nodes = {}
+    newGrid.min_bound_x, newGrid.max_bound_x, newGrid.min_bound_y, newGrid.max_bound_y = getBounds(newGrid.map)
+    newGrid.width = (newGrid.max_bound_x-newGrid.min_bound_x)+1
+    newGrid.height = (newGrid.max_bound_y-newGrid.min_bound_y)+1
+    return setmetatable(newGrid,PostProcessGrid)
   end
 
   -- Gets the node at location <x,y> on a preprocessed grid
@@ -159,11 +173,16 @@ if (...) then
     if outOfRange(x,self.min_bound_x,self.max_bound_x) then return end
     if outOfRange(y,self.min_bound_y,self.max_bound_y) then return end
     if not self.nodes[y] then self.nodes[y] = {} end
-    if not self.nodes[y][x] then self.nodes[y][x] = Node(x,y) end
+    if not self.nodes[y][x] then self.nodes[y][x] = Node:new(x,y) end
     return self.nodes[y][x]
   end
 
-  return Grid
+  return setmetatable(Grid,{
+    __call = function(self,...)
+      return self:new(...)
+    end
+  })
+
 end
 
 

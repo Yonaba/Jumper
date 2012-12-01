@@ -24,20 +24,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
 
-  -- Loads dependancies
-  local Class = require (_PATH .. 'third-party.30log.30log')
-
   -- Internal Node Class
-  local Node = Class {}
+  local Node = {}
+  Node.__index = Node
 
   -- Custom initializer for nodes
-  function Node:__init(x,y)
-    self.x = x
-    self.y = y
+  function Node:new(x,y)
+    return setmetatable({x = x, y = y}, Node)
   end
 
   -- Enables the use of operator '<' to compare nodes.
-  -- Will be used to sort a collection nodes in a binary heap on the basis of their F-cost
+  -- Will be used to sort a collection of nodes in a binary heap on the basis of their F-cost
   function Node.__lt(A,B) return (A.f < B.f) end
 
   return Node

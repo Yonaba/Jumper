@@ -22,16 +22,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
 if (...) then
-  local _path = (...):gsub("%.init", "")
-  
-  local pcall = pcall
-  local old_require = require
-  require = function(p)
-    if pcall(old_require,p) then return old_require(p) end
-    local inner_path = _path..'.core.third-party.30log.'..p
-    if pcall(old_require,inner_path) then return old_require(inner_path) end
-    return old_require(p)
-  end
-  
+  local _path = (...):gsub('%.init', '')
   return require(_path..'.jumper')
 end

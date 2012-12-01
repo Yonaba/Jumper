@@ -1,5 +1,12 @@
 #Version history#
 
+## 1.6.2 (12/01/12)
+* Third-party lib 30log replaced by an hardocded class system
+* Third-party lib binary-heaps replaced by a lighter implementation
+* Added support for custom heuristics
+* Removed <tt>getDiagonalMoves()</tt> and <tt>setDiagonalMoves()</tt>, replaced by <tt>getMode()</tt> and <tt>setMode()</tt>
+* Internal improvements, reuse data.
+
 ## 1.6.1 (11/22/12)
 * Added Cardinal/Intercardinal heuristic
 
