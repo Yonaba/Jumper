@@ -18,7 +18,19 @@ git clone git://github.com/Yonaba/Jumper.git
 ````
 
 ###Download
-You can also download these files as an archive : [zip](https://github.com/Yonaba/Jumper/zipball/master) or [tarball](https://github.com/Yonaba/Jumper/tarball/master).<br/>
+* __Archive:__ [zip](https://github.com/Yonaba/Jumper/zipball/master) 
+* __Tarball:__ [tarball](https://github.com/Yonaba/Jumper/tarball/master)
+
+###LuaRocks
+```bash
+luarocks install jumper
+````
+
+###MoonRocks
+```bash
+luarocks install --server=http://rocks.moonscript.org/manifests/Yonaba jumper
+````
+
 
 ##Examples of Use
 Find several examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](https://github.com/Yonaba/Jumper-Examples)
