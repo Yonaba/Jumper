@@ -1,5 +1,20 @@
 #Version history#
 
+## 1.6.3 (01/19/13)
+* Added <tt>Grid:iter</tt>
+* Added <tt>Grid:each</tt>
+* Added <tt>Grid:eachRange</tt>
+* Added <tt>Grid:imap</tt>
+* Added <tt>Grid:imapRange</tt>
+* Added <tt>Grid:__call</tt>
+* Added <tt>Pathfinder:version</tt>
+* Added path iterator
+* Improved node passability handling
+* Added support for string maps
+* Various code improvements
+* Hardcoded documentation, generation with LDoc
+* Updated README, rockspecs
+
 ## 1.6.2 (12/01/12)
 * Third-party lib 30log replaced by an hardocded class system
 * Third-party lib binary-heaps replaced by a lighter implementation

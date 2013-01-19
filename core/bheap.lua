@@ -1,25 +1,19 @@
--- Copyright (c) 2012 Roland Yonaba
-
---[[
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
---]]
+--- <strong>A light implementation of `binary heaps`</strong>.
+-- While running a search, <a href="http://en.wikipedia.org/wiki/A_star">A*</a> algorithm maintains a list of nodes called __open list__.
+-- Finding in this list the lowest cost node from the node being processed can be quite slow, 
+-- (as it requires to skim through the collection of nodes stored in this list) 
+-- especially when dozens of nodes are being processed (large maps). 
+--
+-- The current modules implements the <a href="http://www.policyalmanac.org/games/binaryHeaps.htm">binary heap</a> data structure,
+-- from which the internal open list will be instantiated. As such, looking up for lower-cost 
+-- node will run faster, and globally makes the search algorithm run faster.
+--
+-- This module should not normally be used explicitely. The algorithm uses it internally.
+--
+-- @author Roland Yonaba
+-- @copyright 2012-2013
+-- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
+-- @module core.bheap
 
 --[[
   Notes:
@@ -28,7 +22,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
 local floor = math.floor
-
 
 -- Default comparison function
 local function f_min(a,b) 
@@ -79,19 +72,26 @@ local function newHeap(template,comp)
   template)
 end
 
--- Heap template
+--- The `heap` class
+-- @class table
+-- @name heap
 local heap = setmetatable({},
   {__call = function(self,...)
     return newHeap(self,...)
   end})
 heap.__index = heap
 
--- Checks if a heap is empty
+--- Checks if a `heap` is empty
+-- @class function
+-- @name heap:empty
+-- @treturn bool `true` of no item is queued in the heap, `false` otherwise
 function heap:empty()
   return (self.size==0)
 end
 
--- Clears the heap
+--- Clears the `heap` (removes all items queued in the heap)
+-- @class function
+-- @name heap:clear
 function heap:clear()
   self.__heap = {}
   self.size = 0
@@ -99,15 +99,22 @@ function heap:clear()
   return self
 end
 
--- Pushes a new value into the heap
-function heap:push(value)
+--- Adds a new item in the `heap`
+-- @class function
+-- @name heap:push
+-- @tparam object item a new object to be queued in the heap
+function heap:push(item)
   self.size = self.size + 1
-  self.__heap[self.size] = value
+  self.__heap[self.size] = item
   percolate_up(self, self.size)
   return self
 end
 
--- Pops the root value
+--- Pops from the `heap`.
+-- Removes and returns the lowest cost item (with respect to the comparison function used) from the `heap`.
+-- @class function
+-- @name heap:pop
+-- @treturn object an object stored in the heap
 function heap:pop()
   local root
   if self.size > 0 then
@@ -123,6 +130,10 @@ function heap:pop()
 end
 
 -- Restores the heap property
+--- Reorders the `heap` with respect to the comparison function being used. 
+-- This function should be called explicitely when the *heap property* was lost. 
+-- @class function
+-- @name heap:heapify
 function heap:heapify()
   for i = floor(self.size/2),1,-1 do
     percolate_down(self,i)
@@ -131,3 +142,25 @@ function heap:heapify()
 end
 
 return heap
+
+--[[
+Copyright (c) 2012-2013 Roland Yonaba
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--]]

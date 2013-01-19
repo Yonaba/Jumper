@@ -1,39 +1,62 @@
---[[
-Copyright (c) 2012 Roland Yonaba
+--- <strong>The `pathfinder` class API</strong>.
+-- This file holds the implementation of the search algorithm, which is a mix 
+-- of <a href="http://harablog.wordpress.com/2011/09/07/jump-point-search/">Jump point Search</a>
+-- and <a href="http://en.wikipedia.org/wiki/A_star">A*</a> search. To quote its authors, __Jump Point Search__ is basically 
+-- "*an online symmetry breaking algorithm which speeds up pathfinding 
+-- on uniform-cost grid maps by __jumping over__ many locations that would otherwise 
+-- need to be explicitly considered* ".
+--
+-- It neither requires preprocessing, nor generates memory overhead, and thus performs consistently fast than classical A*. 
+--
+-- The following implementation was written with respect to the core pseudo-code given in 
+-- its <a href="http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf">
+-- technical papers,</a> plus a wide 
+-- range of optimizations and additional features.
+--
+-- @author Roland Yonaba
+-- @copyright 2012-2013
+-- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
+-- @script jumper
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+--- @usage
+local usage = [[
+  -- Usage example (v1.6.3):
+  local Jumper = require ("Jumper.init")
+  local walkable = 0
+  local map = {
+    {0,1,0,1,0 },
+    {0,1,0,1,0 },
+    {0,1,1,1,0 },
+    {0,0,0,0,0 },
+  }
+  local pathfinder = Jumper(map,walkable)
+  local startx, starty = 1,1
+  local endx, endy = 5,1
+  local path, pathLen = pathfinder:getPath(startx, starty, endx, endy)
+  if path then
+    print(('Path from [%d,%d] to [%d,%d] found! Length: %.2f')
+      :format(startx, starty,endx,endy, pathLen))
+    for x,y,step in path:iter() do
+      print(('Step: %d - x: %d - y: %d'):format(step,x,y))
+    end
+  end
+]]
 
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
+local _VERSION = "1.6.3"
+local _RELEASEDATE = "01/19/2011"
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
---]]
-
-local _VERSION = "1.6.2"
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
   local insert = table.insert
   local pairs = pairs
   local max, abs = math.max, math.abs
-  local assert, type = assert, type
+  local assert, type,setmetatable = assert, type, setmetatable
 
   -- Loads dependancies
   local Heuristic = require (_PATH .. 'core.heuristics')
   local Grid = require (_PATH ..'core.grid')
   local Heap = require (_PATH .. 'core.bheap')
-
+  
   -------------------------------------------------------------------------------------------------
   -- Local helpers, these routines will stay private
   -- As they are internally used by the public interface
@@ -78,12 +101,26 @@ if (...) then
     toClear = {}
   end
 
+  -- Path iterator
+  local path_mt = {}
+  path_mt.__index = path_mt
+  function path_mt:iter()
+    local i,pathLen = 1,#self
+    return function()
+      if self[i] then
+        local x, y = self[i].x, self[i].y
+        i = i+1
+        return x,y,i
+      end
+    end
+  end
+  
   -- Performs a traceback from the goal node to the start node
   -- Only happens when the path was found
   local function traceBackPath(self)
     local sx,sy = self.startNode.x,self.startNode.y
     local x,y
-    local path = {{x = self.endNode.x, y = self.endNode.y}}
+    local path = setmetatable({{x = self.endNode.x, y = self.endNode.y}},path_mt)
     local node
 
     while true do
@@ -342,8 +379,11 @@ end
   end
   -------------------------------------------------------------------------------------------------
 
-  -- Public interface
-  -- Jump Point Search Class
+
+--- The `pathfinder` class
+-- @class table
+-- @name pathfinder
+-- @field grid a `grid` object
   local JPS = {
     allowDiagonal = true, -- By default, allows diagonal moves
     autoFill = false -- Will not fill paths by default
@@ -353,11 +393,19 @@ end
   -- Availables search modes
   local searchModes = { ['DIAGONAL'] = true, ['ORTHOGONAL'] = true}
 
-  -- Custom initializer (walkable, allowDiagonal,heuristic and autoFill are optional)
-  function JPS:new(map,walkable,postProcess)
+  --- Inits a new `pathfinder` object
+  -- @class function
+  -- @name pathfinder:new
+  -- @tparam table|string map A collision map - (2D array) with consecutive integer indices or a string with line-break symbol as a row delimiter.
+  -- @tparam[opt] string|int|function walkable the value for walkable nodes on the passed-in map array.
+  -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean: 
+  -- `true` when value matches a *walkable* node, `false` otherwise.
+  -- @tparam[optchain] bool processOnDemand whether or not caching nodes in the internal grid should be processed on-demand
+  -- @treturn pathfinder a new `pathfinder` object 
+  function JPS:new(map,walkable,processOnDemand)  
     local newPather = {}
     setmetatable(newPather,JPS)
-    newPather.grid = Grid(map,walkable,postProcess)
+    newPather.grid = Grid:new(map,walkable,processOnDemand)
     newPather.allowDiagonal = true
     newPather:setHeuristic('MANHATTAN')
     newPather.autoFill = false
@@ -365,48 +413,70 @@ end
     return newPather
   end
 
-  -- Changes the heuristic used for guidance to the target
-  -- Supports custom heuristics
+  --- Changes heuristic. Sets the passed-in function as a new heuristic for optimal solution search.
+  -- @class function
+  -- @name pathfinder:setHeuristic
+  -- @tparam function|string heuristic a heuristic function, prototyped as `f(dx,dy)` or a string (possible values are `MANHATTAN`, `EUCLIDIAN`, `DIAGONAL`, `CARDINTCARD`, case-sensitive!).
   function JPS:setHeuristic(heuristic)
     assert(Heuristic[heuristic] or (type(heuristic) == 'function'),'Not a valid heuristic!')
     self.heuristic = Heuristic[heuristic] or heuristic
     return self
   end
 
-  -- Gets a reference to the heuristic function currently used
+  --- Gets heuristic. Returns a reference to the heuristic function being used
+  -- @class function
+  -- @name pathfinder:getHeuristic
+  -- @treturn function a function
   function JPS:getHeuristic()
     return self.heuristic
   end
 
-  -- Enables or disables diagonal moves
+  --- Changes search mode. Defines a new search mode for the `pathfinder` object.
+  -- @class function
+  -- @name pathfinder:setMode
+  -- @tparam string mode the current search mode. Possible values are `DIAGONAL` and `ORTHOGONAL` (case-sensitive!)
   function JPS:setMode(mode)
     assert(searchModes[mode],'Invalid mode')
     self.allowDiagonal = (mode == 'DIAGONAL')
     return self 
   end
 
-  -- Returns search mode
+  --- Gets search mode
+  -- @class function
+  -- @name pathfinder:getMode
+  -- @treturn string a string value, to be either `DIAGONAL` and `ORTHOGONAL`
   function JPS:getMode()
     return (self.allowDiagonal and 'DIAGONAL' or 'ORTHOGONAL')
   end
 
-  -- Enables or disables autoFill
+  --- Triggers `autoFill`. Enables (or disables) the `autoFill` feature for the `pathfinder` object.
+  -- @class function
+  -- @name pathfinder:setAutoFill
+  -- @tparam bool bool `true` to enable feature, `false` to disable 
   function JPS:setAutoFill(bool)
     assert(type(bool) == 'boolean','Argument must be a boolean')
     self.autoFill = bool
     return self
   end
 
-  -- Returns whether or not autoFill is enabled
+  --- Gets `autoFill` status. Returns whether or not `autoFill` is enabled
+  -- @class function
+  -- @name pathfinder:getAutoFill
+  -- @treturn bool `true` when feature is enabled, `false` otherwise  
   function JPS:getAutoFill()
     return self.autoFill
   end
 
-  --[[
-    Main search fuction. Requires a start location and end location.
-    endNode must be walkable.
-    Returns the path when found, otherwise nil.
-  --]]
+  --- Calculates a path. Returns the path from location `<startX, startY>` to location `<endX, endY>`.
+  -- Both locations must exist on the collision map.
+  -- @class function
+  -- @name pathfinder:getPath
+  -- @tparam number startX the x-coordinate for the starting location
+  -- @tparam number startY the y-coordinate for the starting location
+  -- @tparam number endX the x-coordinate for the goal location
+  -- @tparam number endY the y-coordinate for the goal location
+  -- @treturn {{x,y},...} a path (array of {x,y} locations) when found, otherwise `nil`
+  -- @treturn number the path length when found, `nil` otherwise
   function JPS:getPath(startX,startY,endX,endY)    
     self.startNode = self.grid:getNodeAt(startX,startY)
     self.endNode = self.grid:getNodeAt(endX,endY)
@@ -424,7 +494,7 @@ end
       -- Pops the lowest-F node, moves it in the closed list
       node = self.openList:pop()
       node.closed = true
-        -- If the popped node is the endNode, traceback and return the path and the path cost
+        -- If the popped node is the endNode, trace back and return the path and the path cost
         if node == self.endNode then  
           return traceBackPath(self),lastPathCost 
         end
@@ -436,16 +506,19 @@ end
     return nil
   end
 
-  --[[
-    Simple path filling utility. As the path returned by JPS algorithm
-    consists of jump locations, it contains some holes. This function
-    alters the given path, inserting missing nodes.
-  --]]
+  --- Path filling helper. The original path returned by @{pathfinder:getPath}
+  -- consists of isolated locations called *jump points*. This function interpolates between those locations
+  -- to build a fully continuous path. It is automatically triggered upon each call to @{pathfinder:getPath} 
+  -- when `autoFill` feature is enabled.
+  -- @class function
+  -- @name pathfinder:fill
+  -- @tparam {{x,y},...} path the path found with @{pathfinder:getPath}
+  -- @treturn {{x,y},...} the passed-in path, interpolated
+  -- @see pathfinder:setAutoFill
   function JPS:fill(path)
     local i = 2
     local xi,yi,dx,dy
     local N = #path
-
     while true do
       xi,yi = path[i].x,path[i].y
       dx,dy = xi-path[i-1].x,yi-path[i-1].y
@@ -461,8 +534,18 @@ end
     return path
   end
 
-  -- Returns a reference to the internal grid
+  --- Gets `grid` object. Returns a reference to the internal `grid` object used by the `pathfinder` object
+  -- @class function
+  -- @name pathfinder:getGrid
+  -- @treturn grid the `grid` object
   function JPS:getGrid() return self.grid end
+  
+  --- Returns version and release date.
+  -- @class function
+  -- @name pathfinder:version
+  -- @treturn string the version of the current implementation 
+  -- @treturn string the release of the current implementation 
+  function JPS:version() return _VERSION, _RELEASEDATE end
 
   -- Returns JPS Pathfinder
   return setmetatable(JPS,{
@@ -471,3 +554,26 @@ end
     end
   })
 end
+
+--[[
+Copyright (c) 2012-2013 Roland Yonaba
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--]]
