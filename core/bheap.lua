@@ -23,6 +23,14 @@
 
 local floor = math.floor
 
+-- Lookup value in a table
+local indexOf = function(t,v)
+  for i = 1,#t do
+    if t[i] == v then return i end
+  end
+  return nil
+end
+
 -- Default comparison function
 local function f_min(a,b) 
   return a < b 
@@ -129,12 +137,22 @@ function heap:pop()
   return root
 end
 
--- Restores the heap property
---- Reorders the `heap` with respect to the comparison function being used. 
--- This function should be called explicitely when the *heap property* was lost. 
+--- Restores the `heap` property.
+-- Reorders the `heap` with respect to the comparison function being used. 
+-- When given arg `item`, will sort that very item in the `heap`. 
+-- Otherwise, the whole `heap` will be sorted. 
 -- @class function
 -- @name heap:heapify
-function heap:heapify()
+-- @tparam[opt] object item the modified object 
+function heap:heapify(item)
+  if item then
+    local i = indexOf(self.__heap,item)
+    if i then 
+      percolate_down(self, i)
+      percolate_up(self, i)
+    end
+    return
+  end
   for i = floor(self.size/2),1,-1 do
     percolate_down(self,i)
   end

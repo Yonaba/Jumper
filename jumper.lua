@@ -20,7 +20,7 @@
 
 --- @usage
 local usage = [[
-  -- Usage example (v1.6.3):
+  -- Usage example (v1.6.4):
   local Jumper = require ("Jumper.init")
   local walkable = 0
   local map = {
@@ -42,8 +42,8 @@ local usage = [[
   end
 ]]
 
-local _VERSION = "1.6.3"
-local _RELEASEDATE = "01/19/2013"
+local _VERSION = "1.6.4"
+local _RELEASEDATE = "01/21/2013"
 
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
@@ -370,7 +370,7 @@ end
               jumpNode.opened = true
               if not step_first then step_first = true end
             else
-              self.openList:heapify()
+              self.openList:heapify(jumpNode)
             end
           end
         end
