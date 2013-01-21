@@ -43,7 +43,7 @@ local usage = [[
 ]]
 
 local _VERSION = "1.6.3"
-local _RELEASEDATE = "01/19/2011"
+local _RELEASEDATE = "01/19/2013"
 
 if (...) then
   local _PATH = (...):gsub('[^%.]+$','')
