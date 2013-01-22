@@ -176,7 +176,7 @@ See [docs](http://yonaba.github.com/Jumper/scripts/pathfinder.html#pathfinder:ne
 ###Finders
 Jumper uses a search algorithm to perform a path search from one location to another.
 Actually, there are dozens of search algorithms, each one with its strengths and weaknesses, and this library implements some of these algorithms.
-By default, when a `Pathfinder` object is created, it uses [Jump Point Search](http://yonaba.github.com/Jumper/scripts/search/jps.html), 
+By default, when a `Pathfinder` object is created, it uses [Jump Point Search](http://yonaba.github.com/Jumper/scripts/search.jps.html), 
 which is one of the fastest available, especially with large maps.
 
 ```lua
