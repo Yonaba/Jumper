@@ -2,15 +2,15 @@
 -- The default way to import Jumper in your project is the following:
 -- <ul>
 -- <pre class="example">
--- local Jumper = require (&quot;Jumper.init&quot;)
+-- local Pathfinder = require (&quot;jumper.init&quot;)
 -- </pre></ul>
 --
--- The call to `init.lua` was meant for package self-containment purposes. 
+-- The call to `init.lua` was meant for self-containment purposes. 
 -- On some Lua distributions, the package of modules contains the pattern `init.lua`.
 -- In this case, to import the library in your project, you can just write the following:
 -- <ul>
 -- <pre class="example">
--- local Jumper = require (&quot;Jumper&quot;)
+-- local Pathfinder = require (&quot;jumper&quot;)
 -- </pre></ul>
 --
 -- Optionnally, you can also add the pattern `init.lua` in your package of modules. 
@@ -18,7 +18,7 @@
 -- <ul>
 -- <pre class="example">
 -- package.path = package.path .. (&quot;;.\\\?\\\init.lua&quot;)
--- local Jumper = require (&quot;Jumper&quot;)
+-- local Pathfinder = require (&quot;jumper&quot;)
 -- </pre></ul>
 --
 -- @author Roland Yonaba
@@ -29,8 +29,9 @@
 
 
 if (...) then
-  local _path = (...):gsub('%.init$', '')
-  return require(_path..'.jumper')
+  local _path = (...):match('(.)*%.init$') or ''
+  print('_path',_path)
+  return require(_path..'.pathfinder')
 end
 
 --[[

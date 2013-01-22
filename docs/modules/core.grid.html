@@ -47,7 +47,9 @@
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/init.html">init</a></li>
-  <li><a href="../scripts/jumper.html">jumper</a></li>
+  <li><a href="../scripts/pathfinder.html">pathfinder</a></li>
+  <li><a href="../scripts/search.astar.html">search.astar</a></li>
+  <li><a href="../scripts/search.jps.html">search.jps</a></li>
 </ul>
 
 </div>
@@ -59,7 +61,7 @@
 <p><strong>The <code>grid</code> class API</strong>.</p>
 <p> This file contains the implementation of a <a href="../modules/core.grid.html#core.grid">grid</a>  class, internally used by the
  search algorithm. The <a href="../modules/core.grid.html#core.grid">grid</a>  object is automatically generated upon initialization of the
- <code>pathfinder</code> object, passing it a mandatory <em>collision map</em>.
+ <a href="../scripts/pathfinder.html#">pathfinder</a>  object, passing it a mandatory <em>collision map</em>.
  During a search, the pathfinder evaluates <strong>costs values</strong> for each node being processed, in order to
  select, after each step of iteration, what node should be expanded next to reach the target
  optimally. Those values are cached within an array stored in the <a href="../modules/core.grid.html#core.grid">grid</a>  object.

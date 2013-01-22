@@ -34,9 +34,9 @@
 
 <h2>Scripts</h2>
 <ul>
-  <li><strong>init</strong></li>
+  <li><a href="../scripts/init.html">init</a></li>
   <li><a href="../scripts/pathfinder.html">pathfinder</a></li>
-  <li><a href="../scripts/search.astar.html">search.astar</a></li>
+  <li><strong>search.astar</strong></li>
   <li><a href="../scripts/search.jps.html">search.jps</a></li>
 </ul>
 <h2>Modules</h2>
@@ -51,30 +51,11 @@
 
 <div id="content">
 
-<h1>Script <code>init</code></h1>
+<h1>Script <code>search.astar</code></h1>
 
-<p><strong>The init hook file</strong>.</p>
-<p> The default way to import Jumper in your project is the following:
- <ul>
- <pre class="example">
- local Pathfinder = require (&quot;jumper.init&quot;)
- </pre></ul></p>
-
-<p> The call to <code>init.lua</code> was meant for self-containment purposes.
- On some Lua distributions, the package of modules contains the pattern <code>init.lua</code>.
- In this case, to import the library in your project, you can just write the following:
- <ul>
- <pre class="example">
- local Pathfinder = require (&quot;jumper&quot;)
- </pre></ul></p>
-
-<p> Optionnally, you can also add the pattern <code>init.lua</code> in your package of modules.
- Therefore, the syntax can be shortened:
- <ul>
- <pre class="example">
- package.path = package.path .. (&quot;;.\\?\\init.lua&quot;)
- local Pathfinder = require (&quot;jumper&quot;)
- </pre></ul></p>
+<p><strong><code>A-star</code> algorithm</strong>.</p>
+<p> This file holds an implementation of <a href="http://en.wikipedia.org/wiki/A-star">A*</a> search algorithm,
+ applied on 2D grid-based maps</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Copyright</strong>: 2012-2013</li>

@@ -1,5 +1,19 @@
 #Version history#
 
+##1.7.0 (01/22/13)
+* Added Astar search algorithm, along with Jump Point Search
+* Implemented a common interface for the <tt>Pathfinder</tt> object
+* Added argument type checking on pathfinder initialization
+* Added <tt>Pathfinder:setFinder</tt>
+* Added <tt>Pathfinder:getFinder</tt>
+* Added <tt>Pathfinder:getFinders</tt>
+* Added <tt>Pathfinder:getHeuristics</tt>
+* Added <tt>Pathfinder:getModes</tt>
+* Added <tt>Pathfinder:filter</tt> for path compression
+* Removed <tt>autoFill</tt> feature (<tt>setAutoFill</tt>, <tt>getAutoFill</tt>)
+* Faster heapify method in binary heaps module
+* Updated docs, README, rockspecs
+
 ## 1.6.3 (01/19/13)
 * Added <tt>Grid:iter</tt>
 * Added <tt>Grid:each</tt>

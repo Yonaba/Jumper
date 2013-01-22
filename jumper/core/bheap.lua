@@ -23,7 +23,7 @@
 
 local floor = math.floor
 
--- Lookup value in a table
+-- Lookup for value in a table
 local indexOf = function(t,v)
   for i = 1,#t do
     if t[i] == v then return i end

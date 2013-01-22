@@ -46,7 +46,9 @@
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/init.html">init</a></li>
-  <li><a href="../scripts/jumper.html">jumper</a></li>
+  <li><a href="../scripts/pathfinder.html">pathfinder</a></li>
+  <li><a href="../scripts/search.astar.html">search.astar</a></li>
+  <li><a href="../scripts/search.jps.html">search.jps</a></li>
 </ul>
 
 </div>
@@ -62,7 +64,7 @@
 
 <p> This script holds the definition of built-in heuristics available.</p>
 
-<p> Distance functions are internally used by the <code>pathfinder</code> to evaluate the optimal path
+<p> Distance functions are internally used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  to evaluate the optimal path
  from the start location to the goal. These functions share the same prototype:
  <ul>
  <pre class="example">
@@ -130,7 +132,7 @@
     </dt>
     <dd>
     Manhattan distance.
- <br/>This heuristic is the default one being used by the <code>pathfinder</code> object.
+ <br/>This heuristic is the default one being used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
  <br/>Evaluates as <code>distance = |dx|+|dy|</code>
 
     <h3>Parameters:</h3>

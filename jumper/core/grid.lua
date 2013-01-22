@@ -78,13 +78,7 @@ if (...) then
   local function outOfRange(i,lowerBound,upperBound)
     return (i< lowerBound or i > upperBound)
   end
-
-  local offsets = {
-    {x = 1, y = 0} --[[W]], {x = -1, y =  0}, --[[E]]
-    {x = 0, y = 1} --[[S]], {x =  0, y = -1}, --[[N]]
-    {x = -1, y = -1} --[[NW]], {x = 1, y = -1}, --[[NE]]
-    {x = -1, y =  1} --[[SW]], {x = 1, y =  1}, --[[SE]]
- }    
+  
   -- Offsets for straights moves
   local straightOffsets = {
     {x = 1, y = 0} --[[W]], {x = -1, y =  0}, --[[E]]
@@ -106,16 +100,17 @@ if (...) then
   -- @field walkable The value for walkable nodes 
   -- @field map A reference to the collision map 
   -- @field nodes A 2D array of nodes, each node matching a cell on the collision map
-  local Grid = {
-    width = 0, height = 0, map = {}, nodes = {} }
-  
+  local Grid = {width = 0, height = 0, map = {}, nodes = {}}  
   Grid.__index = Grid
   
+  -- Specialized grids
   local PreProcessGrid = setmetatable({},Grid)
   local PostProcessGrid = setmetatable({},Grid)
   PreProcessGrid.__index = PreProcessGrid
   PostProcessGrid.__index = PostProcessGrid
-  PreProcessGrid.__call = function (self,x,y) return self:getNodeAt(x,y) end
+  PreProcessGrid.__call = function (self,x,y) 
+    return self:getNodeAt(x,y) 
+  end
   PostProcessGrid.__call = function (self,x,y,create)
     if create then return self:getNodeAt(x,y) end
     return self.nodes[y] and self.nodes[y][x]
@@ -275,7 +270,7 @@ if (...) then
     newGrid.nodes, newGrid.min_bound_x, newGrid.max_bound_x, newGrid.min_bound_y, newGrid.max_bound_y = buildGrid(newGrid.map,newGrid.walkable)
     newGrid.width = (newGrid.max_bound_x-newGrid.min_bound_x)+1
     newGrid.height = (newGrid.max_bound_y-newGrid.min_bound_y)+1
-    newGrid.evalf = type(walkable)=='function'
+    newGrid.evalf = type(newGrid.walkable)=='function'
     return setmetatable(newGrid,PreProcessGrid)
   end
 
@@ -288,7 +283,7 @@ if (...) then
     newGrid.min_bound_x, newGrid.max_bound_x, newGrid.min_bound_y, newGrid.max_bound_y = getBounds(newGrid.map)
     newGrid.width = (newGrid.max_bound_x-newGrid.min_bound_x)+1
     newGrid.height = (newGrid.max_bound_y-newGrid.min_bound_y)+1
-    newGrid.evalf = type(walkable)=='function'    
+    newGrid.evalf = type(newGrid.walkable)=='function'    
     return setmetatable(newGrid,PostProcessGrid)
   end
 
