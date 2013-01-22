@@ -1,0 +1,571 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Jumper</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Jumper</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Scripts</h2>
+<ul>
+  <li><a href="../scripts/init.html">init</a></li>
+  <li><strong>pathfinder</strong></li>
+  <li><a href="../scripts/search.astar.html">search.astar</a></li>
+  <li><a href="../scripts/search.jps.html">search.jps</a></li>
+</ul>
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/core.bheap.html">core.bheap</a></li>
+  <li><a href="../modules/core.grid.html">core.grid</a></li>
+  <li><a href="../modules/core.heuristics.html">core.heuristics</a></li>
+  <li><a href="../modules/core.node.html">core.node</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Script <code>pathfinder</code></h1>
+
+<p><strong>The <strong>pathfinder</strong> class API</strong>.</p>
+<p> This file holds the implementation of the <a href="../scripts/pathfinder.html#">pathfinder</a>  class.
+ </p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">-- Usage Example
+-- First, set a collision map
+local map = {
+	{0,1,0,1,0 },
+	{0,1,0,1,0 },
+	{0,1,1,1,0 },
+	{0,0,0,0,0 },
+}
+-- Value for walkable tiles
+local walkable = 0
+
+-- Library setup
+local Pathfinder = require (&quot;jumper.init&quot;)
+local myFinder = Pathfinder(map,walkable)
+
+-- Define start and goal locations coordinates
+local startx, starty = 1,1
+local endx, endy = 5,1
+
+-- Calculates the path, and its length
+local path, length = myFinder:getPath(startx, starty, endx, endy)
+if path then
+  print((&apos;Path found! Length: %.2f&apos;):format(length))
+	for x,y,step in path:iter() do
+	  print((&apos;Step: %d - x: %d - y: %d&apos;):format(step,x,y))
+	end
+end
+</pre>
+    </ul>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: 2012-2013</li>
+        <li><strong>License</strong>: <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a></li>
+        <li><strong>Author</strong>: Roland Yonaba</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:new">pathfinder:new&nbsp;(map[, walkable[, processOnDemand]])</a></td>
+	<td class="summary">Inits a new <a href="../scripts/pathfinder.html#">pathfinder</a>  object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:setFinder">pathfinder:setFinder&nbsp;(finderName)</a></td>
+	<td class="summary">Sets a finder.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getFinder">pathfinder:getFinder&nbsp;()</a></td>
+	<td class="summary">Gets the name of the finder being used.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getFinders">pathfinder:getFinders&nbsp;()</a></td>
+	<td class="summary">Gets the list of all available finders names.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:setHeuristic">pathfinder:setHeuristic&nbsp;(heuristic)</a></td>
+	<td class="summary">Set a heuristic.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getHeuristic">pathfinder:getHeuristic&nbsp;()</a></td>
+	<td class="summary">Gets the heuristic used.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getHeuristics">pathfinder:getHeuristics&nbsp;()</a></td>
+	<td class="summary">Gets the list of all available heuristics.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:setMode">pathfinder:setMode&nbsp;(mode)</a></td>
+	<td class="summary">Changes the search mode.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getMode">pathfinder:getMode&nbsp;()</a></td>
+	<td class="summary">Gets the search mode.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getModes">pathfinder:getModes&nbsp;()</a></td>
+	<td class="summary">Gets the list of all available search modes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getGrid">pathfinder:getGrid&nbsp;()</a></td>
+	<td class="summary">Returns the <code>grid</code> object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:version">pathfinder:version&nbsp;()</a></td>
+	<td class="summary">Returns version and release date.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getPath">pathfinder:getPath&nbsp;(startX, startY, endX, endY)</a></td>
+	<td class="summary">Calculates a path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:fill">pathfinder:fill&nbsp;(path)</a></td>
+	<td class="summary">Path filling function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:filter">pathfinder:filter&nbsp;(path)</a></td>
+	<td class="summary">Path compression.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder">pathfinder</a></td>
+	<td class="summary">The <a href="../scripts/pathfinder.html#">pathfinder</a>  class</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "pathfinder:new"></a>
+    <strong>pathfinder:new&nbsp;(map[, walkable[, processOnDemand]])</strong>
+    </dt>
+    <dd>
+    Inits a new <a href="../scripts/pathfinder.html#">pathfinder</a>  object
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">map</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       A collision map - (2D array) with consecutive integer indices or a string with line-break symbol as a row delimiter.</li>
+      <li><span class="parameter">walkable</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">int</span> or <span class="type">function</span></span>
+       the value for walkable nodes on the passed-in map array.
+ If this parameter is a function, it should be prototyped as <code>f(value)</code>, returning a boolean:
+ <code>true</code> when value matches a <em>walkable</em> node, <code>false</code> otherwise.</li>
+      <li><span class="parameter">processOnDemand</span>
+        <span class="types"><span class="type">bool</span></span>
+       whether or not caching nodes in the internal grid should be processed on-demand</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../scripts/pathfinder.html#">pathfinder</a></span>
+        a new <a href="../scripts/pathfinder.html#">pathfinder</a>  object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:setFinder"></a>
+    <strong>pathfinder:setFinder&nbsp;(finderName)</strong>
+    </dt>
+    <dd>
+    Sets a finder.  The finder refers to the search algorithm used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
+ The default finder is <code>JPS</code> (for <em>Jump Point Search</em>), which is the fastest available.
+ Use <a href="../scripts/pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the list of available finders.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">finderName</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       the name of the finder to be used for further searches.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../scripts/pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getFinder"></a>
+    <strong>pathfinder:getFinder&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the name of the finder being used.  The finder refers to the search algorithm used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the name of the finder to be used for further searches.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getFinders"></a>
+    <strong>pathfinder:getFinders&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the list of all available finders names.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">{string,...}</span></span>
+        array of finders names.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:setHeuristic"></a>
+    <strong>pathfinder:setHeuristic&nbsp;(heuristic)</strong>
+    </dt>
+    <dd>
+    Set a heuristic.  This is a function internally used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  to get the optimal path during a search.
+ Use <a href="../scripts/pathfinder.html#pathfinder:getHeuristics">pathfinder:getHeuristics</a> to get the list of all available heuristics. One can also defined
+ his own heuristic function.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">heuristic</span>
+        <span class="types"><span class="type">function</span> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       a heuristic function, prototyped as <code>f(dx,dy)</code> or a string.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../scripts/pathfinder.html#pathfinder:getHeuristics">pathfinder:getHeuristics</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getHeuristic"></a>
+    <strong>pathfinder:getHeuristic&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the heuristic used.  Returns the function itself.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">function</span></span>
+        the heuristic function being used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getHeuristics"></a>
+    <strong>pathfinder:getHeuristics&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the list of all available heuristics.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">{string,...}</span></span>
+        array of heuristic names.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:setMode"></a>
+    <strong>pathfinder:setMode&nbsp;(mode)</strong>
+    </dt>
+    <dd>
+    Changes the search mode.  Defines a new search mode for the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
+ The default search mode is <code>DIAGONAL</code>, which implies 8-possible directions when moving (north, south, east, west and diagonals).
+ In <code>ORTHOGONAL</code> mode, only 4-directions are allowed (north, south, east and west).
+ Use <a href="../scripts/pathfinder.html#pathfinder:getModes">pathfinder:getModes</a> to get the list of all available search modes.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">mode</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       the new search mode.</li>
+    </ul>
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../scripts/pathfinder.html#pathfinder:getModes">pathfinder:getModes</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getMode"></a>
+    <strong>pathfinder:getMode&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the search mode.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the current search mode
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getModes"></a>
+    <strong>pathfinder:getModes&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the list of all available search modes.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">{string,...}</span></span>
+        array of search modes.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getGrid"></a>
+    <strong>pathfinder:getGrid&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the <code>grid</code> object.  Returns a reference to the internal <code>grid</code> object used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">grid</span></span>
+        the <code>grid</code> object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:version"></a>
+    <strong>pathfinder:version&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns version and release date.
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the version of the current implementation</li>
+        <li>
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the release of the current implementation</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getPath"></a>
+    <strong>pathfinder:getPath&nbsp;(startX, startY, endX, endY)</strong>
+    </dt>
+    <dd>
+    Calculates a path.  Returns the path from location <code>&lt;startX, startY&gt;</code> to location <code>&lt;endX, endY&gt;</code>.
+ Both locations must exist on the collision map.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">startX</span>
+        <span class="types"><span class="type">number</span></span>
+       the x-coordinate for the starting location</li>
+      <li><span class="parameter">startY</span>
+        <span class="types"><span class="type">number</span></span>
+       the y-coordinate for the starting location</li>
+      <li><span class="parameter">endX</span>
+        <span class="types"><span class="type">number</span></span>
+       the x-coordinate for the goal location</li>
+      <li><span class="parameter">endY</span>
+        <span class="types"><span class="type">number</span></span>
+       the y-coordinate for the goal location</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+          <span class="types"><span class="type">{node,...}</span></span>
+        a path (array of <code>nodes</code>) when found, otherwise <code>nil</code></li>
+        <li>
+          <span class="types"><span class="type">number</span></span>
+        the path length when found, <code>0</code> otherwise</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:fill"></a>
+    <strong>pathfinder:fill&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Path filling function.  It interpolates between non contiguous locations along a path
+ to build a fully continuous path. It maybe useful when using <code>Jump Point Search</code> finder.
+ It does the opposite of <a href="../scripts/pathfinder.html#pathfinder:filter">pathfinder:filter</a>
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+        <span class="types"><span class="type">{node,...}</span></span>
+       the path found with <a href="../scripts/pathfinder.html#pathfinder:getPath">pathfinder:getPath</a></li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">{node,...}</span></span>
+        the passed-in path, interpolated
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../scripts/pathfinder.html#pathfinder:filter">pathfinder:filter</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:filter"></a>
+    <strong>pathfinder:filter&nbsp;(path)</strong>
+    </dt>
+    <dd>
+    Path compression.  Given a path, it eliminates useless nodes to return a path consisting of
+ straight directions. It does the opposite of <a href="../scripts/pathfinder.html#pathfinder:fill">pathfinder:fill</a>
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">path</span>
+        <span class="types"><span class="type">{node,...}</span></span>
+       the path found with <a href="../scripts/pathfinder.html#pathfinder:getPath">pathfinder:getPath</a></li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">{node,...}</span></span>
+        the passed-in path, filtered
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../scripts/pathfinder.html#pathfinder:fill">pathfinder:fill</a>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "pathfinder"></a>
+    <strong>pathfinder</strong>
+    </dt>
+    <dd>
+    The <a href="../scripts/pathfinder.html#">pathfinder</a>  class
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

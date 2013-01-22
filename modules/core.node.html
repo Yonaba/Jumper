@@ -47,7 +47,9 @@
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/init.html">init</a></li>
-  <li><a href="../scripts/jumper.html">jumper</a></li>
+  <li><a href="../scripts/pathfinder.html">pathfinder</a></li>
+  <li><a href="../scripts/search.astar.html">search.astar</a></li>
+  <li><a href="../scripts/search.jps.html">search.jps</a></li>
 </ul>
 
 </div>
@@ -62,7 +64,7 @@
  and then stored within the <a href="../modules/core.node.html#core.grid">grid</a>  object.</p>
 
 <p> In the following implementation, nodes can be compared using the <code>&lt;</code> operator. The comparison is
- made on the basis of their <code>f</code> cost. From a processed node, the <code>pathfinder</code> would expand the search
+ made on the basis of their <code>f</code> cost. From a processed node, the <a href="../scripts/pathfinder.html#">pathfinder</a>  would expand the search
  to the next neighbouring node having the lowest <code>f</code> cost. This comparison is internally used within the
  <em>open list</em> <code>heap</code> to quickly sort all nodes queued inside the heap.
  </p>
