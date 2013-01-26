@@ -3,7 +3,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-    <title>Jumper</title>
+    <title>Jumper documentation</title>
     <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -24,7 +24,7 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper</h1>
+<h1>Jumper (v1.8.0)</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
@@ -39,36 +39,39 @@
 
 <h2>Modules</h2>
 <ul>
-  <li><strong>core.bheap</strong></li>
-  <li><a href="../modules/core.grid.html">core.grid</a></li>
-  <li><a href="../modules/core.heuristics.html">core.heuristics</a></li>
-  <li><a href="../modules/core.node.html">core.node</a></li>
+  <li><strong>jumper.core.bheap</strong></li>
+  <li><a href="../modules/jumper.core.heuristics.html">jumper.core.heuristics</a></li>
+  <li><a href="../modules/jumper.core.node.html">jumper.core.node</a></li>
+  <li><a href="../modules/jumper.core.path.html">jumper.core.path</a></li>
+  <li><a href="../modules/jumper.grid.html">jumper.grid</a></li>
+  <li><a href="../modules/jumper.pathfinder.html">jumper.pathfinder</a></li>
 </ul>
 <h2>Scripts</h2>
 <ul>
-  <li><a href="../scripts/init.html">init</a></li>
-  <li><a href="../scripts/pathfinder.html">pathfinder</a></li>
-  <li><a href="../scripts/search.astar.html">search.astar</a></li>
-  <li><a href="../scripts/search.jps.html">search.jps</a></li>
+  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
+  <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
+  <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
+  <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
+  <li><a href="../scripts/jumper.search.jps.html">jumper.search.jps</a></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>core.bheap</code></h1>
+<h1>Module <code>jumper.core.bheap</code></h1>
 
 <p><strong>A light implementation of <code>binary heaps</code></strong>.</p>
-<p> While running a search, <a href="http://en.wikipedia.org/wiki/A_star">A*</a> algorithm maintains a list of nodes called <strong>open list</strong>.
+<p> While running a search, some algorithms have to maintains a list of nodes called <strong>open list</strong>.
  Finding in this list the lowest cost node from the node being processed can be quite slow,
  (as it requires to skim through the collection of nodes stored in this list)
  especially when dozens of nodes are being processed (large maps). </p>
 
-<p> The current modules implements the <a href="http://www.policyalmanac.org/games/binaryHeaps.htm">binary heap</a> data structure,
+<p> The current module implements a <a href="http://www.policyalmanac.org/games/binaryHeaps.htm">binary heap</a> data structure,
  from which the internal open list will be instantiated. As such, looking up for lower-cost
  node will run faster, and globally makes the search algorithm run faster.</p>
 
-<p> This module should not normally be used explicitely. The algorithm uses it internally.</p>
+<p> This module should normally not be used explicitely. The algorithm uses it internally.</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Copyright</strong>: 2012-2013</li>
@@ -81,30 +84,30 @@
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#heap:empty">heap:empty&nbsp;()</a></td>
-	<td class="summary">Checks if a <a href="../modules/core.bheap.html#heap">heap</a>  is empty</td>
+	<td class="summary">Checks if a <a href="../modules/jumper.core.bheap.html#heap">heap</a>  is empty</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#heap:clear">heap:clear&nbsp;()</a></td>
-	<td class="summary">Clears the <a href="../modules/core.bheap.html#heap">heap</a>  (removes all items queued in the heap)</td>
+	<td class="summary">Clears the <a href="../modules/jumper.core.bheap.html#heap">heap</a>  (removes all items queued in the heap)</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#heap:push">heap:push&nbsp;(item)</a></td>
-	<td class="summary">Adds a new item in the <a href="../modules/core.bheap.html#heap">heap</a> </td>
+	<td class="summary">Adds a new item in the <a href="../modules/jumper.core.bheap.html#heap">heap</a> </td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#heap:pop">heap:pop&nbsp;()</a></td>
-	<td class="summary">Pops from the <a href="../modules/core.bheap.html#heap">heap</a> .</td>
+	<td class="summary">Pops from the <a href="../modules/jumper.core.bheap.html#heap">heap</a> .</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#heap:heapify">heap:heapify&nbsp;([item])</a></td>
-	<td class="summary">Restores the <a href="../modules/core.bheap.html#heap">heap</a>  property.</td>
+	<td class="summary">Restores the <a href="../modules/jumper.core.bheap.html#heap">heap</a>  property.</td>
 	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#heap">heap</a></td>
-	<td class="summary">The <a href="../modules/core.bheap.html#heap">heap</a>  class</td>
+	<td class="summary">The <a href="../modules/jumper.core.bheap.html#heap">heap</a>  class</td>
 	</tr>
 </table>
 
@@ -120,7 +123,7 @@
     <strong>heap:empty&nbsp;()</strong>
     </dt>
     <dd>
-    Checks if a <a href="../modules/core.bheap.html#heap">heap</a>  is empty
+    Checks if a <a href="../modules/jumper.core.bheap.html#heap">heap</a>  is empty
 
 
     <h3>Returns:</h3>
@@ -139,7 +142,7 @@
     <strong>heap:clear&nbsp;()</strong>
     </dt>
     <dd>
-    Clears the <a href="../modules/core.bheap.html#heap">heap</a>  (removes all items queued in the heap)
+    Clears the <a href="../modules/jumper.core.bheap.html#heap">heap</a>  (removes all items queued in the heap)
 
 
 
@@ -152,7 +155,7 @@
     <strong>heap:push&nbsp;(item)</strong>
     </dt>
     <dd>
-    Adds a new item in the <a href="../modules/core.bheap.html#heap">heap</a>
+    Adds a new item in the <a href="../modules/jumper.core.bheap.html#heap">heap</a>
 
     <h3>Parameters:</h3>
     <ul>
@@ -171,8 +174,8 @@
     <strong>heap:pop&nbsp;()</strong>
     </dt>
     <dd>
-    Pops from the <a href="../modules/core.bheap.html#heap">heap</a> .
- Removes and returns the lowest cost item (with respect to the comparison function used) from the <a href="../modules/core.bheap.html#heap">heap</a> .
+    Pops from the <a href="../modules/jumper.core.bheap.html#heap">heap</a> .
+ Removes and returns the lowest cost item (with respect to the comparison function used) from the <a href="../modules/jumper.core.bheap.html#heap">heap</a> .
 
 
     <h3>Returns:</h3>
@@ -191,10 +194,10 @@
     <strong>heap:heapify&nbsp;([item])</strong>
     </dt>
     <dd>
-    Restores the <a href="../modules/core.bheap.html#heap">heap</a>  property.
- Reorders the <a href="../modules/core.bheap.html#heap">heap</a>  with respect to the comparison function being used.
- When given arg <code>item</code>, will sort that very item in the <a href="../modules/core.bheap.html#heap">heap</a> .
- Otherwise, the whole <a href="../modules/core.bheap.html#heap">heap</a>  will be sorted.
+    Restores the <a href="../modules/jumper.core.bheap.html#heap">heap</a>  property.
+ Reorders the <a href="../modules/jumper.core.bheap.html#heap">heap</a>  with respect to the comparison function being used.
+ When given arg <code>item</code>, will sort that very item in the <a href="../modules/jumper.core.bheap.html#heap">heap</a> .
+ Otherwise, the whole <a href="../modules/jumper.core.bheap.html#heap">heap</a>  will be sorted.
 
     <h3>Parameters:</h3>
     <ul>
@@ -217,7 +220,7 @@
     <strong>heap</strong>
     </dt>
     <dd>
-    The <a href="../modules/core.bheap.html#heap">heap</a>  class
+    The <a href="../modules/jumper.core.bheap.html#heap">heap</a>  class
 
 
 

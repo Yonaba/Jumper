@@ -24,7 +24,7 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper</h1>
+<h1>Jumper (v1.8.0)</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
@@ -34,11 +34,11 @@
 
 <h2>Scripts</h2>
 <ul>
-  <li><strong>search.astar</strong></li>
-  <li><a href="../scripts/search.bfs.html">search.bfs</a></li>
-  <li><a href="../scripts/search.dfs.html">search.dfs</a></li>
-  <li><a href="../scripts/search.dijkstra.html">search.dijkstra</a></li>
-  <li><a href="../scripts/search.jps.html">search.jps</a></li>
+  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
+  <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
+  <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
+  <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
+  <li><strong>jumper.search.jps</strong></li>
 </ul>
 <h2>Modules</h2>
 <ul>
@@ -54,11 +54,21 @@
 
 <div id="content">
 
-<h1>Script <code>search.astar</code></h1>
+<h1>Script <code>jumper.search.jps</code></h1>
 
-<p><strong><code>A-star</code> algorithm</strong>.</p>
-<p> Implementation of <a href="http://en.wikipedia.org/wiki/A-star">A*</a> search algorithm,
- applied on 2D grid-based maps.</p>
+<p><strong><code>Jump Point Search</code> algorithm</strong>.</p>
+<p> This file holds an implementation of <a href="http://harablog.wordpress.com/2011/09/07/jump-point-search/">Jump Point Search</a> algorithm.
+ To quote its authors, <strong>Jump Point Search</strong> is basically
+ "<em>an online symmetry breaking algorithm which speeds up pathfinding
+ on uniform-cost grid maps by <strong>jumping over</strong> many locations that would otherwise
+ need to be explicitly considered</em> ".</p>
+
+<p> It neither requires preprocessing, nor generates memory overhead, and thus performs consistently fast than classical A*.</p>
+
+<p> The following implementation was written with respect to the core pseudo-code given in
+ its <a href="http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf">
+ technical papers,</a> plus a wide
+ range of optimizations and additional features.</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Copyright</strong>: 2012-2013</li>

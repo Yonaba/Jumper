@@ -3,7 +3,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-    <title>Jumper</title>
+    <title>Jumper documentation</title>
     <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -24,7 +24,7 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper</h1>
+<h1>Jumper (v1.8.0)</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
@@ -37,30 +37,32 @@
 </ul>
 
 
-<h2>Scripts</h2>
-<ul>
-  <li><a href="../scripts/init.html">init</a></li>
-  <li><strong>pathfinder</strong></li>
-  <li><a href="../scripts/search.astar.html">search.astar</a></li>
-  <li><a href="../scripts/search.jps.html">search.jps</a></li>
-</ul>
 <h2>Modules</h2>
 <ul>
-  <li><a href="../modules/core.bheap.html">core.bheap</a></li>
-  <li><a href="../modules/core.grid.html">core.grid</a></li>
-  <li><a href="../modules/core.heuristics.html">core.heuristics</a></li>
-  <li><a href="../modules/core.node.html">core.node</a></li>
+  <li><a href="../modules/jumper.core.bheap.html">jumper.core.bheap</a></li>
+  <li><a href="../modules/jumper.core.heuristics.html">jumper.core.heuristics</a></li>
+  <li><a href="../modules/jumper.core.node.html">jumper.core.node</a></li>
+  <li><a href="../modules/jumper.core.path.html">jumper.core.path</a></li>
+  <li><a href="../modules/jumper.grid.html">jumper.grid</a></li>
+  <li><strong>jumper.pathfinder</strong></li>
+</ul>
+<h2>Scripts</h2>
+<ul>
+  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
+  <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
+  <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
+  <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
+  <li><a href="../scripts/jumper.search.jps.html">jumper.search.jps</a></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Script <code>pathfinder</code></h1>
+<h1>Module <code>jumper.pathfinder</code></h1>
 
 <p><strong>The <strong>pathfinder</strong> class API</strong>.</p>
-<p> This file holds the implementation of the <a href="../scripts/pathfinder.html#">pathfinder</a>  class.
- </p>
+<p> Implementation of the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  class.</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">-- Usage Example
@@ -75,8 +77,13 @@ local map = {
 local walkable = 0
 
 -- Library setup
-local Pathfinder = require (&quot;jumper.init&quot;)
-local myFinder = Pathfinder(map,walkable)
+local Grid = require (&quot;jumper.grid&quot;) -- The grid class
+local Pathfinder = require (&quot;jumper.pathfinder&quot;) -- The pathfinder lass
+
+-- Creates a grid object
+local grid = Grid(map)
+-- Creates a pathfinder object using Jump Point Search
+local myFinder = Pathfinder(&apos;JPS&apos;, grid, walkable)
 
 -- Define start and goal locations coordinates
 local startx, starty = 1,1
@@ -86,10 +93,19 @@ local endx, endy = 5,1
 local path, length = myFinder:getPath(startx, starty, endx, endy)
 if path then
   print((&apos;Path found! Length: %.2f&apos;):format(length))
-	for x,y,step in path:iter() do
-	  print((&apos;Step: %d - x: %d - y: %d&apos;):format(step,x,y))
+	for node, count in path:iter() do
+	  print((&apos;Step: %d - x: %d - y: %d&apos;):format(count, node.x, node.y))
 	end
 end
+
+--&gt; Output:
+--&gt; Path found! Length: 8.83
+--&gt; Step: 1 - x: 1 - y: 1
+--&gt; Step: 2 - x: 1 - y: 3
+--&gt; Step: 3 - x: 2 - y: 4
+--&gt; Step: 4 - x: 4 - y: 4
+--&gt; Step: 5 - x: 5 - y: 3
+--&gt; Step: 6 - x: 5 - y: 1
 </pre>
     </ul>
     <h3>Info:</h3>
@@ -103,8 +119,24 @@ end
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#pathfinder:new">pathfinder:new&nbsp;(map[, walkable[, processOnDemand]])</a></td>
-	<td class="summary">Inits a new <a href="../scripts/pathfinder.html#">pathfinder</a>  object</td>
+	<td class="name" nowrap><a href="#pathfinder:new">pathfinder:new&nbsp;(finderName, grid[, walkable])</a></td>
+	<td class="summary">Inits a new <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getGrid">pathfinder:getGrid&nbsp;(grid)</a></td>
+	<td class="summary">Sets a <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getGrid">pathfinder:getGrid&nbsp;()</a></td>
+	<td class="summary">Returns the <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:setWalkable">pathfinder:setWalkable&nbsp;([walkable])</a></td>
+	<td class="summary">Sets the <code>walkable</code> value or function.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#pathfinder:getWalkable">pathfinder:getWalkable&nbsp;()</a></td>
+	<td class="summary">Gets the <code>walkable</code> value or function.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#pathfinder:setFinder">pathfinder:setFinder&nbsp;(finderName)</a></td>
@@ -143,10 +175,6 @@ end
 	<td class="summary">Gets the list of all available search modes.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pathfinder:getGrid">pathfinder:getGrid&nbsp;()</a></td>
-	<td class="summary">Returns the <code>grid</code> object.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#pathfinder:version">pathfinder:version&nbsp;()</a></td>
 	<td class="summary">Returns version and release date.</td>
 	</tr>
@@ -154,20 +182,12 @@ end
 	<td class="name" nowrap><a href="#pathfinder:getPath">pathfinder:getPath&nbsp;(startX, startY, endX, endY)</a></td>
 	<td class="summary">Calculates a path.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#pathfinder:fill">pathfinder:fill&nbsp;(path)</a></td>
-	<td class="summary">Path filling function.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#pathfinder:filter">pathfinder:filter&nbsp;(path)</a></td>
-	<td class="summary">Path compression.</td>
-	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
 	<tr>
 	<td class="name" nowrap><a href="#pathfinder">pathfinder</a></td>
-	<td class="summary">The <a href="../scripts/pathfinder.html#">pathfinder</a>  class</td>
+	<td class="summary">The <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  class</td>
 	</tr>
 </table>
 
@@ -180,31 +200,110 @@ end
     <dl class="function">
     <dt>
     <a name = "pathfinder:new"></a>
-    <strong>pathfinder:new&nbsp;(map[, walkable[, processOnDemand]])</strong>
+    <strong>pathfinder:new&nbsp;(finderName, grid[, walkable])</strong>
     </dt>
     <dd>
-    Inits a new <a href="../scripts/pathfinder.html#">pathfinder</a>  object
+    Inits a new <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object
 
     <h3>Parameters:</h3>
     <ul>
-      <li><span class="parameter">map</span>
-        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-       A collision map - (2D array) with consecutive integer indices or a string with line-break symbol as a row delimiter.</li>
+      <li><span class="parameter">finderName</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       the name of the <code>finder</code> (search algorithm) to be used for further searches.
+ Use <a href="../modules/jumper.pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the full list of available finders.</li>
+      <li><span class="parameter">grid</span>
+        <span class="types"><a class="type" href="../modules/jumper.pathfinder.html#jumper.grid">grid</a></span>
+       a <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object.</li>
       <li><span class="parameter">walkable</span>
         <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">int</span> or <span class="type">function</span></span>
        the value for walkable nodes on the passed-in map array.
  If this parameter is a function, it should be prototyped as <code>f(value)</code>, returning a boolean:
  <code>true</code> when value matches a <em>walkable</em> node, <code>false</code> otherwise.</li>
-      <li><span class="parameter">processOnDemand</span>
-        <span class="types"><span class="type">bool</span></span>
-       whether or not caching nodes in the internal grid should be processed on-demand</li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
-          <span class="types"><a class="type" href="../scripts/pathfinder.html#">pathfinder</a></span>
-        a new <a href="../scripts/pathfinder.html#">pathfinder</a>  object
+          <span class="types"><a class="type" href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a></span>
+        a new <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getGrid"></a>
+    <strong>pathfinder:getGrid&nbsp;(grid)</strong>
+    </dt>
+    <dd>
+    Sets a <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object.  Defines the <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  on which the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  will make path searches.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">grid</span>
+        <span class="types"><a class="type" href="../modules/jumper.pathfinder.html#jumper.grid">grid</a></span>
+       a <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getGrid"></a>
+    <strong>pathfinder:getGrid&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns the <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object.  Returns a reference to the internal <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object used by the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/jumper.pathfinder.html#jumper.grid">grid</a></span>
+        the <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:setWalkable"></a>
+    <strong>pathfinder:setWalkable&nbsp;([walkable])</strong>
+    </dt>
+    <dd>
+    Sets the <code>walkable</code> value or function.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">walkable</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">int</span> or <span class="type">function</span></span>
+       the value for walkable nodes on the passed-in map array.
+ If this parameter is a function, it should be prototyped as <code>f(value)</code>, returning a boolean:
+ <code>true</code> when value matches a <em>walkable</em> node, <code>false</code> otherwise.</li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "pathfinder:getWalkable"></a>
+    <strong>pathfinder:getWalkable&nbsp;()</strong>
+    </dt>
+    <dd>
+    Gets the <code>walkable</code> value or function.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">value</span> or <span class="type">function</span></span>
+        the <code>walkable</code> previously set
     </ol>
 
 
@@ -216,9 +315,9 @@ end
     <strong>pathfinder:setFinder&nbsp;(finderName)</strong>
     </dt>
     <dd>
-    Sets a finder.  The finder refers to the search algorithm used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
+    Sets a finder.  The finder refers to the search algorithm used by the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object.
  The default finder is <code>JPS</code> (for <em>Jump Point Search</em>), which is the fastest available.
- Use <a href="../scripts/pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the list of available finders.
+ Use <a href="../modules/jumper.pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the list of available finders.
 
     <h3>Parameters:</h3>
     <ul>
@@ -231,7 +330,7 @@ end
 
     <h3>see also:</h3>
     <ul>
-         <a href="../scripts/pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a>
+         <a href="../modules/jumper.pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a>
     </ul>
 
 
@@ -241,7 +340,7 @@ end
     <strong>pathfinder:getFinder&nbsp;()</strong>
     </dt>
     <dd>
-    Gets the name of the finder being used.  The finder refers to the search algorithm used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
+    Gets the name of the finder being used.  The finder refers to the search algorithm used by the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object.
 
 
     <h3>Returns:</h3>
@@ -279,8 +378,8 @@ end
     <strong>pathfinder:setHeuristic&nbsp;(heuristic)</strong>
     </dt>
     <dd>
-    Set a heuristic.  This is a function internally used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  to get the optimal path during a search.
- Use <a href="../scripts/pathfinder.html#pathfinder:getHeuristics">pathfinder:getHeuristics</a> to get the list of all available heuristics. One can also defined
+    Set a heuristic.  This is a function internally used by the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  to get the optimal path during a search.
+ Use <a href="../modules/jumper.pathfinder.html#pathfinder:getHeuristics">pathfinder:getHeuristics</a> to get the list of all available heuristics. One can also defined
  his own heuristic function.
 
     <h3>Parameters:</h3>
@@ -294,7 +393,7 @@ end
 
     <h3>see also:</h3>
     <ul>
-         <a href="../scripts/pathfinder.html#pathfinder:getHeuristics">pathfinder:getHeuristics</a>
+         <a href="../modules/jumper.pathfinder.html#pathfinder:getHeuristics">pathfinder:getHeuristics</a>
     </ul>
 
 
@@ -311,7 +410,7 @@ end
     <ol>
 
           <span class="types"><span class="type">function</span></span>
-        the heuristic function being used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object
+        the heuristic function being used by the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object
     </ol>
 
 
@@ -342,10 +441,10 @@ end
     <strong>pathfinder:setMode&nbsp;(mode)</strong>
     </dt>
     <dd>
-    Changes the search mode.  Defines a new search mode for the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
+    Changes the search mode.  Defines a new search mode for the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object.
  The default search mode is <code>DIAGONAL</code>, which implies 8-possible directions when moving (north, south, east, west and diagonals).
  In <code>ORTHOGONAL</code> mode, only 4-directions are allowed (north, south, east and west).
- Use <a href="../scripts/pathfinder.html#pathfinder:getModes">pathfinder:getModes</a> to get the list of all available search modes.
+ Use <a href="../modules/jumper.pathfinder.html#pathfinder:getModes">pathfinder:getModes</a> to get the list of all available search modes.
 
     <h3>Parameters:</h3>
     <ul>
@@ -358,7 +457,7 @@ end
 
     <h3>see also:</h3>
     <ul>
-         <a href="../scripts/pathfinder.html#pathfinder:getModes">pathfinder:getModes</a>
+         <a href="../modules/jumper.pathfinder.html#pathfinder:getModes">pathfinder:getModes</a>
     </ul>
 
 
@@ -395,25 +494,6 @@ end
 
           <span class="types"><span class="type">{string,...}</span></span>
         array of search modes.
-    </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "pathfinder:getGrid"></a>
-    <strong>pathfinder:getGrid&nbsp;()</strong>
-    </dt>
-    <dd>
-    Returns the <code>grid</code> object.  Returns a reference to the internal <code>grid</code> object used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object
-
-
-    <h3>Returns:</h3>
-    <ol>
-
-          <span class="types"><span class="type">grid</span></span>
-        the <code>grid</code> object
     </ol>
 
 
@@ -480,67 +560,6 @@ end
 
 
 </dd>
-    <dt>
-    <a name = "pathfinder:fill"></a>
-    <strong>pathfinder:fill&nbsp;(path)</strong>
-    </dt>
-    <dd>
-    Path filling function.  It interpolates between non contiguous locations along a path
- to build a fully continuous path. It maybe useful when using <code>Jump Point Search</code> finder.
- It does the opposite of <a href="../scripts/pathfinder.html#pathfinder:filter">pathfinder:filter</a>
-
-    <h3>Parameters:</h3>
-    <ul>
-      <li><span class="parameter">path</span>
-        <span class="types"><span class="type">{node,...}</span></span>
-       the path found with <a href="../scripts/pathfinder.html#pathfinder:getPath">pathfinder:getPath</a></li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-          <span class="types"><span class="type">{node,...}</span></span>
-        the passed-in path, interpolated
-    </ol>
-
-
-    <h3>see also:</h3>
-    <ul>
-         <a href="../scripts/pathfinder.html#pathfinder:filter">pathfinder:filter</a>
-    </ul>
-
-
-</dd>
-    <dt>
-    <a name = "pathfinder:filter"></a>
-    <strong>pathfinder:filter&nbsp;(path)</strong>
-    </dt>
-    <dd>
-    Path compression.  Given a path, it eliminates useless nodes to return a path consisting of
- straight directions. It does the opposite of <a href="../scripts/pathfinder.html#pathfinder:fill">pathfinder:fill</a>
-
-    <h3>Parameters:</h3>
-    <ul>
-      <li><span class="parameter">path</span>
-        <span class="types"><span class="type">{node,...}</span></span>
-       the path found with <a href="../scripts/pathfinder.html#pathfinder:getPath">pathfinder:getPath</a></li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-          <span class="types"><span class="type">{node,...}</span></span>
-        the passed-in path, filtered
-    </ol>
-
-
-    <h3>see also:</h3>
-    <ul>
-         <a href="../scripts/pathfinder.html#pathfinder:fill">pathfinder:fill</a>
-    </ul>
-
-
-</dd>
 </dl>
     <h2><a name="Tables"></a>Tables</h2>
 
@@ -550,7 +569,7 @@ end
     <strong>pathfinder</strong>
     </dt>
     <dd>
-    The <a href="../scripts/pathfinder.html#">pathfinder</a>  class
+    The <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  class
 
 
 

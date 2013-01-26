@@ -3,7 +3,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-    <title>Jumper</title>
+    <title>Jumper documentation</title>
     <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -24,7 +24,7 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper</h1>
+<h1>Jumper (v1.8.0)</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
@@ -38,24 +38,27 @@
 
 <h2>Modules</h2>
 <ul>
-  <li><a href="../modules/core.bheap.html">core.bheap</a></li>
-  <li><a href="../modules/core.grid.html">core.grid</a></li>
-  <li><strong>core.heuristics</strong></li>
-  <li><a href="../modules/core.node.html">core.node</a></li>
+  <li><a href="../modules/jumper.core.bheap.html">jumper.core.bheap</a></li>
+  <li><strong>jumper.core.heuristics</strong></li>
+  <li><a href="../modules/jumper.core.node.html">jumper.core.node</a></li>
+  <li><a href="../modules/jumper.core.path.html">jumper.core.path</a></li>
+  <li><a href="../modules/jumper.grid.html">jumper.grid</a></li>
+  <li><a href="../modules/jumper.pathfinder.html">jumper.pathfinder</a></li>
 </ul>
 <h2>Scripts</h2>
 <ul>
-  <li><a href="../scripts/init.html">init</a></li>
-  <li><a href="../scripts/pathfinder.html">pathfinder</a></li>
-  <li><a href="../scripts/search.astar.html">search.astar</a></li>
-  <li><a href="../scripts/search.jps.html">search.jps</a></li>
+  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
+  <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
+  <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
+  <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
+  <li><a href="../scripts/jumper.search.jps.html">jumper.search.jps</a></li>
 </ul>
 
 </div>
 
 <div id="content">
 
-<h1>Module <code>core.heuristics</code></h1>
+<h1>Module <code>jumper.core.heuristics</code></h1>
 
 <p><strong>Heuristics for the search algorithm</strong>.</p>
 <p> A <a href="http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html">heuristic</a>
@@ -64,7 +67,7 @@
 
 <p> This script holds the definition of built-in heuristics available.</p>
 
-<p> Distance functions are internally used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  to evaluate the optimal path
+<p> Distance functions are internally used by the <a href="../modules/jumper.core.heuristics.html#jumper.pathfinder">pathfinder</a>  to evaluate the optimal path
  from the start location to the goal. These functions share the same prototype:
  <ul>
  <pre class="example">
@@ -77,17 +80,16 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example">  -- Example
-  local Distance = require (&apos;Jumper.core.heuristics&apos;)
-  local Jumper = require (&quot;Jumper.init&quot;)
+  local Distance = require (&apos;jumper.core.heuristics&apos;)
+  local Grid = require (&quot;jumper.grid&quot;)
+  local Pathfinder = require (&quot;jumper.pathfinder&quot;)
   local walkable = 0
   -- Placeholder: local map = {...}
-  local pathfinder = Jumper(map,walkable)
+  local grid = Grid(map)
+  local myFinder = Pathfinder(&apos;ASTAR&apos;, grid, walkable)
 
   -- Use Euclidian heuristic to evaluate distance
-  pathfinder:setHeuristic(&apos;EUCLIDIAN&apos;)
-  local startx, starty = 1,1
-  local endx, endy = 5,1
-  local path, pathLen = pathfinder:getPath(startx, starty, endx, endy)
+  myFinder:setHeuristic(&apos;EUCLIDIAN&apos;)
   -- etc ...
 </pre>
     </ul>
@@ -132,7 +134,7 @@
     </dt>
     <dd>
     Manhattan distance.
- <br/>This heuristic is the default one being used by the <a href="../scripts/pathfinder.html#">pathfinder</a>  object.
+ <br/>This heuristic is the default one being used by the <a href="../modules/jumper.core.heuristics.html#jumper.pathfinder">pathfinder</a>  object.
  <br/>Evaluates as <code>distance = |dx|+|dy|</code>
 
     <h3>Parameters:</h3>

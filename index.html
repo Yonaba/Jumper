@@ -3,7 +3,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-    <title>Jumper</title>
+    <title>Jumper documentation</title>
     <link rel="stylesheet" href="ldoc.css" type="text/css" />
 </head>
 <body>
@@ -24,24 +24,27 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper</h1>
+<h1>Jumper (v1.8.0)</h1>
 
 
 
 
 <h2>Modules</h2>
 <ul>
-  <li><a href="modules/core.bheap.html">core.bheap</a></li>
-  <li><a href="modules/core.grid.html">core.grid</a></li>
-  <li><a href="modules/core.heuristics.html">core.heuristics</a></li>
-  <li><a href="modules/core.node.html">core.node</a></li>
+  <li><a href="modules/jumper.core.bheap.html">jumper.core.bheap</a></li>
+  <li><a href="modules/jumper.core.heuristics.html">jumper.core.heuristics</a></li>
+  <li><a href="modules/jumper.core.node.html">jumper.core.node</a></li>
+  <li><a href="modules/jumper.core.path.html">jumper.core.path</a></li>
+  <li><a href="modules/jumper.grid.html">jumper.grid</a></li>
+  <li><a href="modules/jumper.pathfinder.html">jumper.pathfinder</a></li>
 </ul>
 <h2>Scripts</h2>
 <ul>
-  <li><a href="scripts/init.html">init</a></li>
-  <li><a href="scripts/pathfinder.html">pathfinder</a></li>
-  <li><a href="scripts/search.astar.html">search.astar</a></li>
-  <li><a href="scripts/search.jps.html">search.jps</a></li>
+  <li><a href="scripts/jumper.search.astar.html">jumper.search.astar</a></li>
+  <li><a href="scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
+  <li><a href="scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
+  <li><a href="scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
+  <li><a href="scripts/jumper.search.jps.html">jumper.search.jps</a></li>
 </ul>
 
 </div>
@@ -50,43 +53,55 @@
 
 
 
-  <h2>A pathfinding library for 2D grid based games</h2>
+  <h2>Fast and lightweight pathfinding library for grid based games</h2>
 
 <h2>Modules</h2>
 <table class="module_list">
 	<tr>
-		<td class="name" nowrap><a href="modules/core.bheap.html">core.bheap</a></td>
+		<td class="name" nowrap><a href="modules/jumper.core.bheap.html">jumper.core.bheap</a></td>
 		<td class="summary"><strong>A light implementation of <code>binary heaps</code></strong>.</td>
 	</tr>
 	<tr>
-		<td class="name" nowrap><a href="modules/core.grid.html">core.grid</a></td>
-		<td class="summary"><strong>The <code>grid</code> class API</strong>.</td>
-	</tr>
-	<tr>
-		<td class="name" nowrap><a href="modules/core.heuristics.html">core.heuristics</a></td>
+		<td class="name" nowrap><a href="modules/jumper.core.heuristics.html">jumper.core.heuristics</a></td>
 		<td class="summary"><strong>Heuristics for the search algorithm</strong>.</td>
 	</tr>
 	<tr>
-		<td class="name" nowrap><a href="modules/core.node.html">core.node</a></td>
+		<td class="name" nowrap><a href="modules/jumper.core.node.html">jumper.core.node</a></td>
 		<td class="summary"><strong>The <code>node</code> class</strong>.</td>
+	</tr>
+	<tr>
+		<td class="name" nowrap><a href="modules/jumper.core.path.html">jumper.core.path</a></td>
+		<td class="summary"><strong>The <code>path</code> class</strong>.</td>
+	</tr>
+	<tr>
+		<td class="name" nowrap><a href="modules/jumper.grid.html">jumper.grid</a></td>
+		<td class="summary"><strong>The <code>grid</code> class API</strong>.</td>
+	</tr>
+	<tr>
+		<td class="name" nowrap><a href="modules/jumper.pathfinder.html">jumper.pathfinder</a></td>
+		<td class="summary"><strong>The <strong>pathfinder</strong> class API</strong>.</td>
 	</tr>
 </table>
 <h2>Scripts</h2>
 <table class="module_list">
 	<tr>
-		<td class="name" nowrap><a href="scripts/init.html">init</a></td>
-		<td class="summary"><strong>The init hook file</strong>.</td>
-	</tr>
-	<tr>
-		<td class="name" nowrap><a href="scripts/pathfinder.html">pathfinder</a></td>
-		<td class="summary"><strong>The <strong>pathfinder</strong> class API</strong>.</td>
-	</tr>
-	<tr>
-		<td class="name" nowrap><a href="scripts/search.astar.html">search.astar</a></td>
+		<td class="name" nowrap><a href="scripts/jumper.search.astar.html">jumper.search.astar</a></td>
 		<td class="summary"><strong><code>A-star</code> algorithm</strong>.</td>
 	</tr>
 	<tr>
-		<td class="name" nowrap><a href="scripts/search.jps.html">search.jps</a></td>
+		<td class="name" nowrap><a href="scripts/jumper.search.bfs.html">jumper.search.bfs</a></td>
+		<td class="summary"><strong><code>Breadth-First Search</code> algorithm</strong>.</td>
+	</tr>
+	<tr>
+		<td class="name" nowrap><a href="scripts/jumper.search.dfs.html">jumper.search.dfs</a></td>
+		<td class="summary"><strong><code>Depth First Search</code> algorithm</strong>.</td>
+	</tr>
+	<tr>
+		<td class="name" nowrap><a href="scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></td>
+		<td class="summary"><strong><code>Dijkstra</code> algorithm</strong>.</td>
+	</tr>
+	<tr>
+		<td class="name" nowrap><a href="scripts/jumper.search.jps.html">jumper.search.jps</a></td>
 		<td class="summary"><strong><code>Jump Point Search</code> algorithm</strong>.</td>
 	</tr>
 </table>
