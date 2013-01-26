@@ -1,8 +1,9 @@
 Jumper
 ======
 
-__Jumper__ is a pathfinding library designed for grid-based games.<br/>
-It aims to be __fast__ and __lightweight__. It also features a clean public interface with chaining features which makes it __very friendly and easy to use__.<br/>
+__Jumper__ is a pathfinding library designed for grid-based games. It aims to be __fast__ and __lightweight__.
+It features a wide range of search algorithms, built within a clean interface with 
+chaining features which makes it __very friendly and easy to use__.<br/>
 
 __Jumper__ is written in pure [Lua][]. Thus, it is not __framework-related__ and can be used in any project embedding [Lua][] code.
 
@@ -42,7 +43,7 @@ luarocks install --server=http://rocks.moonscript.org/manifests/Yonaba jumper
 ````
 
 ##Example of Use
-Here is a basic usage example for Jumper:
+Here is a simple example explaining how to use Jumper:
 
 ```lua
 -- Usage Example
@@ -54,11 +55,16 @@ local map = {
 	{0,0,0,0,0 },
 }
 -- Value for walkable tiles
-local walkable = 0 
+local walkable = 0
 
 -- Library setup
-local Pathfinder = require ("jumper.init")
-local myFinder = Pathfinder(map,walkable)
+local Grid = require ("jumper.grid") -- The grid class
+local Pathfinder = require ("jumper.pathfinder") -- The pathfinder lass
+
+-- Creates a grid object
+local grid = Grid(map) 
+-- Creates a pathfinder object using Jump Point Search
+local myFinder = Pathfinder('JPS', grid, walkable) 
 
 -- Define start and goal locations coordinates
 local startx, starty = 1,1
@@ -68,10 +74,19 @@ local endx, endy = 5,1
 local path, length = myFinder:getPath(startx, starty, endx, endy)
 if path then
   print(('Path found! Length: %.2f'):format(length))
-	for x,y,step in path:iter() do
-	  print(('Step: %d - x: %d - y: %d'):format(step,x,y))
+	for node, count in path:iter() do
+	  print(('Step: %d - x: %d - y: %d'):format(count, node.x, node.y))
 	end
 end
+
+--> Output:
+--> Path found! Length: 8.83
+--> Step: 1 - x: 1 - y: 1
+--> Step: 2 - x: 1 - y: 3
+--> Step: 3 - x: 2 - y: 4
+--> Step: 4 - x: 4 - y: 4
+--> Step: 5 - x: 5 - y: 3
+--> Step: 6 - x: 5 - y: 1
 ````
 
 Find some other examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](https://github.com/Yonaba/Jumper-Examples)
@@ -81,13 +96,7 @@ Find a complete documentation and API description online here: [docs](https://yo
 
 ##Usage##
 ###Adding Jumper to your project###
-Copy the contents of the folder named [jumper](https://github.com/Yonaba/Jumper/blob/master/jumper) and its contents and place it inside your projet. Use *require* function to import the library.
-
-```lua
-local Pathfinder = require('jumper.init')
-```
-
-__Note__: See [init](http://yonaba.github.com/Jumper/scripts/init.html) for more details on how to import the library.
+Copy the contents of the folder named [jumper](https://github.com/Yonaba/Jumper/blob/master/jumper) and its contents and place it inside your projet. Use *require* function to import any module of the library.
 
 ###Setting your collision map
 The collision map is a regular Lua table where each cell holds a value, representing whether or not the corresponding tile in the 2D world is walkable
@@ -137,19 +146,29 @@ xxxxxxxxxxxxxx
 ```
 
 ###Initializing Jumper###
-Once your collision map is set, you must specify what value in this collision map matches a __walkable__ tile. If you choose for instance *0* for *walkable tiles*, 
-__any other value__ will be considered as *non walkable*.<br/>
-
-To initialize the pathfinder, you will have to pass __three arguments__ to Jumper.
+Once your collision map is set, you have to init a `grid` object.
+This is fairly simple, you just have to require the [grid](https://github.com/Yonaba/Jumper/blob/master/jumper/grid.lua) module, and then pass it two arguments.
 
 ```lua
-local myFinder = Pathfinder(map,walkable,processOnDemand)
+local Grid = require 'jumper.grid'
+local grid = Grid(map,processOnDemand)
 ```
 
-The first argument is __mandatory__. The __two others__ left are __optional__.
-* __map__ refers to the collision map representing the 2D world.
-* __walkable__ (optional) refers to the value representing walkable tiles. Will be considered as __0__ if not given.
-* __processOnDemand__ (optional) is a boolean to __enable or not__ [on-demand processing for the internal grid](https://github.com/Yonaba/Jumper/#the-grid).
+Only the first arg `map` is __mandatory__. It refers to the [collision map](https://github.com/Yonaba/Jumper#setting-your-collision-map) previously defined.
+The second arg `processOnDemand` is optional. See [here](https://github.com/Yonaba/Jumper#the-grid-object) for more details.<br/>
+ 
+Next, to init a `pathfinder`, you have specify what value in this collision map matches a __walkable__ tile. If you choose for instance *0* for *walkable tiles*, 
+and you happen to assign that value to the `pathfinder`, it will consider __any other value__ as *non walkable*.<br/>
+To initialize a `pathfinder`, you will have to require the [pathfinder](https://github.com/Yonaba/Jumper/blob/master/jumper/pathfinder.lua) module, and then pass _it _three arguments__.
+
+```lua
+local myFinder = Pathfinder(finderName, grid, walkable)
+```
+
+The first and second arguments are __mandatory__. The last one is optional.
+* `finderName` refers to the search algorithm to be used by the pathfinder. See [finders](https://github.com/Yonaba/Jumper#finders) for more details.
+* `grid` refers to the grid object.
+* `walkable` (optional) refers to the value representing walkable tiles. If not given, any tile will be considered *fully walkable* on the grid.
 
 You might want to have multiple values designing a walkable tile. 
 In this case, argument <tt>walkable</tt> can be a function, prototyped as <tt>f(value)</tt>, returning a boolean.
@@ -167,39 +186,41 @@ local function walkable(value)
   return false
 end
 
-local Pathfinder = require('jumper.init')
-local myFinder = Pathfinder(map,walkable)
+local Grid = require ('jumper.grid')
+local Pathfinder = require('jumper.pathfinder')
+local myFinder = Pathfinder('ASTAR', Grid(map), walkable)
 ```
 
-See [docs](http://yonaba.github.com/Jumper/scripts/pathfinder.html#pathfinder:new) for more details on initializing a new `Pathfinder` object.<br/>.
 
 ###Finders
-Jumper uses a search algorithm to perform a path search from one location to another.
-Actually, there are dozens of search algorithms, each one with its strengths and weaknesses, and this library implements some of these algorithms.
-By default, when a `Pathfinder` object is created, it uses [Jump Point Search](http://yonaba.github.com/Jumper/scripts/search.jps.html), 
-which is one of the fastest available, especially with large maps.
+Jumper uses search algorithm to perform a path search from one location to another.
+Actually, there are dozens of search algorithms, each one having its strengths and weaknesses, and this library implements some of these algorithms.
+As of version 1.8.0, Jumper implements [A-star](http://en.wikipedia.org/wiki/A-star), [Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm), 
+[Breadth-First search](http://en.wikipedia.org/wiki/Breadth-first_search), [Depth First search](http://en.wikipedia.org/wiki/Depth-first_search) 
+and [Jump Point Search](http://harablog.wordpress.com/2011/09/07/jump-point-search/) (which is one of the fastest available for grid maps).
 
 ```lua
-local Pathfinder = require ('jumper.init')
-local myFinder = Pathfinder(map,0)
+local Grid = require ('jumper.grid')
+local Pathfinder = require ('jumper.pathfinder')
+local myFinder = Pathfinder('JPS',Grid(map),0)
 print(myFinder:getFinder()) --> 'JPS'
 ````
 
-Use `Pathfinder:getFinders` to get the list of all available finders, and `Pathfinder:setFinder` to switch to another search algorithm.
-See the [pathhfinder class](http://yonaba.github.com/Jumper/scripts/pathfinder.html) docs for more details.
+Use `pathfinder:getFinders` to get the list of all available finders, and `pathfinder:setFinder` to switch to another search algorithm.
+See the [`pathfinder` class documentation](http://yonaba.github.com/Jumper/modules/jumper.pathfinder.html) for more details.
 
 ###Distance heuristics###
-Heuristics are functions used by the search algorithm to evaluate the optimal path while processing.
+`Heuristics` are functions used by the search algorithm to evaluate the optimal path while processing.
 
 ####Built-in heuristics
-*Jumper* features four (4) types of distance heuristics.
+Jumper features four (4) types of distance heuristics.
 
 * MANHATTAN distance : *|dx| + |dy|*
 * EUCLIDIAN distance : *sqrt(dx*dx + dy*dy)*
 * DIAGONAL distance : *max(|dx|, |dy|)*
 * CARDINAL/INTERCARDINAL distance: *min(|dx|,|dy|)*sqrt(2) + max(|dx|,|dy|) - min(|dx|,|dy|)*
 
-By default, when you init  *Jumper*, __MANHATTAN__ distance will be used.<br/>
+By default, when you init Jumper, __MANHATTAN__ distance will be used.<br/>
 If you want to use __another heuristic__, you just have to pass one of the following predefined strings to <tt>pathfinder:setHeuristic(Name)</tt>:
 
 ```lua
@@ -212,11 +233,12 @@ If you want to use __another heuristic__, you just have to pass one of the follo
 As an example :
 
 ```lua
-local Pathfinder = require('jumper.init')
-local myFinder = Pathfinder(map)
+local Grid = require ('jumper.grid')
+local Pathfinder = require('jumper.pathfinder')
+local myFinder = Pathfinder('ASTAR',Grid(map))
 myFinder:setHeuristic('CARDINTCARD')
 ```
-See [docs](http://yonaba.github.com/Jumper/modules/core.heuristics.html) for more details on how to deal with distance heuristics.
+See [docs](http://yonaba.github.com/Jumper/modules/jumper.core.heuristics.html) for more details on how to deal with distance heuristics.
 
 ####Custom heuristics
 You can also cook __your own heuristic__. This custom heuristic should be passed to <tt>Pathfinder:setHeuristic()</tt> as a function 
@@ -227,50 +249,41 @@ As an example:
 
 ```lua
 -- A custom heuristic
-local function distance(dx, dy)
+local function myDistance(dx, dy)
   return (math.abs(dx) + 1.4 * math.abs(dy))
 end
-local Pathfinder = require('jumper.init')
-local myFinder = Pathfinder(map)
-myFinder:setHeuristic(distance)
+local Grid = require ('jumper.grid')
+local Pathfinder = require('jumper.pathfinder')
+local myFinder = Pathfinder('ASTAR',Grid(map))
+myFinder:setHeuristic(myDistance)
 ````
 
 ##The Grid
 ###Map access
-When you init __Jumper__, passing it a 2D map (2-dimensional array), __Jumper__ keeps track of this map.<br/>
-Therefore, you can access it via <tt>(Pathfinder:getGrid()).map</tt>
-
-```lua
-local map = {
-  {0,0,0},
-  {0,0,0},
-  {0,0,0},
-}
-
-local Pathfinder = require 'jumper.init'
-local myFinder = Pathfinder(map)
-local internalGrid = myFinder:getGrid()
-````
+When you init a `grid` object, passing it a 2D map (2-dimensional array), __Jumper__ keeps track of this map.<br/>
+Therefore, you can access it via <tt>(Grid()):getMap()</tt>
 
 ###The Grid Object
-__Jumper__ creates an *internal grid* (which is also a 2D dimensional array) that will be used __later on__ to answer your pathfinding calls. This
-internal array of nodes is accessible via <tt>Pathfinder:getGrid().nodes</tt>.<br/>
-__When initializing Jumper__, the map passed as an argument is __pre-preprocessed by default__. It just means that __Jumper__ caches all nodes with respect to the map passed at first and create some internal data needed for pathfinding operations.
+When creating the `grid` object, the map passed as argument is __pre-preprocessed by default__. It just means that __Jumper__ caches all nodes and create some internal data needed for pathfinding operations.
 This will make further pathfinding requests being answered faster, but will __have a drawback in terms of memory consumed__.<br/>
 *As an example, a __500 x 650__ sized map will consume around __55 Mb__ of memory right after initializing Jumper, when using the pre-preprocesed mode.*
 
 You can __optionally__ choose to __process nodes on-demand__, setting the relevant argument to <tt>true</tt> when initializing __Jumper__.
 
 ```lua
-local Pathfinder = require 'jumper.init'
+
 local map = {
   {0,0,0},
   {0,0,0},
   {0,0,0},
 }
-local walkable = 0
+local Grid = require 'jumper.grid'
+local Pathfinder = require 'jumper.pathfinder'
+
 local processOnDemand = true
-local myFinder = Pathfinder(map,walkable,processOnDemand)
+local grid = Grid(map, processOnDemand)
+local walkable = 0
+local myFinder = Pathfinder('DFS', grid, walkable)
 ````
 
 In this case, the internal grid will consume __0 kB (no memory) at initialization__. But later on, this is likely to grow, as __Jumper__ will automatically create and keep caching new nodes __on purpose__.
@@ -281,8 +294,8 @@ Therefore, consider this a __tuning parameter__, and choose what suits the best 
 ##Handling paths##
 ###Using native <tt>Pathfinder:getPath()</tt>###
 
-Calling <tt>Pathfinder:getPath()</tt> will return a table representing a path from one node to another.<br/>
-The path is always represented as follows :
+Calling <tt>Pathfinder:getPath()</tt> will return a `path`.<br/>
+The `path` is always represented as follows :
 
 ```lua
 path = {
@@ -293,18 +306,18 @@ path = {
 }
 ```
 
-Each [node](http://yonaba.github.com/Jumper/modules/core.node.html) have `x` and `y` attributes, corresponding to their location on the grid. That is, a set of nodes makes a complete path.
+Each [node](http://yonaba.github.com/Jumper/modules/jumper.core.node.html) has `x` and `y` attributes, corresponding to its location on the grid. That is, a set of nodes makes a complete path.
 
-You can iterate on nodes along the path using <tt>path:iter</tt>
+You can iterate on nodes along a `path` using <tt>path:iter</tt>
 ```lua
-for x,y,step in path:iter() do
+for node,step in path:iter() do
   -- ...
 end
 ````
 
 ###Path filling###
-Depending on the search algorithm being used, the set of nodes making a path may not be contiguous.
-For instance, with the path given below, you can notice node `{x = 1,y = 3}` was skipped.
+Depending on the search algorithm being used, the set of nodes composing a `path` may not be contiguous.
+For instance, in the path given below, you can notice node `{x = 1,y = 3}` was skipped.
 
 ```lua
 local path = {{x = 1, y = 1},{x = 1,y = 2},{x = 1,y = 4}}
@@ -314,8 +327,8 @@ This is actually not a problem, as the way from `{x = 1,y = 2}` to `{x = 1,y = 4
 that can be used to polish (interpolate) a path early computed, filling such holes.
 
 ```lua
-local path = {{x = 1,y = 1},{x = 4,y = 4}}
-myFinder:fill(path) -- Returns {{x = 1,y = 1},{x = 2,y = 2},{x = 3,y = 3},{x = 4,y = 4}}
+-- Assuming: path = {{x = 1,y = 1},{x = 4,y = 4}}
+path:fill() -- Returns {{x = 1,y = 1},{x = 2,y = 2},{x = 3,y = 3},{x = 4,y = 4}}
 ```
 
 ###Path filtering###
@@ -323,24 +336,30 @@ This feature does the opposite work of `Pathfinder:fill`.
 Given a path, it removes some unecessary nodes to leave a path made of turning points. The path to follow would be the straight line between all those nodes.
 
 ```lua
-local path = {{x = 1,y = 1},{x = 1,y = 2},{x = 1,y = 3},{x = 1,y = 4},{x = 1,y = 5}}
-myFinder:filter(path) -- Returns {{x = 1,y = 1},{x = 1,y = 5}}
+-- Assuming: path = {{x = 1,y = 1},{x = 1,y = 2},{x = 1,y = 3},{x = 1,y = 4},{x = 1,y = 5}}
+path:filter() -- Returns {{x = 1,y = 1},{x = 1,y = 5}}
 ````
+
+See [`path` class documentation](http://yonaba.github.com/Jumper/modules/jumper.core.path.html) for more details.
 
 ##Chaining##
 All setters can be chained.<br/>
-This is convenient if you need to __quickly reconfigure__ the `Pathfinder` object.
+This is convenient if you need to __quickly reconfigure__ the `pathfinder` object.
 
 ```lua 
-local Pathfinder = require ('jumper.init')
 local map = {
   {0,0,0},
   {0,0,0},
   {0,0,0},
 }
-local myFinder = Pathfinder(map)
+
+local Grid = require ('jumper.grid')
+local Pathfinder = require ('jumper.pathfinder')
+
+local grid = Grid(map)
+local myFinder = Pathfinder('BFS', grid, 0)
 -- some code
--- calls the pathfinder, reconfigures it and requests a new path
+-- calls the finder, reconfigures it and requests a new path
 local path,length = myFinder:setFinder('ASTAR')
 				   :setHeuristic('EUCLIDIAN')
 				   :setMode('ORTHOGONAL')
