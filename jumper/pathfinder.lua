@@ -161,7 +161,7 @@ if (...) then
 
   --- Sets a `grid` object. Defines the `grid` on which the `pathfinder` will make path searches.
   -- @class function
-  -- @name pathfinder:getGrid
+  -- @name pathfinder:setGrid
   -- @tparam grid grid a `grid` object
   function Pathfinder:setGrid(grid)
     assert(isAGrid(grid), 'Bad argument #1. Expected a \'grid\' object')
@@ -181,7 +181,7 @@ if (...) then
   --- Sets the `walkable` value or function.
   -- @class function
   -- @name pathfinder:setWalkable
-  -- @tparam[opt] string|int|function walkable the value for walkable nodes on the passed-in map array.
+  -- @tparam string|int|function walkable the value for walkable nodes on the passed-in map array.
   -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean:
   -- `true` when value matches a *walkable* node, `false` otherwise.
   function Pathfinder:setWalkable(walkable)

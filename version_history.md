@@ -1,5 +1,27 @@
 #Version history#
 
+##1.8.0 (01/26/2013)
+* Moved the internal `Grid` module at the top level
+* Separated path handling logic from the pathfinder class
+* Added a new `Path` class
+* Moved <tt>Pathfinder:filter</tt> and <tt>Pathfinder:fill</tt> to <tt>Path:filter</tt> and <tt>Path:fill</tt> 
+* Changed <tt>Pathfinder:new</tt> args, to handle the explicit choice of a finder.
+* Added <tt>Pathfinder:setGrid</tt> 
+* Added <tt>Pathfinder:getGrid</tt> 
+* Added <tt>Pathfinder:setWalkable</tt> 
+* Added <tt>Pathfinder:getWalkable</tt>
+* Changed <tt>Grid:isWalkableAt</tt> to handle a third-parameter for node walkability testing
+* Added <tt>Grid:getWidth</tt>
+* Added <tt>Grid:getHeight</tt>
+* Added <tt>Grid:getMap</tt>
+* Added <tt>Grid:getNodes</tt>
+* Added <tt>Grid:getNodes</tt>
+* Added <tt>Path:getLength</tt> for the `Path` class, for path length self-evaluation, as it fails with finders not handling heuristics.
+* Added Dijkstra algorithm
+* Added Breadth-First search algorithm
+* Added Depth-First search algorithm
+* Updated README and documentation
+
 ##1.7.0 (01/22/13)
 * Added Astar search algorithm, along with Jump Point Search
 * Implemented a common interface for the <tt>Pathfinder</tt> object
