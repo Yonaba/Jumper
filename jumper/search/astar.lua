@@ -1,24 +1,23 @@
 --- <strong>`A-star` algorithm</strong>.
--- This file holds an implementation of <a href="http://en.wikipedia.org/wiki/A-star">A*</a> search algorithm, 
--- applied on 2D grid-based maps
+-- Implementation of <a href="http://en.wikipedia.org/wiki/A-star">A*</a> search algorithm.
 --
 -- @author Roland Yonaba
 -- @copyright 2012-2013
 -- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
--- @script search.astar
+-- @script jumper.search.astar
 
 
 
 if (...) then
-  local abs, sqrt2 = math.abs, math.sqrt(2)
+  local sqrt2 = math.sqrt(2)
 
-  local function astarSearch(finder, node, endNode, toClear)
+  local function astar_search(finder, node, endNode, toClear, overrideHeuristic)
     -- Collect all neighbouring nodes from the current examined node
-    local neighbours = finder.grid:getNeighbours(node, finder.allowDiagonal)
+    local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal)
     for i = 1, #neighbours do
       local neighbour = neighbours[i]
-      if not neighbour.closed then
-        -- If not in closed list
+      if not neighbour.closed then -- If not in closed list
+        
         local x, y = neighbour.x, neighbour.y
         local dx, dy = x - node.x, y - node.y
         local extraG = node.g + ((dx == 0 or dy == 0) and 1 or sqrt2) -- Evaluates the new G-cost
@@ -27,7 +26,9 @@ if (...) then
           -- Updates G, H and F-costs and its parent
           toClear[neighbour] = true
           neighbour.g = extraG
-          neighbour.h = neighbour.h or finder.heuristic(abs(x-endNode.x),abs(y-endNode.y))
+          local d_to_end_x, d_to_end_y = (endNode.x - x),(endNode.y - y)
+          local heuristic = overrideHeuristic or finder.heuristic
+          neighbour.h = neighbour.h or heuristic(d_to_end_x, d_to_end_y)
           neighbour.f = neighbour.g + neighbour.h
           neighbour.parent = node
           
@@ -45,7 +46,7 @@ if (...) then
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.  
-  return function (finder, startNode, endNode, toClear)
+  return function (finder, startNode, endNode, toClear, overrideHeuristic)
 
     startNode.g, startNode.f = 0,0
     finder.openList:clear()
@@ -63,7 +64,7 @@ if (...) then
           return node
         end
       -- otherwise, keep going A-star search from the popped node        
-      astarSearch(finder, node, endNode, toClear)
+      astar_search(finder, node, endNode, toClear, overrideHeuristic)
     end
 
     return nil

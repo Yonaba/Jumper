@@ -18,25 +18,23 @@
 -- @author Roland Yonaba
 -- @copyright 2012-2013
 -- @license MIT
--- @module core.heuristics
+-- @module jumper.core.heuristics
 
 --- @usage
 local usage = [[
   -- Example
-  local Distance = require ('Jumper.core.heuristics')
-  local Jumper = require ("Jumper.init")
+  local Distance = require ('jumper.core.heuristics')
+  local Grid = require ("jumper.grid")
+  local Pathfinder = require ("jumper.pathfinder")
   local walkable = 0
   -- Placeholder: local map = {...}
-  local pathfinder = Jumper(map,walkable)
+  local grid = Grid(map)
+  local myFinder = Pathfinder('ASTAR', grid, walkable)
   
   -- Use Euclidian heuristic to evaluate distance
-  pathfinder:setHeuristic('EUCLIDIAN') 
-  local startx, starty = 1,1
-  local endx, endy = 5,1
-  local path, pathLen = pathfinder:getPath(startx, starty, endx, endy)
+  myFinder:setHeuristic('EUCLIDIAN') 
   -- etc ... 
 ]]
-
 
 local abs = math.abs
 local sqrt = math.sqrt

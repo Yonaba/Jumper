@@ -1,19 +1,19 @@
 --- <strong>A light implementation of `binary heaps`</strong>.
--- While running a search, <a href="http://en.wikipedia.org/wiki/A_star">A*</a> algorithm maintains a list of nodes called __open list__.
+-- While running a search, some algorithms have to maintains a list of nodes called __open list__.
 -- Finding in this list the lowest cost node from the node being processed can be quite slow, 
 -- (as it requires to skim through the collection of nodes stored in this list) 
 -- especially when dozens of nodes are being processed (large maps). 
 --
--- The current modules implements the <a href="http://www.policyalmanac.org/games/binaryHeaps.htm">binary heap</a> data structure,
+-- The current module implements a <a href="http://www.policyalmanac.org/games/binaryHeaps.htm">binary heap</a> data structure,
 -- from which the internal open list will be instantiated. As such, looking up for lower-cost 
 -- node will run faster, and globally makes the search algorithm run faster.
 --
--- This module should not normally be used explicitely. The algorithm uses it internally.
+-- This module should normally not be used explicitely. The algorithm uses it internally.
 --
 -- @author Roland Yonaba
 -- @copyright 2012-2013
 -- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
--- @module core.bheap
+-- @module jumper.core.bheap
 
 --[[
   Notes:

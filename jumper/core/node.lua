@@ -1,5 +1,5 @@
 --- <strong>The <code>node</code> class</strong>.
--- The `node` class represent a cell on a collision map. Basically, for each single cell
+-- The `node` class represents a cell on a collision map. Basically, for each single cell
 -- in the collision map passed-in upon initialization, a `node` object would be generated
 -- and then stored within the `grid` object.
 --
@@ -11,10 +11,9 @@
 -- @author Roland Yonaba
 -- @copyright 2012-2013
 -- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
--- @module core.node
+-- @module jumper.core.node
 
 if (...) then
-  local _PATH = (...):gsub('[^%.]+$','')
 
   --- Internal `node` Class
   -- @class table
