@@ -11,43 +11,43 @@
 if (...) then
   -- Internalization
   local t_remove = table.remove
-  
+
   local function depth_first_search(finder, node, openList, toClear)
-    local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal,)
+    local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal)
     for i = 1,#neighbours do
       local neighbour = neighbours[i]
       if (not neighbour.closed and not neighbour.opened) then
         openList[#openList+1] = neighbour
         neighbour.opened = true
         neighbour.parent = node
-        toClear[neighbour] = true        
-      end    
+        toClear[neighbour] = true
+      end
     end
-  
+
   end
-  
+
   -- Calculates a path.
-  -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.  
+  -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
   return function (finder, startNode, endNode, toClear)
-  
+
     local openList = {} -- We'll use a LIFO queue (simple array)
     openList[1] = startNode
     startNode.opened = true
     toClear[startNode] = true
-    
+
     local node
     while (#openList > 0) do
       node = openList[#openList]
       t_remove(openList)
       node.closed = true
-      
+
       if node == endNode then
         return node
       end
-      
+
       depth_first_search(finder, node, openList, toClear)
     end
-    
+
     return nil
   end
 
