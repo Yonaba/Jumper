@@ -2,7 +2,7 @@
 -- The `path` class represents a path from a `start` location to a `goal`.
 -- An instance from this class would be a result of a request addressed to `pathfinder:getPath`.
 -- A `path` is basically a set of `nodes`, aligned in a specific order, defining a way to follow for moving agents.
--- 
+--
 -- @author Roland Yonaba
 -- @copyright 2012-2013
 -- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
@@ -12,16 +12,16 @@ if (...) then
 
   -- Depandancies
   local Heuristic = require ((...):gsub('%.path$','.heuristics'))
-  
+
   -- Internalization
   local t_insert = table.insert
-  
+
   --- The `path` class
   -- @class table
   -- @name path
   local Path = {}
   Path.__index = Path
-  
+
   --- Inits a new `path` object.
   -- @class function
   -- @name path:new
@@ -29,27 +29,27 @@ if (...) then
   function Path:new()
     return setmetatable({}, Path)
   end
-  
-  --- Iterates on each single `node` along a `path`. At each step of iteration, 
+
+  --- Iterates on each single `node` along a `path`. At each step of iteration,
   -- returns a `node` and plus a count value.
   -- @class function
   -- @name path:iter
-  -- @treturn node a `node`  
-  -- @treturn int the count for the number of nodes 
+  -- @treturn node a `node`
+  -- @treturn int the count for the number of nodes
   function Path:iter()
     local i,pathLen = 1,#self
     return function()
       if self[i] then
         i = i+1
-        return node,i-1
+        return self[i],i-1
       end
     end
   end
-  
+
   --- Evaluates the `path` length
   -- @class function
   -- @name path:getLength
-  -- @treturn number the `path` length  
+  -- @treturn number the `path` length
   function Path:getLength()
     local len = 0
     for i = 2,#self do
@@ -59,7 +59,7 @@ if (...) then
     end
     return len
   end
-  
+
   --- Path filling function. Interpolates between non contiguous locations along a `path`
   -- to build a fully continuous `path`. This maybe useful when using `Jump Point Search` finder.
   -- Does the opposite of @{path:filter}
@@ -84,8 +84,8 @@ if (...) then
       if i>N then break end
     end
   end
-  
-  --- Path compression. Given a `path`, eliminates useless nodes to return a lighter `path`. Does 
+
+  --- Path compression. Given a `path`, eliminates useless nodes to return a lighter `path`. Does
   -- the opposite of @{path:fill}
   -- @class function
   -- @name path:filter
@@ -107,11 +107,11 @@ if (...) then
         end
       else break end
     end
-  end  
-  
+  end
+
   return setmetatable(Path,
-    {__call = function(...) 
-      return self:new(...) 
+    {__call = function(...)
+      return self:new(...)
     end
   })
 end
