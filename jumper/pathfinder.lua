@@ -28,9 +28,9 @@ local Grid = require ("jumper.grid") -- The grid class
 local Pathfinder = require ("jumper.pathfinder") -- The pathfinder lass
 
 -- Creates a grid object
-local grid = Grid(map) 
+local grid = Grid(map)
 -- Creates a pathfinder object using Jump Point Search
-local myFinder = Pathfinder('JPS', grid, walkable) 
+local myFinder = Pathfinder('JPS', grid, walkable)
 
 -- Define start and goal locations coordinates
 local startx, starty = 1,1
@@ -67,7 +67,7 @@ if (...) then
   local _PATH = (...):gsub('%.pathfinder$','')
   local Heap      = require (_PATH .. '.core.bheap')
   local Heuristic = require (_PATH .. '.core.heuristics')
-  local Grid      = require (_PATH .. '.grid')  
+  local Grid      = require (_PATH .. '.grid')
   local Path      = require (_PATH .. '.core.path')
 
   -- Is arg a grid object
@@ -140,7 +140,7 @@ if (...) then
   --- Inits a new `pathfinder` object
   -- @class function
   -- @name pathfinder:new
-  -- @tparam string finderName the name of the `finder` (search algorithm) to be used for further searches. 
+  -- @tparam string finderName the name of the `finder` (search algorithm) to be used for further searches.
   -- Use @{pathfinder:getFinders} to get the full list of available finders.
   -- @tparam grid grid a `grid` object.
   -- @tparam[opt] string|int|function walkable the value for walkable nodes on the passed-in map array.
@@ -194,7 +194,7 @@ if (...) then
 
   --- Gets the `walkable` value or function.
   -- @class function
-  -- @name pathfinder:getWalkable  
+  -- @name pathfinder:getWalkable
   -- @treturn value|function the `walkable` previously set
   function Pathfinder:getWalkable()
     return self.walkable

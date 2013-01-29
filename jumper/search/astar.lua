@@ -17,7 +17,7 @@ if (...) then
     for i = 1, #neighbours do
       local neighbour = neighbours[i]
       if not neighbour.closed then -- If not in closed list
-        
+
         local x, y = neighbour.x, neighbour.y
         local dx, dy = x - node.x, y - node.y
         local extraG = node.g + ((dx == 0 or dy == 0) and 1 or sqrt2) -- Evaluates the new G-cost
@@ -31,7 +31,7 @@ if (...) then
           neighbour.h = neighbour.h or heuristic(d_to_end_x, d_to_end_y)
           neighbour.f = neighbour.g + neighbour.h
           neighbour.parent = node
-          
+
           if not neighbour.opened then
             -- Moves it in openList
             finder.openList:push(neighbour)
@@ -45,7 +45,7 @@ if (...) then
   end
 
   -- Calculates a path.
-  -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.  
+  -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
   return function (finder, startNode, endNode, toClear, overrideHeuristic)
 
     startNode.g, startNode.f = 0,0
@@ -59,11 +59,11 @@ if (...) then
       -- Pops the lowest F-cost node, moves it in the closed list
       node = finder.openList:pop()
       node.closed = true
-        -- If the popped node is the endNode, return it  
+        -- If the popped node is the endNode, return it
         if node == endNode then
           return node
         end
-      -- otherwise, keep going A-star search from the popped node        
+      -- otherwise, keep going A-star search from the popped node
       astar_search(finder, node, endNode, toClear, overrideHeuristic)
     end
 

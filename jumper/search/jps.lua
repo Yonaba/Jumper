@@ -19,14 +19,14 @@
 
 
 if (...) then
-  
+
   -- Dependancies
   local _PATH = (...):match('^(.*[%./])[^%.%/]+[%./][^%.%/]+$')
   local Heuristics = require (_PATH .. '.core.heuristics')
-  
+
   -- Internalization
   local max, abs = math.max, math.abs
-  
+
   -- Local helpers, these routines will stay private
   -- As they are internally used by the public interface
 

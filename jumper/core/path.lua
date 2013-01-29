@@ -10,6 +10,9 @@
 
 if (...) then
 
+  -- Internalization
+  local abs, max = math.abs, math.max
+
   -- Depandancies
   local Heuristic = require ((...):gsub('%.path$','.heuristics'))
 
