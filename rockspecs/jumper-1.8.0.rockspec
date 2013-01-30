@@ -8,7 +8,7 @@ description = {
    summary = "Fast and easy-to-use pathfinding library for grid-based games",
    detailed = [[
       Jumper is a pathfinding library designed for grid-based games.
-      It aims to be fast and lightweight. It also features wide range of search algoeithms, 
+      It aims to be fast and lightweight. It also features wide range of search algorithms, 
 	  a clean public interface with chaining features  which makes it very friendly and easy to use.
    ]],
    homepage = "http://github.com/Yonaba/Jumper",
