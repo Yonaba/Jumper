@@ -24,7 +24,6 @@ build = {
       ["jumper.grid"] = "jumper/grid.lua",
       ["jumper.pathfinder"] = "jumper/pathfinder.lua",
       ["jumper.core.bheap"] = "jumper/core/bheap.lua",
-      ["jumper.core.grid"] = "jumper/core/grid.lua",
       ["jumper.core.heuristics"] = "jumper/core/heuristics.lua",
       ["jumper.core.node"] = "jumper/core/node.lua",
       ["jumper.core.path"] = "jumper/core/path.lua",

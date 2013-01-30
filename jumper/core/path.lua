@@ -44,7 +44,7 @@ if (...) then
     return function()
       if self[i] then
         i = i+1
-        return self[i],i-1
+        return self[i-1],i-1
       end
     end
   end
