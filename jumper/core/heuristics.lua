@@ -55,7 +55,7 @@ local Heuristics = {}
   -- -- First method
   -- pathfinder:setHeuristic('MANHATTAN')<br/>
   -- -- Second method
-  -- local Distance = require ('Jumper.core.heuristics')
+  -- local Distance = require ('jumper.core.heuristics')
   -- pathfinder:setHeuristic(Distance.MANHATTAN)
   -- </pre></ul>
   function Heuristics.MANHATTAN(dx,dy) return abs(dx)+abs(dy) end
@@ -72,7 +72,7 @@ local Heuristics = {}
   -- -- First method
   -- pathfinder:setHeuristic('EUCLIDIAN')<br/>
   -- -- Second method
-  -- local Distance = require ('Jumper.core.heuristics')
+  -- local Distance = require ('jumper.core.heuristics')
   -- pathfinder:setHeuristic(Distance.EUCLIDIAN)
   -- </pre></ul>  
   function Heuristics.EUCLIDIAN(dx,dy) return sqrt(dx*dx+dy*dy) end
@@ -89,7 +89,7 @@ local Heuristics = {}
   -- -- First method
   -- pathfinder:setHeuristic('DIAGONAL')<br/>
   -- -- Second method
-  -- local Distance = require ('Jumper.core.heuristics')
+  -- local Distance = require ('jumper.core.heuristics')
   -- pathfinder:setHeuristic(Distance.DIAGONAL)
   -- </pre></ul>   
   function Heuristics.DIAGONAL(dx,dy) return max(abs(dx),abs(dy)) end
@@ -106,7 +106,7 @@ local Heuristics = {}
   -- -- First method
   -- pathfinder:setHeuristic('CARDINTCARD')<br/>
   -- -- Second method
-  -- local Distance = require ('Jumper.core.heuristics')
+  -- local Distance = require ('jumper.core.heuristics')
   -- pathfinder:setHeuristic(Distance.CARDINTCARD)
   -- </pre></ul>  
   function Heuristics.CARDINTCARD(dx,dy) 
