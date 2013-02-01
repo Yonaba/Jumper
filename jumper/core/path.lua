@@ -12,12 +12,10 @@ if (...) then
 
   -- Internalization
   local abs, max = math.abs, math.max
-
+	local t_insert, t_remove = table.insert, table.remove
+	
   -- Depandancies
   local Heuristic = require ((...):gsub('%.path$','.heuristics'))
-
-  -- Internalization
-  local t_insert = table.insert
 
   --- The `path` class
   -- @class table
@@ -34,11 +32,12 @@ if (...) then
   end
 
   --- Iterates on each single `node` along a `path`. At each step of iteration,
-  -- returns a `node` and plus a count value.
+  -- returns a `node` and plus a count value. Aliased as @{path:nodes}
   -- @class function
   -- @name path:iter
   -- @treturn node a `node`
   -- @treturn int the count for the number of nodes
+	-- @see path:nodes
   function Path:iter()
     local i,pathLen = 1,#self
     return function()
@@ -48,7 +47,16 @@ if (...) then
       end
     end
   end
-
+  
+  --- Iterates on each single `node` along a `path`. At each step of iteration,
+  -- returns a `node` and plus a count value. Aliased for @{path:iter}
+  -- @class function
+  -- @name path:nodes
+  -- @treturn node a `node`
+  -- @treturn int the count for the number of nodes
+	-- @see path:iter	
+	Path.nodes = Path.iter
+	
   --- Evaluates the `path` length
   -- @class function
   -- @name path:getLength
@@ -113,8 +121,8 @@ if (...) then
   end
 
   return setmetatable(Path,
-    {__call = function(...)
-      return self:new(...)
+    {__call = function(self,...)
+      return Path:new(...)
     end
   })
 end
