@@ -21,7 +21,7 @@
 if (...) then
 
   -- Dependancies
-  local _PATH = (...):match('^(.*[%./])[^%.%/]+[%./][^%.%/]+$')
+  local _PATH = (...):match('(.+)%.search.jps$')
   local Heuristics = require (_PATH .. '.core.heuristics')
 
   -- Internalization
