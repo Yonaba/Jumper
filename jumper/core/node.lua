@@ -15,6 +15,8 @@
 
 if (...) then
 
+	local assert = assert
+	
   --- Internal `node` Class
   -- @class table
   -- @name node
@@ -41,7 +43,11 @@ if (...) then
   -- Will be used to sort a collection of nodes in a binary heap on the basis of their F-cost
   function Node.__lt(A,B) return (A.f < B.f) end
 
-  return Node
+  return setmetatable(Node,
+		{__call = function(self,...) 
+			return Node:new(...) 
+		end}
+	)
 end
 
 
