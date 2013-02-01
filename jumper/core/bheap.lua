@@ -112,9 +112,11 @@ end
 -- @name heap:push
 -- @tparam object item a new object to be queued in the heap
 function heap:push(item)
-  self.size = self.size + 1
-  self.__heap[self.size] = item
-  percolate_up(self, self.size)
+	if item then
+		self.size = self.size + 1
+		self.__heap[self.size] = item
+		percolate_up(self, self.size)
+	end
   return self
 end
 
