@@ -16,10 +16,10 @@ local usage = [[
 -- Usage Example
 -- First, set a collision map
 local map = {
-	{0,1,0,1,0 },
-	{0,1,0,1,0 },
-	{0,1,1,1,0 },
-	{0,0,0,0,0 },
+	{0,1,0,1,0},
+	{0,1,0,1,0},
+	{0,1,1,1,0},
+	{0,0,0,0,0},
 }
 -- Value for walkable tiles
 local walkable = 0
@@ -114,7 +114,9 @@ if (...) then
           nodes[y][x] = Node:new(x,y)
         end
       end
-    return nodes, min_bound_x,max_bound_x,min_bound_y,max_bound_y
+    return nodes, 
+			 (min_bound_x or 0), (max_bound_x or 0),
+			 (min_bound_y or 0), (max_bound_y or 0)
   end
 
   -- Checks if a value is out of and interval [lowerBound,upperBound]
