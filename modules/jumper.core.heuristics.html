@@ -48,6 +48,7 @@
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
+  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
   <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
   <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
   <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
@@ -157,7 +158,7 @@
  -- First method
  pathfinder:setHeuristic('MANHATTAN')<br/>
  -- Second method
- local Distance = require ('Jumper.core.heuristics')
+ local Distance = require ('jumper.core.heuristics')
  pathfinder:setHeuristic(Distance.MANHATTAN)
  </pre></ul>
     </ol>
@@ -194,7 +195,7 @@
  -- First method
  pathfinder:setHeuristic('EUCLIDIAN')<br/>
  -- Second method
- local Distance = require ('Jumper.core.heuristics')
+ local Distance = require ('jumper.core.heuristics')
  pathfinder:setHeuristic(Distance.EUCLIDIAN)
  </pre></ul>
     </ol>
@@ -231,7 +232,7 @@
  -- First method
  pathfinder:setHeuristic('DIAGONAL')<br/>
  -- Second method
- local Distance = require ('Jumper.core.heuristics')
+ local Distance = require ('jumper.core.heuristics')
  pathfinder:setHeuristic(Distance.DIAGONAL)
  </pre></ul>
     </ol>
@@ -268,7 +269,7 @@
  -- First method
  pathfinder:setHeuristic('CARDINTCARD')<br/>
  -- Second method
- local Distance = require ('Jumper.core.heuristics')
+ local Distance = require ('jumper.core.heuristics')
  pathfinder:setHeuristic(Distance.CARDINTCARD)
  </pre></ul>
     </ol>

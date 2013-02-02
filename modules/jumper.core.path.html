@@ -49,6 +49,7 @@
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
+  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
   <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
   <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
   <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
@@ -64,8 +65,7 @@
 <p><strong>The <code>path</code> class</strong>.</p>
 <p> The <a href="../modules/jumper.core.path.html#jumper.core.path">path</a>  class represents a path from a <code>start</code> location to a <code>goal</code>.
  An instance from this class would be a result of a request addressed to <code>pathfinder:getPath</code>.
- A <a href="../modules/jumper.core.path.html#jumper.core.path">path</a>  is basically a set of <code>nodes</code>, aligned in a specific order, defining a way to follow for moving agents.
- </p>
+ A <a href="../modules/jumper.core.path.html#jumper.core.path">path</a>  is basically a set of <code>nodes</code>, aligned in a specific order, defining a way to follow for moving agents.</p>
     <h3>Info:</h3>
     <ul>
         <li><strong>Copyright</strong>: 2012-2013</li>
@@ -82,6 +82,10 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#path:iter">path:iter&nbsp;()</a></td>
+	<td class="summary">Iterates on each single <a href="../modules/jumper.core.path.html#jumper.core.node">node</a>  along a <a href="../modules/jumper.core.path.html#jumper.core.path">path</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#path:nodes">path:nodes&nbsp;()</a></td>
 	<td class="summary">Iterates on each single <a href="../modules/jumper.core.path.html#jumper.core.node">node</a>  along a <a href="../modules/jumper.core.path.html#jumper.core.path">path</a> .</td>
 	</tr>
 	<tr>
@@ -137,7 +141,7 @@
     </dt>
     <dd>
     Iterates on each single <a href="../modules/jumper.core.path.html#jumper.core.node">node</a>  along a <a href="../modules/jumper.core.path.html#jumper.core.path">path</a> .  At each step of iteration,
- returns a <a href="../modules/jumper.core.path.html#jumper.core.node">node</a>  and plus a count value.
+ returns a <a href="../modules/jumper.core.path.html#jumper.core.node">node</a>  and plus a count value. Aliased as <a href="../modules/jumper.core.path.html#path:nodes">path:nodes</a>
 
 
     <h3>Returns:</h3>
@@ -151,6 +155,37 @@
     </ol>
 
 
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/jumper.core.path.html#path:nodes">path:nodes</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "path:nodes"></a>
+    <strong>path:nodes&nbsp;()</strong>
+    </dt>
+    <dd>
+    Iterates on each single <a href="../modules/jumper.core.path.html#jumper.core.node">node</a>  along a <a href="../modules/jumper.core.path.html#jumper.core.path">path</a> .  At each step of iteration,
+ returns a <a href="../modules/jumper.core.path.html#jumper.core.node">node</a>  and plus a count value. Aliased for <a href="../modules/jumper.core.path.html#path:iter">path:iter</a>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+          <span class="types"><a class="type" href="../modules/jumper.core.path.html#jumper.core.node">node</a></span>
+        a <a href="../modules/jumper.core.path.html#jumper.core.node">node</a> </li>
+        <li>
+          <span class="types"><span class="type">int</span></span>
+        the count for the number of nodes</li>
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/jumper.core.path.html#path:iter">path:iter</a>
+    </ul>
 
 
 </dd>
