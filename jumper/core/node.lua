@@ -22,10 +22,6 @@ if (...) then
   -- @name node
   -- @field x the x-coordinate of the node on the collision map
   -- @field y the y-coordinate of the node on the collision map
-  -- @field g the G-cost of the node (exists only during a path search)
-  -- @field f the F-cost of the node (exists only during a path search)
-  -- @field h the F-cost of the node (exists only during a path search)
-  -- @field parent a reference to the parent of the current node, used for backtracking upon a path search completion (exists only during a path search).
   local Node = {}
   Node.__index = Node
 
