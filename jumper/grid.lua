@@ -28,7 +28,7 @@ local walkable = 0
 local Grid = require ("jumper.grid") -- The grid class
 
 -- Creates a grid object
-local grid = Grid(map) 
+local grid = Grid(map)
 ]]
 
 if (...) then
@@ -36,22 +36,57 @@ if (...) then
   local pairs = pairs
   local assert = assert
   local next = next
-  local type = type
   local floor = math.floor
+	local otype = type
   local Node = require (_PATH .. '.core.node')
 
   ---------------------------------------------------------------------
   -- Private utilities
+	
+	-- Is i and integer ?
+	local isInt = function(i)
+		return otype(i) =='number' and floor(i)==i
+	end
+	
+	-- Override type to report integers
+	local type = function(v)
+		if isInt(v) then return 'int' end
+		return otype(v)
+	end
+	
+	-- Real count of for values in an array
+	local size = function(t)
+		local count = 0
+		for k,v in pairs(t) do count = count+1 end
+		return count
+	end
 
-  -- Is arg a valid map
+	-- Checks array contents
+	local check_contents = function(t,...)
+		local n_count = size(t)
+		if n_count < 1 then return false end
+		local init_count = t[0] and 0 or 1
+		local n_count = (t[0] and n_count-1 or n_count)
+		local types = {...}
+		if types then types = table.concat(types) end
+		for i=init_count,n_count,1 do
+			if not t[i] then return false end
+			if types then
+				if not types:match(type(t[i])) then return false end
+			end
+		end
+		return true
+	end
+
+	-- Checks if m is a regular map
   local function isMap(m)
-    if type(m) ~= 'table' then return false end
-    for k,v in pairs(m) do
-      if type(k) ~= 'number' then return false end
-      if floor(k)~=k then return false end
-      isMap(v)
-    end
-    return true
+		if not check_contents(m, 'table') then return false end
+		local lsize = size(m[next(m)])
+		for k,v in pairs(m) do
+			if not check_contents(m[k], 'string', 'int') then return false end
+			if size(v)~=lsize then return false end
+		end
+		return true
   end
 
   -- Is arg a valid string map
@@ -67,16 +102,18 @@ if (...) then
   end
 
   -- Parses a map
-  local function parseStringMap(map)
-	local map = {}
-  local w, h
+  local function parseStringMap(str)
+		local map = {}
+		local w, h
     for line in str:gmatch('[^\n\r]+') do
       if line then
         w = not w and #line or w
         assert(#line == w, 'Error parsing map, rows must have the same size!')
         h = (h or 0) + 1
         map[h] = {}
-        for char in line:gmatch('.') do map[h][#map[h]+1] = char end
+        for char in line:gmatch('.') do 
+					map[h][#map[h]+1] = char 
+				end
       end
     end
     return map
@@ -114,7 +151,7 @@ if (...) then
           nodes[y][x] = Node:new(x,y)
         end
       end
-    return nodes, 
+    return nodes,
 			 (min_bound_x or 0), (max_bound_x or 0),
 			 (min_bound_y or 0), (max_bound_y or 0)
   end
@@ -167,12 +204,11 @@ if (...) then
   -- @tparam[optchain] bool processOnDemand whether or not caching nodes in the internal grid should be processed on-demand
   -- @treturn grid a new `grid` object
   function Grid:new(map, processOnDemand)
-
+		map = type(map)=='string' and parseStringMap(map) or map
     assert(isMap(map) or isStringMap(map),('Bad argument #1. Not a valid map'))
     assert(type(processOnDemand) == 'boolean' or not processOnDemand,
       ('Bad argument #2. Expected \'boolean\', got %s.'):format(type(processOnDemand)))
 
-    map = type(map)=='string' and parseStringMap(map) or map
     if processOnDemand then
       return PostProcessGrid:new(map,walkable)
     end
@@ -193,7 +229,8 @@ if (...) then
     local nodeValue = self.map[y] and self.map[y][x]
     if nodeValue then
       if not walkable then return true end
-    else return false
+    else 
+			return false
     end
     if self.__eval then return walkable(nodeValue) end
     return (nodeValue == walkable)
@@ -202,27 +239,27 @@ if (...) then
   --- Gets the `grid` width.
   -- @class function
   -- @name grid:getWidth
-  -- @treturn int the `grid` object width 
+  -- @treturn int the `grid` object width
   function Grid:getWidth()
     return self.width
   end
-  
+
   --- Gets the `grid` height.
   -- @class function
   -- @name grid:getHeight
-  -- @treturn int the `grid` object height   
+  -- @treturn int the `grid` object height
   function Grid:getHeight()
-     return self.height 
+     return self.height
   end
-  
+
   --- Gets the collision map.
   -- @class function
   -- @name grid:getMap
   -- @treturn {{value},...} the collision map previously passed to the `grid` object on initalization
   function Grid:getMap()
     return self.map
-  end  
-  
+  end
+
   --- Gets the `grid` nodes.
   -- @class function
   -- @name grid:getNodes
@@ -230,14 +267,14 @@ if (...) then
   function Grid:getNodes()
     return self.nodes
   end
-  
+
   --- Returns the neighbours of a given `node` on a `grid`
   -- @class function
   -- @name grid:getNeighbours
   -- @tparam node node `node` object
   -- @tparam string|int|function walkable the value for walkable nodes on the passed-in map array.
   -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean:
-  -- `true` when value matches a *walkable* node, `false` otherwise.  
+  -- `true` when value matches a *walkable* node, `false` otherwise.
   -- @tparam[opt] bool allowDiagonal whether or not adjacent nodes (8-directions moves) are allowed
   -- @treturn {node,...} an array of nodes neighbouring a passed-in node on the collision map
   function Grid:getNeighbours(node, walkable, allowDiagonal)
@@ -299,7 +336,7 @@ if (...) then
     end
   end
 
-  --- Each iterator. Executes a function on each `node` in the `grid`, passing the `node` as the first arg to function `f`.
+  --- Each transformation. Executes a function on each `node` in the `grid`, passing the `node` as the first arg to function `f`.
   -- @class function
   -- @name grid:each
   -- @tparam function f a function prototyped as `f(node,...)`
@@ -308,7 +345,7 @@ if (...) then
     for node in self:iter() do f(node,...) end
   end
 
-  --- Each range interator. Executes a function on each `node` in the range of a rectangle of cells, passing the `node` as the first arg to function `f`.
+  --- Each in range transformation. Executes a function on each `node` in the range of a rectangle of cells, passing the `node` as the first arg to function `f`.
   -- @class function
   -- @name grid:eachRange
   -- @tparam int lx the leftmost x-coordinate coordinate of the rectangle
@@ -321,7 +358,7 @@ if (...) then
     for node in self:iter(lx,ly,ex,ey) do f(node,...) end
   end
 
-  --- Map iterator. Maps function `f(node,...)` on each `node` in a given range, passing the `node` as the first arg to function `f`.
+  --- Map transformation. Maps function `f(node,...)` on each `node` in a given range, passing the `node` as the first arg to function `f`. The passed-in function should return a `node` object.
   -- @class function
   -- @name grid:imap
   -- @tparam function f a function prototyped as `f(node,...)`
@@ -332,7 +369,7 @@ if (...) then
     end
   end
 
-  --- Map range iterator. Maps `f(node,...)` on each `nod`e in the range of a rectangle of cells, passing the `node` as the first arg to function `f`.
+  --- Map in range transformation. Maps `f(node,...)` on each `nod`e in the range of a rectangle of cells, passing the `node` as the first arg to function `f`. The passed-in function should return a `node` object.
   -- @class function
   -- @name grid:imapRange
   -- @tparam int lx the leftmost x-coordinate coordinate of the rectangle
