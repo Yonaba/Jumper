@@ -101,7 +101,7 @@ Copy the contents of the folder named [jumper](https://github.com/Yonaba/Jumper/
 ###Setting your collision map
 The collision map is a regular Lua table where each cell holds a value, representing whether or not the corresponding tile in the 2D world is walkable
 or not.<br/>
-__Caution__ : *All cells in your collision maps must be indexed with consecutive integers*.
+__Caution__ : *All cells in your collision maps must be indexed with consecutive integers* __starting at 0__ or __1__.
 
 ```lua
 local map = {
@@ -371,7 +371,8 @@ local path,length = myFinder:setFinder('ASTAR')
 
 * [Daniel Harabor][], [Alban Grastien][] : for [the algorithm and the technical papers][].<br/>
 * [XueXiao Xu][], [Nathan Witmer][]: for their [JavaScript port][] <br/>
-* [Steve Donovan](https://github.com/stevedonovan): for the documentation generator tool [LDoc](https://github.com/stevedonovan/ldoc/).
+* [Steve Donovan](https://github.com/stevedonovan): for the awesome documentation generator tool [LDoc](https://github.com/stevedonovan/ldoc/).
+* [Srdjan Markovic](https://github.com/srdjan-m), who reported various bugs and feedbacks.
 
 ##License##
 
