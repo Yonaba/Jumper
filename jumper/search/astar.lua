@@ -7,69 +7,75 @@
 -- @script jumper.search.astar
 
 
+-- This implementation of A-star was based on Nash A. & al.
+-- http://aigamedev.com/open/tutorials/theta-star-any-angle-paths/
 
 if (...) then
-  local sqrt2 = math.sqrt(2)
 
-  local function astar_search(finder, node, endNode, toClear, overrideHeuristic)
-    -- Collect all neighbouring nodes from the current examined node
-    local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal)
-    for i = 1, #neighbours do
-      local neighbour = neighbours[i]
-      if not neighbour.closed then -- If not in closed list
-
-        local x, y = neighbour.x, neighbour.y
-        local dx, dy = x - node.x, y - node.y
-        local extraG = node.g + ((dx == 0 or dy == 0) and 1 or sqrt2) -- Evaluates the new G-cost
-
-        if (not neighbour.opened or extraG < neighbour.g) then
-          -- Updates G, H and F-costs and its parent
-          toClear[neighbour] = true
-          neighbour.g = extraG
-          local d_to_end_x, d_to_end_y = (endNode.x - x),(endNode.y - y)
-          local heuristic = overrideHeuristic or finder.heuristic
-          neighbour.h = neighbour.h or heuristic(d_to_end_x, d_to_end_y)
-          neighbour.f = neighbour.g + neighbour.h
-          neighbour.parent = node
-
-          if not neighbour.opened then
-            -- Moves it in openList
-            finder.openList:push(neighbour)
-            neighbour.opened = true
-          else
-            finder.openList:heapify(neighbour) -- Updates the node rank in the openList
-          end
-        end
-      end
-    end
-  end
+	-- Internalization
+	local ipairs = ipairs
+	local huge = math.huge
+	local sqrt2 = math.sqrt(2)
+	
+	-- Updates G-cost
+	local function computeCost(node, neighbour)
+		local dx = neighbour.x - node.x
+		local dy = neighbour.y - node.y
+		local mCost = ((dx == 0 or dy == 0) and 1 or sqrt2)
+		if node.g + mCost < neighbour.g then
+			neighbour.parent = node
+			neighbour.g = node.g + mCost
+		end	
+	end
+	
+	-- Updates vertex node-neighbour
+	local function updateVertex(finder, node, neighbour, endNode, heuristic)
+		local oldG = neighbour.g
+		computeCost(node, neighbour)
+		if neighbour.g < oldG then
+			if neighbour.opened then
+				neighbour.opened = false
+			end
+			neighbour.h = heuristic(endNode.x - neighbour.x, endNode.y - neighbour.y)
+			neighbour.f = neighbour.g + neighbour.h
+			finder.openList:push(neighbour)
+			neighbour.opened = true
+		end	
+	end
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
   return function (finder, startNode, endNode, toClear, overrideHeuristic)
-
-    startNode.g, startNode.f = 0,0
-    finder.openList:clear()
-    finder.openList:push(startNode)
-    startNode.opened = true
-    toClear[startNode] = true
-
-    local node
-    while not finder.openList:empty() do
-      -- Pops the lowest F-cost node, moves it in the closed list
-      node = finder.openList:pop()
-      node.closed = true
-        -- If the popped node is the endNode, return it
-        if node == endNode then
-          return node
-        end
-      -- otherwise, keep going A-star search from the popped node
-      astar_search(finder, node, endNode, toClear, overrideHeuristic)
-    end
-
-    return nil
-  end
-
+		local heuristic = overrideHeuristic or finder.heuristic
+		
+		finder.openList:clear()
+		startNode.g = 0
+		startNode.h = heuristic(endNode.x - startNode.x, endNode.y - startNode.y)
+		startNode.f = startNode.g + startNode.h
+		finder.openList:push(startNode)
+		startNode.opened = true
+		
+		while not finder.openList:empty() do
+			local node = finder.openList:pop()
+			node.closed = true
+			if node == endNode then
+				return node
+			end
+			local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal)
+			for i, neighbour in ipairs(neighbours) do
+				if not neighbour.closed then
+					if not neighbour.opened then
+						neighbour.g = huge
+						neighbour.parent = nil					
+					end
+					updateVertex(finder, node, neighbour, endNode, heuristic)
+				end			
+			end		
+		end		
+		
+		return nil
+	end
+	
 end
 
 --[[
