@@ -211,15 +211,18 @@ if (...) then
   end
 
   --- Sets a finder. The finder refers to the search algorithm used by the `pathfinder` object.
-  -- The default finder is `JPS` (for *Jump Point Search*), which is the fastest available.
-  -- Use @{pathfinder:getFinders} to get the list of available finders.
+  -- The default finder is `ASTAR`. Use @{pathfinder:getFinders} to get the list of available finders.
   -- @class function
   -- @name pathfinder:setFinder
   -- @tparam string finderName the name of the finder to be used for further searches.
   -- @see pathfinder:getFinders
   function Pathfinder:setFinder(finderName)
+		local finderName = finderName
 		if not finderName then
-			if not self.finder then finderName = 'ASTAR' end
+			if not self.finder then 
+				finderName = 'ASTAR' 
+			else return 
+			end
 		end
     assert(Finders[finderName],'Not a valid finder name!')
     self.finder = finderName
