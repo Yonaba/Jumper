@@ -32,8 +32,10 @@ git clone git://github.com/Yonaba/Jumper.git
 ````
 
 ###Download (latest)
-* __Archive:__ [zip](https://github.com/Yonaba/Jumper/zipball/master) 
-* __Tarball:__ [tarball](https://github.com/Yonaba/Jumper/tarball/master)
+* __Development release__: [zip](https://github.com/Yonaba/Jumper/zipball/master) | [tar.gz](https://github.com/Yonaba/Jumper/tarball/master)
+* __Stable release (1.8.0)__: [zip](https://github.com/Yonaba/Jumper/archive/jumper-1.8.0.zip) | [tar.gz](https://github.com/Yonaba/Jumper/archive/jumper-1.8.0.tar.gz)
+* __All releases__: [tags](https://github.com/Yonaba/Jumper/tags)
+
 
 ###LuaRocks
 ```bash
@@ -162,19 +164,20 @@ The second arg `processOnDemand` is optional. See [here](https://github.com/Yona
  
 Next, to init a `pathfinder`, you have specify what value in this collision map matches a __walkable__ tile. If you choose for instance *0* for *walkable tiles*, 
 and you happen to assign that value to the `pathfinder`, it will consider __any other value__ as *non walkable*.<br/>
-To initialize a `pathfinder`, you will have to require the [pathfinder](https://github.com/Yonaba/Jumper/blob/master/jumper/pathfinder.lua) module, and then pass _it _three arguments__.
+To initialize a `pathfinder`, you will have to require the [pathfinder](https://github.com/Yonaba/Jumper/blob/master/jumper/pathfinder.lua) module, and then pass it __three arguments__.
 
 ```lua
 local myFinder = Pathfinder(grid, finderName, walkable)
 ```
 
-The first and second arguments are __mandatory__. The last one is optional.
-* `finderName` refers to the search algorithm to be used by the pathfinder. See [finders](https://github.com/Yonaba/Jumper#finders) for more details.
+The first arg is __mandatory__. The others are optional.
 * `grid` refers to the grid object.
+* `finderName` refers to the search algorithm to be used by the pathfinder. See [finders](https://github.com/Yonaba/Jumper#finders) for more details.
 * `walkable` (optional) refers to the value representing walkable tiles. If not given, any tile will be considered *fully walkable* on the grid.
 
-You might want to have multiple values designing a walkable tile. 
+You might want to have __multiple values designing a walkable tile__. 
 In this case, argument <tt>walkable</tt> can be a function, prototyped as <tt>f(value)</tt>, returning a boolean.
+
 ```lua
 local map = {
   {0,0,0,0,0,0},
@@ -194,13 +197,15 @@ local Pathfinder = require('jumper.pathfinder')
 local myFinder = Pathfinder(Grid(map), 'ASTAR', walkable)
 ```
 
-
 ###Finders
 Jumper uses search algorithm to perform a path search from one location to another.
 Actually, there are dozens of search algorithms, each one having its strengths and weaknesses, and this library implements some of these algorithms.
-As of version 1.8.0, Jumper implements [A-star](http://en.wikipedia.org/wiki/A-star), [Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm), 
-[Breadth-First search](http://en.wikipedia.org/wiki/Breadth-first_search), [Depth First search](http://en.wikipedia.org/wiki/Depth-first_search) 
-and [Jump Point Search](http://harablog.wordpress.com/2011/09/07/jump-point-search/) (which is one of the fastest available for grid maps).
+[Since v1.8.0](https://github.com/Yonaba/Jumper/blob/master/version_history.md#180-01262013), Jumper implements a wide range of search algorithms: 
+* [A-star](http://en.wikipedia.org/wiki/A-star)
+* [Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
+* [Breadth-First search](http://en.wikipedia.org/wiki/Breadth-first_search)
+* [Depth First search](http://en.wikipedia.org/wiki/Depth-first_search)
+* [Jump Point Search](http://harablog.wordpress.com/2011/09/07/jump-point-search/) (which is one of the fastest available for grid maps).
 
 ```lua
 local Grid = require ('jumper.grid')
@@ -387,28 +392,26 @@ tsc -f specs/*
 * [Srdjan Markovic](https://github.com/srdjan-m), who reported various bugs and feedbacks.
 
 ##License##
-
 This work is under [MIT-LICENSE][]<br/>
-Copyright (c) 2012-2013 Roland Yonaba
+Copyright (c) 2012-2013 Roland Yonaba.
 
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and associated documentation files (the
-    "Software"), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be included
-    in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+> Permission is hereby granted, free of charge, to any person obtaining a copy<br/>
+> of this software and associated documentation files (the "Software"), to deal<br/>
+> in the Software without restriction, including without limitation the rights<br/>
+> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br/>
+> copies of the Software, and to permit persons to whom the Software is<br/>
+> furnished to do so, subject to the following conditions:<br/>
+><br/>
+> The above copyright notice and this permission notice shall be included in<br/>
+> all copies or substantial portions of the Software.<br/>
+><br/>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br/>
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br/>
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE<br/>
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br/>
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br/>
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br/>
+> THE SOFTWARE.
 
 [Jump Point Search]: http://harablog.wordpress.com/2011/09/07/jump-point-search/
 [Lua]: http://lua.org
