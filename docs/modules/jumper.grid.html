@@ -49,7 +49,6 @@
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
-  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
   <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
   <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
   <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
@@ -132,19 +131,19 @@ local grid = Grid(map)
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:each">grid:each&nbsp;(f[, ...])</a></td>
-	<td class="summary">Each iterator.</td>
+	<td class="summary">Each transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:eachRange">grid:eachRange&nbsp;(lx, ly, ex, ey, f[, ...])</a></td>
-	<td class="summary">Each range interator.</td>
+	<td class="summary">Each in range transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:imap">grid:imap&nbsp;(f[, ...])</a></td>
-	<td class="summary">Map iterator.</td>
+	<td class="summary">Map transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:imapRange">grid:imapRange&nbsp;(lx, ly, ex, ey, f[, ...])</a></td>
-	<td class="summary">Map range iterator.</td>
+	<td class="summary">Map in range transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:getNodeAt">grid:getNodeAt&nbsp;(x, y)</a></td>
@@ -378,7 +377,7 @@ local grid = Grid(map)
     <strong>grid:each&nbsp;(f[, ...])</strong>
     </dt>
     <dd>
-    Each iterator.  Executes a function on each <code>node</code> in the <a href="../modules/jumper.grid.html#jumper.grid">grid</a> , passing the <code>node</code> as the first arg to function <code>f</code>.
+    Each transformation.  Executes a function on each <code>node</code> in the <a href="../modules/jumper.grid.html#jumper.grid">grid</a> , passing the <code>node</code> as the first arg to function <code>f</code>.
 
     <h3>Parameters:</h3>
     <ul>
@@ -400,7 +399,7 @@ local grid = Grid(map)
     <strong>grid:eachRange&nbsp;(lx, ly, ex, ey, f[, ...])</strong>
     </dt>
     <dd>
-    Each range interator.  Executes a function on each <code>node</code> in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>.
+    Each in range transformation.  Executes a function on each <code>node</code> in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>.
 
     <h3>Parameters:</h3>
     <ul>
@@ -434,7 +433,7 @@ local grid = Grid(map)
     <strong>grid:imap&nbsp;(f[, ...])</strong>
     </dt>
     <dd>
-    Map iterator.  Maps function <code>f(node,...)</code> on each <code>node</code> in a given range, passing the <code>node</code> as the first arg to function <code>f</code>.
+    Map transformation.  Maps function <code>f(node,...)</code> on each <code>node</code> in a given range, passing the <code>node</code> as the first arg to function <code>f</code>. The passed-in function should return a <code>node</code> object.
 
     <h3>Parameters:</h3>
     <ul>
@@ -456,7 +455,7 @@ local grid = Grid(map)
     <strong>grid:imapRange&nbsp;(lx, ly, ex, ey, f[, ...])</strong>
     </dt>
     <dd>
-    Map range iterator.  Maps <code>f(node,...)</code> on each <code>nod</code>e in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>.
+    Map in range transformation.  Maps <code>f(node,...)</code> on each <code>nod</code>e in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>. The passed-in function should return a <code>node</code> object.
 
     <h3>Parameters:</h3>
     <ul>

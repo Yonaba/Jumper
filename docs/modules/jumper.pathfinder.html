@@ -49,7 +49,6 @@
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
-  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
   <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
   <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
   <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
@@ -69,10 +68,10 @@
         <pre class="example">-- Usage Example
 -- First, set a collision map
 local map = {
-	{0,1,0,1,0 },
-	{0,1,0,1,0 },
-	{0,1,1,1,0 },
-	{0,0,0,0,0 },
+	{0,1,0,1,0},
+	{0,1,0,1,0},
+	{0,1,1,1,0},
+	{0,0,0,0,0},
 }
 -- Value for walkable tiles
 local walkable = 0
@@ -84,7 +83,7 @@ local Pathfinder = require (&quot;jumper.pathfinder&quot;) -- The pathfinder las
 -- Creates a grid object
 local grid = Grid(map)
 -- Creates a pathfinder object using Jump Point Search
-local myFinder = Pathfinder(&apos;JPS&apos;, grid, walkable)
+local myFinder = Pathfinder(grid, &apos;JPS&apos;, walkable)
 
 -- Define start and goal locations coordinates
 local startx, starty = 1,1
@@ -120,7 +119,7 @@ end
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#pathfinder:new">pathfinder:new&nbsp;(finderName, grid[, walkable])</a></td>
+	<td class="name" nowrap><a href="#pathfinder:new">pathfinder:new&nbsp;(grid[, finderName[, walkable]])</a></td>
 	<td class="summary">Inits a new <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object</td>
 	</tr>
 	<tr>
@@ -201,20 +200,20 @@ end
     <dl class="function">
     <dt>
     <a name = "pathfinder:new"></a>
-    <strong>pathfinder:new&nbsp;(finderName, grid[, walkable])</strong>
+    <strong>pathfinder:new&nbsp;(grid[, finderName[, walkable]])</strong>
     </dt>
     <dd>
     Inits a new <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object
 
     <h3>Parameters:</h3>
     <ul>
+      <li><span class="parameter">grid</span>
+        <span class="types"><a class="type" href="../modules/jumper.pathfinder.html#jumper.grid">grid</a></span>
+       a <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object</li>
       <li><span class="parameter">finderName</span>
         <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
        the name of the <code>finder</code> (search algorithm) to be used for further searches.
- Use <a href="../modules/jumper.pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the full list of available finders.</li>
-      <li><span class="parameter">grid</span>
-        <span class="types"><a class="type" href="../modules/jumper.pathfinder.html#jumper.grid">grid</a></span>
-       a <a href="../modules/jumper.pathfinder.html#jumper.grid">grid</a>  object.</li>
+ Defaults to <code>ASTAR</code> when not given. Use <a href="../modules/jumper.pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the full list of available finders..</li>
       <li><span class="parameter">walkable</span>
         <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">int</span> or <span class="type">function</span></span>
        the value for walkable nodes on the passed-in map array.
@@ -317,8 +316,7 @@ end
     </dt>
     <dd>
     Sets a finder.  The finder refers to the search algorithm used by the <a href="../modules/jumper.pathfinder.html#jumper.pathfinder">pathfinder</a>  object.
- The default finder is <code>JPS</code> (for <em>Jump Point Search</em>), which is the fastest available.
- Use <a href="../modules/jumper.pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the list of available finders.
+ The default finder is <code>ASTAR</code>. Use <a href="../modules/jumper.pathfinder.html#pathfinder:getFinders">pathfinder:getFinders</a> to get the list of available finders.
 
     <h3>Parameters:</h3>
     <ul>
