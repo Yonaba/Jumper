@@ -64,7 +64,7 @@ local Pathfinder = require ("jumper.pathfinder") -- The pathfinder lass
 -- Creates a grid object
 local grid = Grid(map) 
 -- Creates a pathfinder object using Jump Point Search
-local myFinder = Pathfinder('JPS', grid, walkable) 
+local myFinder = Pathfinder(grid, 'JPS', walkable) 
 
 -- Define start and goal locations coordinates
 local startx, starty = 1,1
@@ -162,7 +162,7 @@ and you happen to assign that value to the `pathfinder`, it will consider __any 
 To initialize a `pathfinder`, you will have to require the [pathfinder](https://github.com/Yonaba/Jumper/blob/master/jumper/pathfinder.lua) module, and then pass _it _three arguments__.
 
 ```lua
-local myFinder = Pathfinder(finderName, grid, walkable)
+local myFinder = Pathfinder(grid, finderName, walkable)
 ```
 
 The first and second arguments are __mandatory__. The last one is optional.
@@ -188,7 +188,7 @@ end
 
 local Grid = require ('jumper.grid')
 local Pathfinder = require('jumper.pathfinder')
-local myFinder = Pathfinder('ASTAR', Grid(map), walkable)
+local myFinder = Pathfinder(Grid(map), 'ASTAR', walkable)
 ```
 
 
@@ -202,7 +202,7 @@ and [Jump Point Search](http://harablog.wordpress.com/2011/09/07/jump-point-sear
 ```lua
 local Grid = require ('jumper.grid')
 local Pathfinder = require ('jumper.pathfinder')
-local myFinder = Pathfinder('JPS',Grid(map),0)
+local myFinder = Pathfinder(Grid(map), 'JPS', 0)
 print(myFinder:getFinder()) --> 'JPS'
 ````
 
@@ -235,7 +235,7 @@ As an example :
 ```lua
 local Grid = require ('jumper.grid')
 local Pathfinder = require('jumper.pathfinder')
-local myFinder = Pathfinder('ASTAR',Grid(map))
+local myFinder = Pathfinder(Grid(map),'ASTAR')
 myFinder:setHeuristic('CARDINTCARD')
 ```
 See [docs](http://yonaba.github.com/Jumper/modules/jumper.core.heuristics.html) for more details on how to deal with distance heuristics.
@@ -254,7 +254,7 @@ local function myDistance(dx, dy)
 end
 local Grid = require ('jumper.grid')
 local Pathfinder = require('jumper.pathfinder')
-local myFinder = Pathfinder('ASTAR',Grid(map))
+local myFinder = Pathfinder(Grid(map), 'ASTAR')
 myFinder:setHeuristic(myDistance)
 ````
 
@@ -283,7 +283,7 @@ local Pathfinder = require 'jumper.pathfinder'
 local processOnDemand = true
 local grid = Grid(map, processOnDemand)
 local walkable = 0
-local myFinder = Pathfinder('DFS', grid, walkable)
+local myFinder = Pathfinder(grid, 'DFS', walkable)
 ````
 
 In this case, the internal grid will consume __0 kB (no memory) at initialization__. But later on, this is likely to grow, as __Jumper__ will automatically create and keep caching new nodes __on purpose__.
@@ -357,7 +357,7 @@ local Grid = require ('jumper.grid')
 local Pathfinder = require ('jumper.pathfinder')
 
 local grid = Grid(map)
-local myFinder = Pathfinder('BFS', grid, 0)
+local myFinder = Pathfinder(grid, 'BFS', 0)
 -- some code
 -- calls the finder, reconfigures it and requests a new path
 local path,length = myFinder:setFinder('ASTAR')
