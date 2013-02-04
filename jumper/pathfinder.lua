@@ -15,10 +15,10 @@ local usage = [[
 -- Usage Example
 -- First, set a collision map
 local map = {
-	{0,1,0,1,0 },
-	{0,1,0,1,0 },
-	{0,1,1,1,0 },
-	{0,0,0,0,0 },
+	{0,1,0,1,0},
+	{0,1,0,1,0},
+	{0,1,1,1,0},
+	{0,0,0,0,0},
 }
 -- Value for walkable tiles
 local walkable = 0
@@ -30,7 +30,7 @@ local Pathfinder = require ("jumper.pathfinder") -- The pathfinder lass
 -- Creates a grid object
 local grid = Grid(map)
 -- Creates a pathfinder object using Jump Point Search
-local myFinder = Pathfinder('JPS', grid, walkable)
+local myFinder = Pathfinder(grid, 'JPS', walkable)
 
 -- Define start and goal locations coordinates
 local startx, starty = 1,1
@@ -59,10 +59,20 @@ if (...) then
 
   -- Internalization
   local t_insert, t_remove = table.insert, table.remove
+	local floor = math.floor
   local pairs = pairs
   local assert = assert
   local setmetatable, getmetatable = setmetatable, getmetatable
-
+	
+	-- Type function ovverride, to support integers
+	local otype = type
+	local isInt = function(v) 
+		return otype(v) == 'number' and floor(v) == v and 'int' or nil 
+	end
+	local type = function(v)
+		return isInt(v) or otype(v)
+	end
+	
   -- Dependancies
   local _PATH = (...):gsub('%.pathfinder$','')
   local Heap      = require (_PATH .. '.core.bheap')
@@ -140,22 +150,22 @@ if (...) then
   --- Inits a new `pathfinder` object
   -- @class function
   -- @name pathfinder:new
-  -- @tparam string finderName the name of the `finder` (search algorithm) to be used for further searches.
-  -- Use @{pathfinder:getFinders} to get the full list of available finders.
-  -- @tparam grid grid a `grid` object.
-  -- @tparam[opt] string|int|function walkable the value for walkable nodes on the passed-in map array.
+  -- @tparam grid grid a `grid` object
+  -- @tparam[opt] string finderName the name of the `finder` (search algorithm) to be used for further searches.
+	-- Defaults to `ASTAR` when not given. Use @{pathfinder:getFinders} to get the full list of available finders..
+  -- @tparam[optchain] string|int|function walkable the value for walkable nodes on the passed-in map array.
   -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean:
   -- `true` when value matches a *walkable* node, `false` otherwise.
   -- @treturn pathfinder a new `pathfinder` object
-  function Pathfinder:new(finderName, grid, walkable)
+  function Pathfinder:new(grid, finderName, walkable)
     local newPathfinder = {}
     setmetatable(newPathfinder, Pathfinder)
+	  newPathfinder:setGrid(grid)
     newPathfinder:setFinder(finderName)
-    newPathfinder:setGrid(grid)
-    newPathfinder.openList = Heap()
     newPathfinder:setWalkable(walkable)
     newPathfinder:setMode('DIAGONAL')
     newPathfinder:setHeuristic('MANHATTAN')
+    newPathfinder.openList = Heap()
     return newPathfinder
   end
 
@@ -185,7 +195,7 @@ if (...) then
   -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean:
   -- `true` when value matches a *walkable* node, `false` otherwise.
   function Pathfinder:setWalkable(walkable)
-    assert(('stringnumberfunction'):match(type(walkable)),
+    assert(('stringintfunctionnil'):match(type(walkable)),
       ('Bad argument #2. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
     self.walkable = walkable
     self.grid.__eval = type(self.walkable) == 'function'
@@ -208,6 +218,9 @@ if (...) then
   -- @tparam string finderName the name of the finder to be used for further searches.
   -- @see pathfinder:getFinders
   function Pathfinder:setFinder(finderName)
+		if not finderName then
+			if not self.finder then finderName = 'ASTAR' end
+		end
     assert(Finders[finderName],'Not a valid finder name!')
     self.finder = finderName
     return self
