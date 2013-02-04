@@ -17,6 +17,7 @@ __Jumper__ is written in pure [Lua][]. Thus, it is not __framework-related__ and
 * [The Grid](https://github.com/Yonaba/Jumper#the-grid)
 * [Handling paths](https://github.com/Yonaba/Jumper#handling-paths)
 * [Chaining](https://github.com/Yonaba/Jumper#chaining)
+* [Specs](https://github.com/Yonaba/Jumper#specs)
 * [Credits and Thanks](https://github.com/Yonaba/Jumper#credits-and-thanks)
 * [License](https://github.com/Yonaba/Jumper#license)
 
@@ -365,6 +366,15 @@ local path,length = myFinder:setFinder('ASTAR')
 				   :setMode('ORTHOGONAL')
 				   :getPath(1,1,3,3)
 -- That's it!				   
+```
+
+##Specs
+Specs tests have been included.<br/>
+You can run them using [Telescope](https://github.com/norman/telescope) with the following command 
+from the [root](https://github.com/Yonaba/Jumper/blob/master/jumper) folder:
+
+```
+tsc -f specs/*
 ```
 
 ##Credits and Thanks##
