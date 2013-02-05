@@ -55,6 +55,7 @@ if (...) then
 		startNode.h = heuristic(endNode.x - startNode.x, endNode.y - startNode.y)
 		startNode.f = startNode.g + startNode.h
 		finder.openList:push(startNode)
+		toClear[startNode] = true
 		startNode.opened = true
 		
 		while not finder.openList:empty() do
@@ -66,6 +67,7 @@ if (...) then
 			local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal)
 			for i, neighbour in ipairs(neighbours) do
 				if not neighbour.closed then
+					toClear[neighbour] = true
 					if not neighbour.opened then
 						neighbour.g = huge
 						neighbour.parent = nil					
