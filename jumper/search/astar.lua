@@ -7,7 +7,8 @@
 -- @script jumper.search.astar
 
 
--- This implementation of A-star was based on Nash A. & al.
+-- This implementation of A-star was based on Nash A. & al. pseudocode
+-- Added override args to support dijkstra and thetaStar
 -- http://aigamedev.com/open/tutorials/theta-star-any-angle-paths/
 
 if (...) then
@@ -15,13 +16,13 @@ if (...) then
 	-- Internalization
 	local ipairs = ipairs
 	local huge = math.huge
-	local sqrt2 = math.sqrt(2)
+	
+	-- Depandancies
+	local Heuristics = require ((...):match('(.+)%.search.astar$') .. '.core.heuristics')
 	
 	-- Updates G-cost
-	local function computeCost(node, neighbour)
-		local dx = neighbour.x - node.x
-		local dy = neighbour.y - node.y
-		local mCost = ((dx == 0 or dy == 0) and 1 or sqrt2)
+	local function computeCost(node, neighbour, finder)
+		local mCost = Heuristics.EUCLIDIAN(neighbour.x - node.x, neighbour.y - node.y)
 		if node.g + mCost < neighbour.g then
 			neighbour.parent = node
 			neighbour.g = node.g + mCost
@@ -29,9 +30,10 @@ if (...) then
 	end
 	
 	-- Updates vertex node-neighbour
-	local function updateVertex(finder, node, neighbour, endNode, heuristic)
+	local function updateVertex(finder, node, neighbour, endNode, heuristic, overrideCostEval)
 		local oldG = neighbour.g
-		computeCost(node, neighbour)
+		local cmpCost = overrideCostEval or computeCost
+		cmpCost(node, neighbour, finder)
 		if neighbour.g < oldG then
 			if neighbour.opened then
 				neighbour.opened = false
@@ -45,7 +47,7 @@ if (...) then
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
-  return function (finder, startNode, endNode, toClear, overrideHeuristic)
+  return function (finder, startNode, endNode, toClear, overrideHeuristic, overrideCostEval)
 		local heuristic = overrideHeuristic or finder.heuristic
 		
 		finder.openList:clear()
@@ -68,7 +70,7 @@ if (...) then
 						neighbour.g = huge
 						neighbour.parent = nil					
 					end
-					updateVertex(finder, node, neighbour, endNode, heuristic)
+					updateVertex(finder, node, neighbour, endNode, heuristic, overrideCostEval)
 				end			
 			end		
 		end		
