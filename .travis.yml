@@ -1,5 +1,9 @@
 language: erlang
 
+branches:
+  only:
+	  - master
+
 env:
   - LUA=""
   - LUA="luajit"
