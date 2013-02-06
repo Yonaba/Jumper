@@ -2,7 +2,7 @@ language: erlang
 
 branches:
   only:
-	  - master
+    - master
 
 env:
   - LUA=""
