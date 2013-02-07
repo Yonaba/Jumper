@@ -51,12 +51,13 @@ local Button = {
 Button.__index = Button
 
 -- Custom Initializer
-function Button:new(x,y,w,h,color,label)
+function Button:new(x,y,w,h,color,label, tooltip)
 	local newButton = {}
 	newButton.x,newButton.y = x,y
 	newButton.w,newButton.h = w,h
 	newButton.label = label
   newButton.backColor = color
+	newButton.tip = tooltip
   newButton._hide = false
 	tinsert(buttons,newButton)
   return setmetatable(newButton, Button)
@@ -78,6 +79,15 @@ function Button:setLabel(str) self.label = str end
 
 -- Sets the back color
 function Button:setBackColor(color) self.backColor = color end
+
+-- Displays tooltip
+function Button:drawToolTip()
+	local mx, my = love.mouse.getPosition()
+	if self.tip then
+		love.graphics.setColor(255,155,0,255)
+		love.graphics.print(self.tip, mx + 5, my - 20)
+	end
+end 
 
 -- Runs the attached callback
 function Button:callback()
@@ -104,7 +114,8 @@ function Button:draw()
     love.graphics.printf(self.label,self.x,self.y+(self.h/2)-(font:getHeight()/2),self.w,"center")
     
     if self:mouseIsOn() then 
-    self:drawBorder() 
+    self:drawBorder()
+		self:drawToolTip()
       if love.mouse.isDown("l") and not(self.setPause) then
         self:callback()
         self.setPause = true
