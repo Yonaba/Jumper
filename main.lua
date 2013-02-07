@@ -17,7 +17,7 @@ local BASTAR = Ui.addButton(625, 140, 70, 15, {153,51,0,255}, 'ASTAR')
 local BDIJKSTRA = Ui.addButton(705, 140, 70, 15, {153,51,0,255}, 'DIJKSTRA')
 local BDFS = Ui.addButton(625, 165, 70, 15, {153,51,0,255}, 'DFS')
 local BBFS = Ui.addButton(705, 165, 70, 15, {153,51,0,255}, 'BFS')
-local BTASTAR = Ui.addButton(625, 190, 70, 15, {153,51,0,255}, 'TASTAR')
+local BTASTAR = Ui.addButton(625, 190, 70, 15, {153,51,0,255}, 'THETASTAR')
 local BJPS = Ui.addButton(705, 190, 70, 15, {153,51,0,255}, 'JPS')
 local BMANHATTAN = Ui.addButton(625, 245, 70, 15, {153,51,0,255}, 'MANHATTAN')
 local BEUCLIDIAN = Ui.addButton(705, 245, 70, 15, {153,51,0,255}, 'EUCLIDIAN')
@@ -60,7 +60,31 @@ function love.load()
 	end
 	
 	BGRED:setCallback(f,-5)
-	BGINC:setCallback(f,5)	
+	BGINC:setCallback(f,5)
+	
+	local f = function(button)
+		if button == BDFS or button == BBFS then
+			BMANHATTAN:hide()
+			BDIAGONAL:hide()
+			BEUCLIDIAN:hide()
+			BCARDINTCARD:hide()
+		else
+			BMANHATTAN:show()
+			BDIAGONAL:show()
+			BEUCLIDIAN:show()
+			BCARDINTCARD:show()		
+		end
+		finder:setFinder(button.label)
+		log = ('Finder chosen: %s'):format(finder:getFinder())
+	end
+	
+	BASTAR:setCallback(f)
+	BBFS:setCallback(f)
+	BDFS:setCallback(f)
+	BDIJKSTRA:setCallback(f)
+	BTASTAR:setCallback(f)
+	BJPS:setCallback(f)
+	
 	
 end
 
