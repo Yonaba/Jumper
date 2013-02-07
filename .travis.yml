@@ -1,5 +1,4 @@
 language: erlang
-
 branches:
   only:
     - master
