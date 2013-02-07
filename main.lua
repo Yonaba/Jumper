@@ -9,6 +9,7 @@ local font8 = love.graphics.newFont('res/dungeon.ttf', 8)
 local demoGrid
 local finder
 local log = ''
+local selFinder, selHeuristic
 
 local BGTYPE = Ui.addButton(650, 35, 100, 15,{153,51,0,255},'PREPROCESSED')
 local BGRED = Ui.addButton(672.5, 85, 25, 15,{153,51,0,255},'-')
@@ -74,18 +75,47 @@ function love.load()
 			BEUCLIDIAN:show()
 			BCARDINTCARD:show()		
 		end
+		if selFinder ~= button then
+			selFinder.backColor = {153,51,0,255}
+		end
+		button.backColor = {100, 100, 100, 255}
+		selFinder = button
 		finder:setFinder(button.label)
 		log = ('Finder chosen: %s'):format(finder:getFinder())
 	end
 	
 	BASTAR:setCallback(f)
+	BDIJKSTRA:setCallback(f)
 	BBFS:setCallback(f)
 	BDFS:setCallback(f)
-	BDIJKSTRA:setCallback(f)
 	BTASTAR:setCallback(f)
-	BJPS:setCallback(f)
+	BJPS:setCallback(f)	
 	
+	local f = function(button)
+		if selHeuristic ~= button then
+			selHeuristic.backColor = {153,51,0,255}
+		end
+		button.backColor = {100, 100, 100, 255}
+		selHeuristic = button
+		finder:setHeuristic(button.label)
+		log = ('Heuristic chosen: %s'):format(button.label)
+	end	
 	
+	BMANHATTAN:setCallback(f)
+	BDIAGONAL:setCallback(f)
+	BEUCLIDIAN:setCallback(f)
+	BCARDINTCARD:setCallback(f)
+	
+	BMODE:setCallback(function(button)
+		button.label = ((button.label == 'DIAGONAL') and 'ORTHOGONAL' or 'DIAGONAL')
+		finder:setMode(button.label)
+		log = ('Mode chosen: %s'):format(button.label)		
+	end)
+	
+	selFinder = BASTAR
+	BASTAR.backColor = {100, 100, 100, 255}
+	selHeuristic = BMANHATTAN
+	BMANHATTAN.backColor = {100, 100, 100, 255}
 end
 
 
