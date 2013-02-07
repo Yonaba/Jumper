@@ -1,5 +1,4 @@
 language: erlang
-
 branches:
   only:
     - master
@@ -7,8 +6,3 @@ branches:
 env:
   - LUA=""
   - LUA="luajit"
-
-install:
-  - sudo apt-get install luajit
-  - sudo apt-get install luarocks
-  - sudo luarocks install telescope
