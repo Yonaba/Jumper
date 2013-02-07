@@ -11,27 +11,35 @@ local finder
 local log = ''
 local selFinder, selHeuristic
 
-local BGTYPE = Ui.addButton(650, 35, 100, 15,{153,51,0,255},'PREPROCESSED')
-local BGRED = Ui.addButton(672.5, 85, 25, 15,{153,51,0,255},'-')
-local BGINC = Ui.addButton(712.5, 85, 25, 15,{153,51,0,255},'+')
-local BASTAR = Ui.addButton(625, 140, 70, 15, {153,51,0,255}, 'ASTAR')
-local BDIJKSTRA = Ui.addButton(705, 140, 70, 15, {153,51,0,255}, 'DIJKSTRA')
-local BDFS = Ui.addButton(625, 165, 70, 15, {153,51,0,255}, 'DFS')
-local BBFS = Ui.addButton(705, 165, 70, 15, {153,51,0,255}, 'BFS')
-local BTASTAR = Ui.addButton(625, 190, 70, 15, {153,51,0,255}, 'THETASTAR')
-local BJPS = Ui.addButton(705, 190, 70, 15, {153,51,0,255}, 'JPS')
-local BMANHATTAN = Ui.addButton(625, 245, 70, 15, {153,51,0,255}, 'MANHATTAN')
-local BEUCLIDIAN = Ui.addButton(705, 245, 70, 15, {153,51,0,255}, 'EUCLIDIAN')
-local BDIAGONAL = Ui.addButton(625, 275, 70, 15, {153,51,0,255}, 'DIAGONAL')
-local BCARDINTCARD = Ui.addButton(705, 275, 70, 15, {153,51,0,255}, 'CARDINTCARD')
-local BMODE = Ui.addButton(650, 335, 100, 15,{153,51,0,255},'DIAGONAL')
-local BOBST = Ui.addButton(645, 375, 50, 15, {0,0,255,255},nil,'set\nunwalkable')
-local BCLEAROBST = Ui.addButton(705, 375, 50, 15, {255,255,255,255},nil,'set\nwalkable')
-local BSTART = Ui.addButton(645, 400, 50, 15, {0, 255, 0, 255},nil,'set\nstart')
-local BGOAL = Ui.addButton(705, 400, 50, 15, {255,0,0,255},nil,'set\ngoal')
-local BGETPATH = Ui.addButton(630, 470, 70, 15, {255,0,0,255},'CALCULATE')
-local BFILLPATH = Ui.addButton(630, 495,70, 15, {255,0,0,255},'FILL PATH')
-local BFILTERPATH = Ui.addButton(630, 520, 70, 15, {255,0,0,255},'FILTER PATH')
+local BDEFCOLOR = {153,51,0,255}
+local BLUE = {0,0,255,255}
+local WHITE = {255,255,255,255}
+local GREEN = {0, 255, 0, 255}
+local RED = {255,0,0,255}
+local SELCOLOR = {100, 100, 100, 255}
+local LOGCOLOR = {245, 245, 10, 255}
+
+local BGTYPE = Ui.addButton(650, 35, 100, 15,BDEFCOLOR,'PREPROCESSED')
+local BGRED = Ui.addButton(672.5, 85, 25, 15,BDEFCOLOR,'-')
+local BGINC = Ui.addButton(712.5, 85, 25, 15,BDEFCOLOR,'+')
+local BASTAR = Ui.addButton(625, 140, 70, 15, BDEFCOLOR, 'ASTAR')
+local BDIJKSTRA = Ui.addButton(705, 140, 70, 15, BDEFCOLOR, 'DIJKSTRA')
+local BDFS = Ui.addButton(625, 165, 70, 15, BDEFCOLOR, 'DFS')
+local BBFS = Ui.addButton(705, 165, 70, 15, BDEFCOLOR, 'BFS')
+local BTASTAR = Ui.addButton(625, 190, 70, 15, BDEFCOLOR, 'THETASTAR')
+local BJPS = Ui.addButton(705, 190, 70, 15, BDEFCOLOR, 'JPS')
+local BMANHATTAN = Ui.addButton(625, 245, 70, 15, BDEFCOLOR, 'MANHATTAN')
+local BEUCLIDIAN = Ui.addButton(705, 245, 70, 15, BDEFCOLOR, 'EUCLIDIAN')
+local BDIAGONAL = Ui.addButton(625, 275, 70, 15, BDEFCOLOR, 'DIAGONAL')
+local BCARDINTCARD = Ui.addButton(705, 275, 70, 15, BDEFCOLOR, 'CARDINTCARD')
+local BMODE = Ui.addButton(650, 335, 100, 15,BDEFCOLOR,'DIAGONAL')
+local BOBST = Ui.addButton(645, 375, 50, 15, BLUE)
+local BCLEAROBST = Ui.addButton(705, 375, 50, 15, WHITE)
+local BSTART = Ui.addButton(645, 400, 50, 15, GREEN)
+local BGOAL = Ui.addButton(705, 400, 50, 15, RED)
+local BGETPATH = Ui.addButton(630, 470, 70, 15, RED,'CALCULATE')
+local BFILLPATH = Ui.addButton(630, 495,70, 15, RED,'FILL PATH')
+local BFILTERPATH = Ui.addButton(630, 520, 70, 15, RED,'FILTER PATH')
 
 function love.load()
 	love._openConsole()
@@ -76,9 +84,9 @@ function love.load()
 			BCARDINTCARD:show()		
 		end
 		if selFinder ~= button then
-			selFinder.backColor = {153,51,0,255}
+			selFinder.backColor = BDEFCOLOR
 		end
-		button.backColor = {100, 100, 100, 255}
+		button.backColor = SELCOLOR
 		selFinder = button
 		finder:setFinder(button.label)
 		log = ('Finder chosen: %s'):format(finder:getFinder())
@@ -93,9 +101,9 @@ function love.load()
 	
 	local f = function(button)
 		if selHeuristic ~= button then
-			selHeuristic.backColor = {153,51,0,255}
+			selHeuristic.backColor = BDEFCOLOR
 		end
-		button.backColor = {100, 100, 100, 255}
+		button.backColor = SELCOLOR
 		selHeuristic = button
 		finder:setHeuristic(button.label)
 		log = ('Heuristic chosen: %s'):format(button.label)
@@ -113,15 +121,15 @@ function love.load()
 	end)
 	
 	selFinder = BASTAR
-	BASTAR.backColor = {100, 100, 100, 255}
+	BASTAR.backColor = SELCOLOR
 	selHeuristic = BMANHATTAN
-	BMANHATTAN.backColor = {100, 100, 100, 255}
+	BMANHATTAN.backColor = SELCOLOR
 end
 
 
 function love.draw()
 
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(WHITE)
 	love.graphics.setFont(font10)
 	love.graphics.printf(('Grid type: %s'):format(''), 600, 15, 200, 'center')	
 	love.graphics.printf(('Grid size: %dx%d'):format(demoGrid.n_tiles, demoGrid.n_tiles),
@@ -134,10 +142,10 @@ function love.draw()
 	love.graphics.printf((': %d ms'):format(0), 710, 495, 100, 'left')
 	love.graphics.printf((': %d ms'):format(0), 710, 520, 100, 'left')
 	love.graphics.printf(('Path length: %.2f'):format(0), 600, 550, 200, 'center')
-	love.graphics.setColor(245, 245, 10, 255)
+	love.graphics.setColor(LOGCOLOR)
 	love.graphics.printf(log, 600, 570, 200, 'center')
 	
-	love.graphics.setColor(255, 255, 255, 255)	
+	love.graphics.setColor(WHITE)	
 	demoGrid:draw(H)	
 	demoGrid:drawMouseCoord(true)
 	
