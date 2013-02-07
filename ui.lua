@@ -22,7 +22,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
 
 local tinsert = table.insert
-local ipairs = ipairs
+local ipairs, unpack = ipairs, unpack
 
 
 ----------------------------------------------------------------------------------------------------------------------
@@ -70,8 +70,9 @@ function Button:hide() self._hide = true end
 function Button:show() self._hide = false end
 
 -- Attachs a callback function to a button
-function Button:setCallback(f)
+function Button:setCallback(f,...)
 	self.f = f
+	self.args = {...} or {}
 end
 
 -- Sets a label for a button
@@ -91,7 +92,7 @@ end
 
 -- Runs the attached callback
 function Button:callback()
-	if self.f then self.f() end
+	if self.f then self.f(self, unpack(self.args)) end
 end
 
 -- Draws a rect border when hovering the button
