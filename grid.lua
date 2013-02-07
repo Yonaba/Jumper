@@ -1,5 +1,5 @@
 
-local Grid = require 'jumper.grid'
+local Grid = require('jumper.grid')
 
 local grid = {}
 grid.__index = grid
@@ -18,7 +18,6 @@ function grid:set(env_size, n)
 	self.n_tiles = math.max(self.min_tiles, 
 		math.min((n or self.n_tiles), self.max_tiles))
 	self.tile_size = env_size/self.n_tiles
-	print(self.tile_size)
 end
 
 function grid:make(pod)
