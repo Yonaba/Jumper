@@ -3,8 +3,13 @@ local H = love.graphics.getHeight()
 local Grid = require('grid')
 local Ui = require('ui')
 local PF = require ('jumper.pathfinder')
+local font10 = love.graphics.newFont('res/dungeon.ttf', 10)
+local font8 = love.graphics.newFont('res/dungeon.ttf', 8)
 
 local demoGrid
+local finder
+local log = ''
+
 local BGTYPE = Ui.addButton(650, 35, 100, 15,{153,51,0,255},'PREPROCESSED')
 local BGRED = Ui.addButton(682.5, 85, 15, 15,{153,51,0,255},'-')
 local BGINC = Ui.addButton(702.5, 85, 15, 15,{153,51,0,255},'+')
@@ -27,12 +32,19 @@ local BGETPATH = Ui.addButton(630, 470, 70, 15, {255,0,0,255},'CALCULATE')
 local BFILLPATH = Ui.addButton(630, 495,70, 15, {255,0,0,255},'FILL PATH')
 local BFILTERPATH = Ui.addButton(630, 520, 70, 15, {255,0,0,255},'FILTER PATH')
 
-local font10 = love.graphics.newFont('res/dungeon.ttf', 10)
-local font8 = love.graphics.newFont('res/dungeon.ttf', 8)
-
 function love.load()
 	love._openConsole()
-	demoGrid = Grid:new(H, 10, false)
+	demoGrid = Grid:new(H)
+	finder = PF(demoGrid.grid)
+	
+	BGTYPE:setCallback(function(button)
+		button.label = ((button.label == 'PREPROCESSED') and 'PROCESSONDEMAND' or 'PREPROCESSED')
+		demoGrid:set(H, demoGrid.n_tiles)
+		local timeGenGrid, memUsed = demoGrid:make(button.label == 'PROCESSONDEMAND')
+		log = ('Grid generated in: %d ms\nMemory count: %d kiB'):format(timeGenGrid, memUsed)
+		finder:setGrid(demoGrid.grid)
+	end)
+	
 end
 
 
@@ -51,7 +63,10 @@ function love.draw()
 	love.graphics.printf((': %d ms'):format(0), 710, 495, 100, 'left')
 	love.graphics.printf((': %d ms'):format(0), 710, 520, 100, 'left')
 	love.graphics.printf(('Path length: %.2f'):format(0), 600, 550, 200, 'center')
+	love.graphics.setColor(245, 245, 10, 255)
+	love.graphics.printf(log, 600, 570, 200, 'center')
 	
+	love.graphics.setColor(255, 255, 255, 255)	
 	demoGrid:draw(H)	
 	demoGrid:drawMouseCoord(true)
 	
