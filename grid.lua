@@ -3,7 +3,7 @@ local Grid = require('jumper.grid')
 
 local grid = {}
 grid.__index = grid
-grid. min_tiles = 60
+grid. min_tiles = 10
 grid.max_tiles = 60
 grid.n_tiles = grid.min_tiles
 
