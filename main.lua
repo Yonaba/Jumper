@@ -11,8 +11,8 @@ local finder
 local log = ''
 
 local BGTYPE = Ui.addButton(650, 35, 100, 15,{153,51,0,255},'PREPROCESSED')
-local BGRED = Ui.addButton(682.5, 85, 15, 15,{153,51,0,255},'-')
-local BGINC = Ui.addButton(702.5, 85, 15, 15,{153,51,0,255},'+')
+local BGRED = Ui.addButton(672.5, 85, 25, 15,{153,51,0,255},'-')
+local BGINC = Ui.addButton(712.5, 85, 25, 15,{153,51,0,255},'+')
 local BASTAR = Ui.addButton(625, 140, 70, 15, {153,51,0,255}, 'ASTAR')
 local BDIJKSTRA = Ui.addButton(705, 140, 70, 15, {153,51,0,255}, 'DIJKSTRA')
 local BDFS = Ui.addButton(625, 165, 70, 15, {153,51,0,255}, 'DFS')
@@ -44,6 +44,23 @@ function love.load()
 		log = ('Grid generated in: %d ms\nMemory count: %d kiB'):format(timeGenGrid, memUsed)
 		finder:setGrid(demoGrid.grid)
 	end)
+	
+	local f = function(button, step)
+		local n_tiles
+		if step < 0 then 
+			n_tiles = math.max(Grid.min_tiles, demoGrid.n_tiles+step)
+		else
+			n_tiles = math.min(Grid.max_tiles, demoGrid.n_tiles+step)		
+		end
+		if n_tiles == demoGrid.n_tiles then return end
+		demoGrid:set(H, n_tiles)
+		local timeGenGrid, memUsed = demoGrid:make(BGTYPE.label == 'PROCESSONDEMAND')
+		log = ('Grid generated in: %d ms\nMemory count: %d kiB'):format(timeGenGrid, memUsed)
+		finder:setGrid(demoGrid.grid)
+	end
+	
+	BGRED:setCallback(f,-5)
+	BGINC:setCallback(f,5)	
 	
 end
 
