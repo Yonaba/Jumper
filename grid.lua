@@ -3,7 +3,7 @@ local Grid = require('jumper.grid')
 
 local grid = {}
 grid.__index = grid
-grid. min_tiles = 10
+grid. min_tiles = 60
 grid.max_tiles = 60
 grid.n_tiles = grid.min_tiles
 
@@ -20,6 +20,15 @@ function grid:set(env_size, n)
 	self.tile_size = env_size/self.n_tiles
 end
 
+local measure = function(f,...)
+	local st = love.timer.getMicroTime()
+	collectgarbage()
+	local mcount = collectgarbage('count')
+	f(...)
+	return ((love.timer.getMicroTime() - st)*1000),
+		math.abs(collectgarbage('count') - mcount)
+end
+
 function grid:make(pod)
 	self.cmap = {}
 	for i = 1, self.n_tiles do
@@ -28,7 +37,9 @@ function grid:make(pod)
 			self.cmap[i][j] = 0
 		end
 	end
-	self.grid = Grid:new(self.cmap, pod)	
+	return measure(function(g)
+		g.grid = Grid:new(g.cmap, pod)
+	end, self)
 end
 
 function grid:getMouseCoordOnHover()
