@@ -8,6 +8,7 @@ grid.max_tiles = 60
 grid.n_tiles = grid.min_tiles
 grid.snode = false
 grid.enode = false
+grid.path = false
 
 function grid:new(env_size, n_tiles, pod)
 	local n = setmetatable({}, grid)
@@ -67,6 +68,18 @@ function grid:drawMouseCoord(draw)
 	end
 end
 
+function grid:getPath(finder)
+	if self.enode and self.snode then
+		return measure(function(g, finder)
+		print('Request', g.snode.x, g.snode.y, g.enode.x, g.enode.y)
+		print('finder.grid', finder.grid==g.grid, finder.grid.map == g.cmap)
+			local path = finder:getPath(g.snode.x, g.snode.y, g.enode.x, g.enode.y)
+			print('Request', path)
+			g.path = path or false
+		end, self, finder)
+	end
+end
+
 function grid:draw(len, blockColor, defColor, sNodeColor, eNodeColor)
 	love.graphics.setColor(defColor)
 	for i = 0, self.n_tiles do
@@ -88,7 +101,20 @@ function grid:draw(len, blockColor, defColor, sNodeColor, eNodeColor)
 			end			
 		end
 	end
+	if self.path then
+		for node, count in (self.path:iter()) do
+			love.graphics.setColor(230, 230, 30, 255)
+			love.graphics.setPoint(5, 'smooth')
+			love.graphics.point(node.x * self.tile_size - self.tile_size/2, node.y * self.tile_size - self.tile_size/2)
+			if count > 1 then
+				love.graphics.setColor(200, 60, 250, 255)
+				love.graphics.line(node.x * self.tile_size - self.tile_size/2, node.y * self.tile_size - self.tile_size/2,
+					self.path[count-1].x * self.tile_size - self.tile_size/2, self.path[count-1].y * self.tile_size - self.tile_size/2)
+			end
+		end
+	end
 end
+
 
 
 return grid

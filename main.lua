@@ -46,7 +46,7 @@ local BFILTERPATH = Ui.addButton(630, 520, 70, 15, RED,'FILTER PATH')
 function love.load()
 	love._openConsole()
 	demoGrid = Grid:new(H)
-	finder = PF(demoGrid.grid)
+	finder = PF(demoGrid.grid, 'ASTAR', 0)
 	
 	BGTYPE:setCallback(function(button)
 		button.label = ((button.label == 'PREPROCESSED') and 'PROCESSONDEMAND' or 'PREPROCESSED')
@@ -133,13 +133,37 @@ function love.load()
 	BSTART:setCallback(set, 'START')
 	BGOAL:setCallback(set, 'GOAL')
 	
+	local function path(button)
+		local timePath = demoGrid:getPath(finder)
+		print('timePath', timePath)
+		if demoGrid.path then
+			log = ('Path found in: %d ms'):format(timePath)
+		end
+	end
+	BGETPATH:setCallback(path)
 	
+	local function flpath(button)
+		if demoGrid.path then
+			local n_nodes = #demoGrid.path
+			demoGrid.path:fill()
+			log = ('Path interpolated. %d nodes added!'):format(#demoGrid.path - n_nodes)
+		end
+	end
+	BFILLPATH:setCallback(flpath)
+	
+	local function ftpath(button)
+		if demoGrid.path then	
+			local n_nodes = #demoGrid.path	
+			demoGrid.path:filter()
+			log = ('Path filtered. %d nodes removed!'):format(n_nodes - #demoGrid.path)
+		end
+	end
+	BFILTERPATH:setCallback(ftpath)
 	
 end
 
 local function setObst()
 	if love.mouse.isDown('l') then
-	print('clicked')
 		local x, y = demoGrid:getMouseCoordOnHover()
 		if x and y and demoGrid.cmap[y] and demoGrid.cmap[y][x] then
 			demoGrid.cmap[y][x] = (MOUSEMODE == 'OBST' and 1 or (MOUSEMODE == 'CLR' and 0 or demoGrid.cmap[y][x]))
@@ -165,7 +189,7 @@ function love.draw()
 	love.graphics.printf((': %d ms'):format(0), 710, 470, 100, 'left')
 	love.graphics.printf((': %d ms'):format(0), 710, 495, 100, 'left')
 	love.graphics.printf((': %d ms'):format(0), 710, 520, 100, 'left')
-	love.graphics.printf(('Path length: %.2f'):format(0), 600, 550, 200, 'center')
+	love.graphics.printf(('Path length: %.2f'):format(demoGrid.path and demoGrid.path:getLength() or 0), 600, 550, 200, 'center')
 	love.graphics.setColor(LOGCOLOR)
 	love.graphics.printf(log, 600, 570, 200, 'center')
 	
