@@ -3,6 +3,7 @@ local H = love.graphics.getHeight()
 local Grid = require('grid')
 local Ui = require('ui')
 local PF = require ('jumper.pathfinder')
+local measure = require ('utils').measure
 local font10 = love.graphics.newFont('res/dungeon.ttf', 10)
 local font8 = love.graphics.newFont('res/dungeon.ttf', 8)
 
@@ -42,6 +43,8 @@ local BGOAL = Ui.addButton(705, 400, 50, 15, RED)
 local BGETPATH = Ui.addButton(630, 470, 70, 15, RED,'CALCULATE')
 local BFILLPATH = Ui.addButton(630, 495,70, 15, RED,'FILL PATH')
 local BFILTERPATH = Ui.addButton(630, 520, 70, 15, RED,'FILTER PATH')
+
+local TIMEFILLPATH, TIMEFILTERPATH, TIMEPATH = 0, 0, 0
 
 function love.load()
 	love._openConsole()
@@ -137,7 +140,7 @@ function love.load()
 		local timePath = demoGrid:getPath(finder)
 		print('timePath', timePath)
 		if demoGrid.path then
-			log = ('Path found in: %d ms'):format(timePath)
+			TIMEPATH = timePath or 0
 		end
 	end
 	BGETPATH:setCallback(path)
@@ -145,7 +148,12 @@ function love.load()
 	local function flpath(button)
 		if demoGrid.path then
 			local n_nodes = #demoGrid.path
-			demoGrid.path:fill()
+			
+			local timeFlpath = measure(function(p)
+				p:fill()
+			end, demoGrid.path)
+			
+			TIMEFILLPATH = timeFlpath or 0
 			log = ('Path interpolated. %d nodes added!'):format(#demoGrid.path - n_nodes)
 		end
 	end
@@ -153,8 +161,13 @@ function love.load()
 	
 	local function ftpath(button)
 		if demoGrid.path then	
-			local n_nodes = #demoGrid.path	
-			demoGrid.path:filter()
+			local n_nodes = #demoGrid.path
+
+			local timeFtpath = measure(function(p)
+				p:filter()
+			end, demoGrid.path)
+			
+			TIMEFILTERPATH = timeFtpath or 0
 			log = ('Path filtered. %d nodes removed!'):format(n_nodes - #demoGrid.path)
 		end
 	end
@@ -186,9 +199,9 @@ function love.draw()
 	love.graphics.printf(('Heuristic: %s'):format(''), 600, 220, 200, 'center')
 	love.graphics.printf(('Mode: %s'):format(''), 600, 310, 200, 'center')
 	love.graphics.printf(('Path calculation'):format(''), 600, 440, 200, 'center')
-	love.graphics.printf((': %d ms'):format(0), 710, 470, 100, 'left')
-	love.graphics.printf((': %d ms'):format(0), 710, 495, 100, 'left')
-	love.graphics.printf((': %d ms'):format(0), 710, 520, 100, 'left')
+	love.graphics.printf((': %d ms'):format(TIMEPATH), 710, 470, 100, 'left')
+	love.graphics.printf((': %d ms'):format(TIMEFILLPATH), 710, 495, 100, 'left')
+	love.graphics.printf((': %d ms'):format(TIMEFILTERPATH), 710, 520, 100, 'left')
 	love.graphics.printf(('Path length: %.2f'):format(demoGrid.path and demoGrid.path:getLength() or 0), 600, 550, 200, 'center')
 	love.graphics.setColor(LOGCOLOR)
 	love.graphics.printf(log, 600, 570, 200, 'center')

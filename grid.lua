@@ -1,5 +1,6 @@
 
 local Grid = require('jumper.grid')
+local measure = require ('utils').measure
 
 local grid = {}
 grid.__index = grid
@@ -21,15 +22,6 @@ function grid:set(env_size, n)
 	self.n_tiles = math.max(self.min_tiles, 
 		math.min((n or self.n_tiles), self.max_tiles))
 	self.tile_size = env_size/self.n_tiles
-end
-
-local measure = function(f,...)
-	local st = love.timer.getMicroTime()
-	collectgarbage()
-	local mcount = collectgarbage('count')
-	f(...)
-	return ((love.timer.getMicroTime() - st)*1000),
-		math.abs(collectgarbage('count') - mcount)
 end
 
 function grid:make(pod)
