@@ -1,12 +1,41 @@
-local W = love.graphics.getWidth()
-local H = love.graphics.getHeight()
+--[[
+	Copyright (c) 2012-2013 Roland Yonaba
+
+	Permission is hereby granted, free of charge, to any person obtaining a
+	copy of this software and associated documentation files (the
+	"Software"), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish,
+	distribute, sublicense, and/or sell copies of the Software, and to
+	permit persons to whom the Software is furnished to do so, subject to
+	the following conditions:
+
+	The above copyright notice and this permission notice shall be included
+	in all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--]]
+
+-- Depandancies
 local Grid = require('grid')
 local Ui = require('ui')
 local PF = require ('jumper.pathfinder')
 local measure = require ('utils').measure
+
+-- Window dimensions
+local W = love.graphics.getWidth()
+local H = love.graphics.getHeight()
+
+-- Fonts
 local font10 = love.graphics.newFont('res/dungeon.ttf', 10)
 local font8 = love.graphics.newFont('res/dungeon.ttf', 8)
 
+-- Internals, to be accessed from all callback
 local demoGrid
 local finder
 local log = ''
@@ -15,15 +44,17 @@ local MOUSEMODE = ''
 local SNODE, ENODE
 local TIMEFILLPATH, TIMEFILTERPATH, TIMEPATH = 0, 0, 0
 
+-- Colors
 local BDEFCOLOR = {153,51,0,255}
 local BLUE = {0,0,255,255}
 local WHITE = {255,255,255,255}
+local WHITEI = {200,200,255,255}
 local GREEN = {0, 255, 0, 255}
 local RED = {255,0,0,255}
 local SELCOLOR = {100, 100, 100, 255}
 local LOGCOLOR = {245, 245, 10, 255}
 
-
+-- Ui
 local BGTYPE = Ui.addButton(650, 35, 100, 15,BDEFCOLOR,'PREPROCESSED')
 local BGRED = Ui.addButton(672.5, 85, 25, 15,BDEFCOLOR,'-')
 local BGINC = Ui.addButton(712.5, 85, 25, 15,BDEFCOLOR,'+')
@@ -38,16 +69,18 @@ local BEUCLIDIAN = Ui.addButton(705, 245, 70, 15, BDEFCOLOR, 'EUCLIDIAN')
 local BDIAGONAL = Ui.addButton(625, 275, 70, 15, BDEFCOLOR, 'DIAGONAL')
 local BCARDINTCARD = Ui.addButton(705, 275, 70, 15, BDEFCOLOR, 'CARDINTCARD')
 local BMODE = Ui.addButton(650, 335, 100, 15,BDEFCOLOR,'DIAGONAL')
-local BOBST = Ui.addButton(645, 375, 50, 15, BLUE)
-local BCLEAROBST = Ui.addButton(705, 375, 50, 15, WHITE)
-local BSTART = Ui.addButton(645, 400, 50, 15, GREEN)
-local BGOAL = Ui.addButton(705, 400, 50, 15, RED)
+local BOBST = Ui.addButton(645, 375, 50, 15, BLUE,'Obstacle')
+local BCLEAROBST = Ui.addButton(705, 375, 50, 15, WHITEI,'Clear')
+local BSTART = Ui.addButton(645, 400, 50, 15, GREEN,'Start')
+local BGOAL = Ui.addButton(705, 400, 50, 15, RED,'Goal')
 local BGETPATH = Ui.addButton(630, 470, 70, 15, RED,'CALCULATE')
 local BFILLPATH = Ui.addButton(630, 495,70, 15, RED,'FILL PATH')
 local BFILTERPATH = Ui.addButton(630, 520, 70, 15, RED,'FILTER PATH')
 
+
 function love.load()
-	love._openConsole()
+	
+	-- Setting callback functions 
 	demoGrid = Grid:new(H)
 	finder = PF(demoGrid.grid, 'ASTAR', 0)
 	
@@ -174,6 +207,7 @@ function love.load()
 	
 end
 
+
 local function setObst()
 	if love.mouse.isDown('l') then
 		local x, y = demoGrid:getMouseCoordOnHover()
@@ -183,12 +217,14 @@ local function setObst()
 	end
 end
 
+-- Grid filling
 function love.update(dt)
 	setObst()
 end
 
 function love.draw()
-
+	
+	-- Interface
 	love.graphics.setColor(WHITE)
 	love.graphics.setFont(font10)
 	love.graphics.printf(('Grid type: %s'):format(''), 600, 15, 200, 'center')	
@@ -205,13 +241,16 @@ function love.draw()
 	love.graphics.setColor(LOGCOLOR)
 	love.graphics.printf(log, 600, 570, 200, 'center')
 	
+	-- Grid drawing
 	demoGrid:draw(H, BLUE, WHITE, GREEN, RED)	
 	demoGrid:drawMouseCoord(true)
 	
+	--  Ui draw
 	love.graphics.setFont(font8)
 	Ui.draw()
 end
 
+-- Mouse control
 function love.mousepressed(x, y, button)
 	local x, y = demoGrid:getMouseCoordOnHover(x, y)
 	if x and y then

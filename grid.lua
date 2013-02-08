@@ -1,7 +1,31 @@
+--[[
+	Copyright (c) 2012-2013 Roland Yonaba
 
+	Permission is hereby granted, free of charge, to any person obtaining a
+	copy of this software and associated documentation files (the
+	"Software"), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish,
+	distribute, sublicense, and/or sell copies of the Software, and to
+	permit persons to whom the Software is furnished to do so, subject to
+	the following conditions:
+
+	The above copyright notice and this permission notice shall be included
+	in all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--]]
+
+-- Depandancies
 local Grid = require('jumper.grid')
 local measure = require ('utils').measure
 
+-- Grid
 local grid = {}
 grid.__index = grid
 grid. min_tiles = 10
@@ -11,6 +35,7 @@ grid.snode = false
 grid.enode = false
 grid.path = false
 
+-- Init
 function grid:new(env_size, n_tiles, pod)
 	local n = setmetatable({}, grid)
 	n:set(env_size, n_tiles)
@@ -18,12 +43,14 @@ function grid:new(env_size, n_tiles, pod)
 	return n
 end
 
+-- Tiles count
 function grid:set(env_size, n)
 	self.n_tiles = math.max(self.min_tiles, 
 		math.min((n or self.n_tiles), self.max_tiles))
 	self.tile_size = env_size/self.n_tiles
 end
 
+-- Build grid object
 function grid:make(pod)
 	self.cmap = {}
 	for i = 1, self.n_tiles do
@@ -37,6 +64,7 @@ function grid:make(pod)
 	end, self)
 end
 
+-- Screen to tiles coordinates
 function grid:getMouseCoordOnHover(x, y)
 	local mx, my = x, y
 	if not mx or not my then 
@@ -50,6 +78,7 @@ function grid:getMouseCoordOnHover(x, y)
 	return nil
 end
 
+-- Display coordinates
 function grid:drawMouseCoord(draw)
 	local x, y = self:getMouseCoordOnHover()
 	if draw and x and y then
@@ -60,18 +89,17 @@ function grid:drawMouseCoord(draw)
 	end
 end
 
+-- Path request
 function grid:getPath(finder)
 	if self.enode and self.snode then
 		return measure(function(g, finder)
-		print('Request', g.snode.x, g.snode.y, g.enode.x, g.enode.y)
-		print('finder.grid', finder.grid==g.grid, finder.grid.map == g.cmap)
 			local path = finder:getPath(g.snode.x, g.snode.y, g.enode.x, g.enode.y)
-			print('Request', path)
 			g.path = path or false
 		end, self, finder)
 	end
 end
 
+-- Drawing grid
 function grid:draw(len, blockColor, defColor, sNodeColor, eNodeColor)
 	love.graphics.setColor(defColor)
 	for i = 0, self.n_tiles do
@@ -106,7 +134,5 @@ function grid:draw(len, blockColor, defColor, sNodeColor, eNodeColor)
 		end
 	end
 end
-
-
 
 return grid
