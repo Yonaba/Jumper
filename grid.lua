@@ -6,6 +6,8 @@ grid.__index = grid
 grid. min_tiles = 10
 grid.max_tiles = 60
 grid.n_tiles = grid.min_tiles
+grid.snode = false
+grid.enode = false
 
 function grid:new(env_size, n_tiles, pod)
 	local n = setmetatable({}, grid)
@@ -42,8 +44,11 @@ function grid:make(pod)
 	end, self)
 end
 
-function grid:getMouseCoordOnHover()
-	local mx, my = love.mouse.getPosition()
+function grid:getMouseCoordOnHover(x, y)
+	local mx, my = x, y
+	if not mx or not my then 
+		mx, my = love.mouse.getPosition() 
+	end
 	local _x = math.floor(mx/self.tile_size)+1
 	local _y = math.floor(my/self.tile_size)+1
 	if self.cmap[_y] and self.cmap[_y][_x]  then
@@ -62,10 +67,26 @@ function grid:drawMouseCoord(draw)
 	end
 end
 
-function grid:draw(len)
+function grid:draw(len, blockColor, defColor, sNodeColor, eNodeColor)
+	love.graphics.setColor(defColor)
 	for i = 0, self.n_tiles do
 		love.graphics.line(i*self.tile_size, 0, i*self.tile_size, len)	
 		love.graphics.line(0, i*self.tile_size, len, i*self.tile_size)	
+	end
+	for y = 1,self.grid.height do
+		for x = 1,self.grid.width do
+			if self.cmap[y][x] == 1 then
+				love.graphics.setColor(blockColor)
+				love.graphics.rectangle('fill', (x-1)*self.tile_size+1, (y-1)*self.tile_size+1, self.tile_size-2, self.tile_size-2)
+			end
+			if self.enode and x == self.enode.x and y == self.enode.y then
+				love.graphics.setColor(eNodeColor)
+				love.graphics.rectangle('fill', (x-1)*self.tile_size+1, (y-1)*self.tile_size+1, self.tile_size-2, self.tile_size-2)			
+			elseif self.snode and x == self.snode.x and y == self.snode.y then
+				love.graphics.setColor(sNodeColor)
+				love.graphics.rectangle('fill', (x-1)*self.tile_size+1, (y-1)*self.tile_size+1, self.tile_size-2, self.tile_size-2)			
+			end			
+		end
 	end
 end
 

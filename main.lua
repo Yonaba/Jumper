@@ -10,6 +10,8 @@ local demoGrid
 local finder
 local log = ''
 local selFinder, selHeuristic
+local MOUSEMODE = ''
+local SNODE, ENODE
 
 local BDEFCOLOR = {153,51,0,255}
 local BLUE = {0,0,255,255}
@@ -124,8 +126,30 @@ function love.load()
 	BASTAR.backColor = SELCOLOR
 	selHeuristic = BMANHATTAN
 	BMANHATTAN.backColor = SELCOLOR
+	
+	local function set(button, flag) MOUSEMODE = flag end
+	BOBST:setCallback(set, 'OBST')
+	BCLEAROBST:setCallback(set, 'CLR')
+	BSTART:setCallback(set, 'START')
+	BGOAL:setCallback(set, 'GOAL')
+	
+	
+	
 end
 
+local function setObst()
+	if love.mouse.isDown('l') then
+	print('clicked')
+		local x, y = demoGrid:getMouseCoordOnHover()
+		if x and y and demoGrid.cmap[y] and demoGrid.cmap[y][x] then
+			demoGrid.cmap[y][x] = (MOUSEMODE == 'OBST' and 1 or (MOUSEMODE == 'CLR' and 0 or demoGrid.cmap[y][x]))
+		end	
+	end
+end
+
+function love.update(dt)
+	setObst()
+end
 
 function love.draw()
 
@@ -145,10 +169,22 @@ function love.draw()
 	love.graphics.setColor(LOGCOLOR)
 	love.graphics.printf(log, 600, 570, 200, 'center')
 	
-	love.graphics.setColor(WHITE)	
-	demoGrid:draw(H)	
+	demoGrid:draw(H, BLUE, WHITE, GREEN, RED)	
 	demoGrid:drawMouseCoord(true)
 	
 	love.graphics.setFont(font8)
 	Ui.draw()
+end
+
+function love.mousepressed(x, y, button)
+	local x, y = demoGrid:getMouseCoordOnHover(x, y)
+	if x and y then
+		if MOUSEMODE == 'START' then 
+			demoGrid.snode = {x = x, y = y}
+		elseif MOUSEMODE == 'GOAL' then
+			if demoGrid.cmap[y][x]~=1 then
+				demoGrid.enode = {x = x, y = y}
+			end
+		end
+	end
 end
