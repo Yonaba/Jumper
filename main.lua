@@ -13,6 +13,7 @@ local log = ''
 local selFinder, selHeuristic
 local MOUSEMODE = ''
 local SNODE, ENODE
+local TIMEFILLPATH, TIMEFILTERPATH, TIMEPATH = 0, 0, 0
 
 local BDEFCOLOR = {153,51,0,255}
 local BLUE = {0,0,255,255}
@@ -21,6 +22,7 @@ local GREEN = {0, 255, 0, 255}
 local RED = {255,0,0,255}
 local SELCOLOR = {100, 100, 100, 255}
 local LOGCOLOR = {245, 245, 10, 255}
+
 
 local BGTYPE = Ui.addButton(650, 35, 100, 15,BDEFCOLOR,'PREPROCESSED')
 local BGRED = Ui.addButton(672.5, 85, 25, 15,BDEFCOLOR,'-')
@@ -43,8 +45,6 @@ local BGOAL = Ui.addButton(705, 400, 50, 15, RED)
 local BGETPATH = Ui.addButton(630, 470, 70, 15, RED,'CALCULATE')
 local BFILLPATH = Ui.addButton(630, 495,70, 15, RED,'FILL PATH')
 local BFILTERPATH = Ui.addButton(630, 520, 70, 15, RED,'FILTER PATH')
-
-local TIMEFILLPATH, TIMEFILTERPATH, TIMEPATH = 0, 0, 0
 
 function love.load()
 	love._openConsole()
@@ -138,7 +138,6 @@ function love.load()
 	
 	local function path(button)
 		local timePath = demoGrid:getPath(finder)
-		print('timePath', timePath)
 		if demoGrid.path then
 			TIMEPATH = timePath or 0
 		end
