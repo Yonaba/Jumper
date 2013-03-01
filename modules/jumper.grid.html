@@ -24,7 +24,7 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper (v1.8.0)</h1>
+<h1>Jumper(v1.8.1)</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
@@ -44,16 +44,17 @@
   <li><a href="../modules/jumper.core.node.html">jumper.core.node</a></li>
   <li><a href="../modules/jumper.core.path.html">jumper.core.path</a></li>
   <li><strong>jumper.grid</strong></li>
+  <li><strong>jumper.grid</strong></li>
   <li><a href="../modules/jumper.pathfinder.html">jumper.pathfinder</a></li>
 </ul>
 <h2>Scripts</h2>
 <ul>
   <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
-  <li><a href="../scripts/jumper.search.astar.html">jumper.search.astar</a></li>
   <li><a href="../scripts/jumper.search.bfs.html">jumper.search.bfs</a></li>
   <li><a href="../scripts/jumper.search.dfs.html">jumper.search.dfs</a></li>
   <li><a href="../scripts/jumper.search.dijkstra.html">jumper.search.dijkstra</a></li>
   <li><a href="../scripts/jumper.search.jps.html">jumper.search.jps</a></li>
+  <li><a href="../scripts/jumper.search.thetastar.html">jumper.search.thetastar</a></li>
 </ul>
 
 </div>
@@ -123,7 +124,7 @@ local grid = Grid(map)
 	<td class="summary">Gets the <a href="../modules/jumper.grid.html#jumper.grid">grid</a>  nodes.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#grid:getNeighbours">grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal])</a></td>
+	<td class="name" nowrap><a href="#grid:getNeighbours">grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal[, tunnel]])</a></td>
 	<td class="summary">Returns the neighbours of a given <code>node</code> on a <a href="../modules/jumper.grid.html#jumper.grid">grid</a> </td>
 	</tr>
 	<tr>
@@ -132,19 +133,19 @@ local grid = Grid(map)
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:each">grid:each&nbsp;(f[, ...])</a></td>
-	<td class="summary">Each iterator.</td>
+	<td class="summary">Each transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:eachRange">grid:eachRange&nbsp;(lx, ly, ex, ey, f[, ...])</a></td>
-	<td class="summary">Each range interator.</td>
+	<td class="summary">Each in range transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:imap">grid:imap&nbsp;(f[, ...])</a></td>
-	<td class="summary">Map iterator.</td>
+	<td class="summary">Map transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:imapRange">grid:imapRange&nbsp;(lx, ly, ex, ey, f[, ...])</a></td>
-	<td class="summary">Map range iterator.</td>
+	<td class="summary">Map in range transformation.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:getNodeAt">grid:getNodeAt&nbsp;(x, y)</a></td>
@@ -306,7 +307,7 @@ local grid = Grid(map)
 </dd>
     <dt>
     <a name = "grid:getNeighbours"></a>
-    <strong>grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal])</strong>
+    <strong>grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal[, tunnel]])</strong>
     </dt>
     <dd>
     Returns the neighbours of a given <code>node</code> on a <a href="../modules/jumper.grid.html#jumper.grid">grid</a>
@@ -324,6 +325,9 @@ local grid = Grid(map)
       <li><span class="parameter">allowDiagonal</span>
         <span class="types"><span class="type">bool</span></span>
        whether or not adjacent nodes (8-directions moves) are allowed</li>
+      <li><span class="parameter">tunnel</span>
+        <span class="types"><span class="type">bool</span></span>
+       Whether or not the pathfinder can tunnel though walls diagonally</li>
     </ul>
 
     <h3>Returns:</h3>
@@ -378,7 +382,7 @@ local grid = Grid(map)
     <strong>grid:each&nbsp;(f[, ...])</strong>
     </dt>
     <dd>
-    Each iterator.  Executes a function on each <code>node</code> in the <a href="../modules/jumper.grid.html#jumper.grid">grid</a> , passing the <code>node</code> as the first arg to function <code>f</code>.
+    Each transformation.  Executes a function on each <code>node</code> in the <a href="../modules/jumper.grid.html#jumper.grid">grid</a> , passing the <code>node</code> as the first arg to function <code>f</code>.
 
     <h3>Parameters:</h3>
     <ul>
@@ -400,7 +404,7 @@ local grid = Grid(map)
     <strong>grid:eachRange&nbsp;(lx, ly, ex, ey, f[, ...])</strong>
     </dt>
     <dd>
-    Each range interator.  Executes a function on each <code>node</code> in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>.
+    Each in range transformation.  Executes a function on each <code>node</code> in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>.
 
     <h3>Parameters:</h3>
     <ul>
@@ -434,7 +438,7 @@ local grid = Grid(map)
     <strong>grid:imap&nbsp;(f[, ...])</strong>
     </dt>
     <dd>
-    Map iterator.  Maps function <code>f(node,...)</code> on each <code>node</code> in a given range, passing the <code>node</code> as the first arg to function <code>f</code>.
+    Map transformation.  Maps function <code>f(node,...)</code> on each <code>node</code> in a given range, passing the <code>node</code> as the first arg to function <code>f</code>. The passed-in function should return a <code>node</code> object.
 
     <h3>Parameters:</h3>
     <ul>
@@ -456,7 +460,7 @@ local grid = Grid(map)
     <strong>grid:imapRange&nbsp;(lx, ly, ex, ey, f[, ...])</strong>
     </dt>
     <dd>
-    Map range iterator.  Maps <code>f(node,...)</code> on each <code>nod</code>e in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>.
+    Map in range transformation.  Maps <code>f(node,...)</code> on each <code>nod</code>e in the range of a rectangle of cells, passing the <code>node</code> as the first arg to function <code>f</code>. The passed-in function should return a <code>node</code> object.
 
     <h3>Parameters:</h3>
     <ul>
