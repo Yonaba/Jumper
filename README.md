@@ -54,10 +54,10 @@ Here is a simple example explaining how to use Jumper:
 -- Usage Example
 -- First, set a collision map
 local map = {
-	{0,1,0,1,0 },
-	{0,1,0,1,0 },
-	{0,1,1,1,0 },
-	{0,0,0,0,0 },
+	{0,1,0,1,0},
+	{0,1,0,1,0},
+	{0,1,1,1,0},
+	{0,0,0,0,0},
 }
 -- Value for walkable tiles
 local walkable = 0
@@ -349,6 +349,38 @@ path:filter() -- Returns {{x = 1,y = 1},{x = 1,y = 5}}
 ````
 
 See [`path` class documentation](http://yonaba.github.com/Jumper/modules/jumper.core.path.html) for more details.
+
+### Tunnelling
+Normally, the pathfinder should returns paths avoiding walls, obstacles. But, you can also authorize it to `tunnel through` walls, 
+that is, to cross them deading diagonally.
+
+Let's set an example:
+
+```
+local map = {
+ {1,1,0},
+ {1,0,1},
+ {0,1,1},
+}
+```
+`0` refers to walkable tiles, and `1` for unwalkable tiles.
+Let's assume we want to move from location `[x: 1, y:3]` to `[x: 3, y:1]`. Calling `getPath()` would fail, because it can't normally cross
+from `[x: 1, y:3]` to `[x: 2, y:2]` (because tiles `[x: 1, y:2]` and `[x: 2, y:3]` are unwalkable), nor from `[x: 2, y:2]` to `[x: 3, y:1]` (because tiles `[x: 2, y:1]` and `[x: 3, y:2]` are unwalkable).
+
+[Passing a fifth argument](http://yonaba.github.com/Jumper/modules/jumper.pathfinder.html#pathfinder:getPath) `tunnel` will override this behaviour, and cause the pathfinder to *tunnel though* those walls.
+
+```
+local map = {
+ {1,1,0},
+ {1,0,1},
+ {0,1,1},
+}
+local tunnel = true
+local path = myFinder:getPath(1,3,3,1,tunnel)
+print(path~=nil) --> true
+```
+
+A __side note__ though, that feature works perfectly with all the available [finders](https://github.com/Yonaba/Jumper#finders) built-in Jumper, __except Jump Point Search algorithm__, as of now.
 
 ##Chaining##
 All setters can be chained.<br/>
