@@ -33,7 +33,7 @@ git clone git://github.com/Yonaba/Jumper.git
 
 ###Download (latest)
 * __Development release__: [zip](https://github.com/Yonaba/Jumper/zipball/master) | [tar.gz](https://github.com/Yonaba/Jumper/tarball/master)
-* __Stable release (1.8.0)__: [zip](https://github.com/Yonaba/Jumper/archive/jumper-1.8.0.zip) | [tar.gz](https://github.com/Yonaba/Jumper/archive/jumper-1.8.0.tar.gz)
+* __Stable release (1.8.1)__: [zip](https://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.zip) | [tar.gz](https://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.tar.gz)
 * __All releases__: [tags](https://github.com/Yonaba/Jumper/tags)
 
 
