@@ -7,8 +7,8 @@
 -- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
 -- @module jumper.pathfinder
 
-local _VERSION = ""
-local _RELEASEDATE = ""
+local _VERSION = "1.8.1"
+local _RELEASEDATE = "03/01/2013"
 
 --- @usage
 local usage = [[
@@ -135,7 +135,6 @@ if (...) then
         t_insert(path,1,node)
         node = node.parent
       else
-        reset()
         t_insert(path,1,startNode)
         return path
       end
@@ -206,7 +205,7 @@ if (...) then
   --- Gets the `walkable` value or function.
   -- @class function
   -- @name pathfinder:getWalkable
-  -- @treturn value|function the `walkable` previously set
+  -- @treturn string|int|function the `walkable` previously set
   function Pathfinder:getWalkable()
     return self.walkable
   end
@@ -322,17 +321,19 @@ if (...) then
   -- @tparam number startY the y-coordinate for the starting location
   -- @tparam number endX the x-coordinate for the goal location
   -- @tparam number endY the y-coordinate for the goal location
+  -- @tparam[opt] bool tunnel Whether or not the pathfinder can tunnel though walls diagonally (not compatible with `Jump Point Search`)
   -- @treturn {node,...} a path (array of `nodes`) when found, otherwise `nil`
   -- @treturn number the path length when found, `0` otherwise
-  function Pathfinder:getPath(startX, startY, endX, endY)
+  function Pathfinder:getPath(startX, startY, endX, endY, tunnel)
+		reset()
     local startNode = self.grid:getNodeAt(startX, startY)
     local endNode = self.grid:getNodeAt(endX, endY)
     assert(startNode, ('Invalid location [%d, %d]'):format(startX, startY))
     assert(endNode and self.grid:isWalkableAt(endX, endY),
       ('Invalid or unreachable location [%d, %d]'):format(endX, endY))
-    local _endNode = Finders[self.finder](self, startNode, endNode, toClear)
-    if _endNode then return
-      traceBackPath(self, _endNode, startNode), lastPathCost
+    local _endNode = Finders[self.finder](self, startNode, endNode, toClear, tunnel)
+    if _endNode then 
+			return traceBackPath(self, _endNode, startNode), lastPathCost
     end
     lastPathCost = 0
     return nil, lastPathCost

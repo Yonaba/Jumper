@@ -276,29 +276,40 @@ if (...) then
   -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean:
   -- `true` when value matches a *walkable* node, `false` otherwise.
   -- @tparam[opt] bool allowDiagonal whether or not adjacent nodes (8-directions moves) are allowed
+  -- @tparam[optchain] bool tunnel Whether or not the pathfinder can tunnel though walls diagonally
   -- @treturn {node,...} an array of nodes neighbouring a passed-in node on the collision map
-  function Grid:getNeighbours(node, walkable, allowDiagonal)
-    local neighbours = {}
-
+  function Grid:getNeighbours(node, walkable, allowDiagonal, tunnel)
+		local neighbours = {}
     for i = 1,#straightOffsets do
-      local node = self:getNodeAt(
+      local n = self:getNodeAt(
         node.x + straightOffsets[i].x,
         node.y + straightOffsets[i].y
       )
-      if node and self:isWalkableAt(node.x, node.y, walkable) then
-        neighbours[#neighbours+1] = node
+      if n and self:isWalkableAt(n.x, n.y, walkable) then
+        neighbours[#neighbours+1] = n
       end
     end
 
     if not allowDiagonal then return neighbours end
-
+		
+		tunnel = not not tunnel
     for i = 1,#diagonalOffsets do
-      local node = self:getNodeAt(
+      local n = self:getNodeAt(
         node.x + diagonalOffsets[i].x,
         node.y + diagonalOffsets[i].y
       )
-      if node and self:isWalkableAt(node.x, node.y, walkable) then
-        neighbours[#neighbours+1] = node
+      if n and self:isWalkableAt(n.x, n.y, walkable) then
+				if tunnel then
+					neighbours[#neighbours+1] = n
+				else
+					local skipThisNode = false
+					local n1 = self:getNodeAt(node.x+diagonalOffsets[i].x, node.y)
+					local n2 = self:getNodeAt(node.x, node.y+diagonalOffsets[i].y)
+					if ((n1 and n2) and not self:isWalkableAt(n1.x, n1.y, walkable) and not self:isWalkableAt(n2.x, n2.y, walkable)) then
+						skipThisNode = true
+					end
+					if not skipThisNode then neighbours[#neighbours+1] = n end
+				end
       end
     end
 

@@ -67,7 +67,7 @@ if (...) then
     Otherwise, we add left and right node (perpendicular to the direction
     of move) in the neighbours list.
   --]]
-  local function findNeighbours(finder,node)
+  local function findNeighbours(finder,node, tunnel)
 
     if node.parent then
       local neighbours = {}
@@ -154,7 +154,7 @@ if (...) then
     end
 
     -- Node do not have parent, we return all neighbouring nodes
-    return finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal)
+    return finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal, tunnel)
   end
 
   --[[
@@ -238,11 +238,11 @@ end
     In case a jump point was found, and this node happened to be diagonal to the
     node currently expanded in a straight mode search, we skip this jump point.
   --]]
-  local function identifySuccessors(finder,node,endNode,toClear)
+  local function identifySuccessors(finder,node,endNode,toClear, tunnel)
 
     -- Gets the valid neighbours of the given node
     -- Looks for a jump point in the direction of each neighbour
-    local neighbours = findNeighbours(finder,node)
+    local neighbours = findNeighbours(finder,node, tunnel)
     for i = #neighbours,1,-1 do
 
       local skip = false
@@ -254,6 +254,7 @@ end
         if ((jumpNode.x ~= node.x) and (jumpNode.y ~= node.y)) then skip = true end
       end
 
+			--[[
       -- Hacky trick to discard "tunneling" in diagonal mode search for the first step
       if jumpNode and finder.allowDiagonal and not step_first then
         if jumpNode.x == endNode.x and jumpNode.y == endNode.y then
@@ -263,7 +264,7 @@ end
           end
         end
       end
-
+			--]]
       -- Performs regular A-star on a set of jump points
       if jumpNode and not skip then
         -- Update the jump node and move it in the closed list if it wasn't there
@@ -292,7 +293,7 @@ end
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
-  return function(finder, startNode, endNode, toClear)
+  return function(finder, startNode, endNode, toClear, tunnel)
 
     step_first = false
     startNode.g, startNode.f = 0,0
@@ -311,7 +312,7 @@ end
           return node
         end
       -- otherwise, identify successors of the popped node
-      identifySuccessors(finder, node, endNode, toClear)
+      identifySuccessors(finder, node, endNode, toClear, tunnel)
     end
 
     -- No path found, return nil

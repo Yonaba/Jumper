@@ -47,7 +47,7 @@ if (...) then
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
-  return function (finder, startNode, endNode, toClear, overrideHeuristic, overrideCostEval)
+  return function (finder, startNode, endNode, toClear, tunnel, overrideHeuristic, overrideCostEval)
 		local heuristic = overrideHeuristic or finder.heuristic
 		
 		finder.openList:clear()
@@ -64,7 +64,7 @@ if (...) then
 			if node == endNode then
 				return node
 			end
-			local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal)
+			local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal, tunnel)
 			for i, neighbour in ipairs(neighbours) do
 				if not neighbour.closed then
 					toClear[neighbour] = true
