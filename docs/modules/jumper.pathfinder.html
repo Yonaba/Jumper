@@ -24,7 +24,7 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper</h1>
+<h1>Jumper(v1.8.1)</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
@@ -43,6 +43,7 @@
   <li><a href="../modules/jumper.core.heuristics.html">jumper.core.heuristics</a></li>
   <li><a href="../modules/jumper.core.node.html">jumper.core.node</a></li>
   <li><a href="../modules/jumper.core.path.html">jumper.core.path</a></li>
+  <li><a href="../modules/jumper.grid.html">jumper.grid</a></li>
   <li><a href="../modules/jumper.grid.html">jumper.grid</a></li>
   <li><strong>jumper.pathfinder</strong></li>
 </ul>
@@ -180,7 +181,7 @@ end
 	<td class="summary">Returns version and release date.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#pathfinder:getPath">pathfinder:getPath&nbsp;(startX, startY, endX, endY)</a></td>
+	<td class="name" nowrap><a href="#pathfinder:getPath">pathfinder:getPath&nbsp;(startX, startY, endX, endY[, tunnel])</a></td>
 	<td class="summary">Calculates a path.</td>
 	</tr>
 </table>
@@ -303,7 +304,7 @@ end
     <h3>Returns:</h3>
     <ol>
 
-          <span class="types"><span class="type">value</span> or <span class="type">function</span></span>
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <span class="type">int</span> or <span class="type">function</span></span>
         the <code>walkable</code> previously set
     </ol>
 
@@ -524,7 +525,7 @@ end
 </dd>
     <dt>
     <a name = "pathfinder:getPath"></a>
-    <strong>pathfinder:getPath&nbsp;(startX, startY, endX, endY)</strong>
+    <strong>pathfinder:getPath&nbsp;(startX, startY, endX, endY[, tunnel])</strong>
     </dt>
     <dd>
     Calculates a path.  Returns the path from location <code>&lt;startX, startY&gt;</code> to location <code>&lt;endX, endY&gt;</code>.
@@ -544,6 +545,9 @@ end
       <li><span class="parameter">endY</span>
         <span class="types"><span class="type">number</span></span>
        the y-coordinate for the goal location</li>
+      <li><span class="parameter">tunnel</span>
+        <span class="types"><span class="type">bool</span></span>
+       Whether or not the pathfinder can tunnel though walls diagonally (not compatible with <code>Jump Point Search</code>)</li>
     </ul>
 
     <h3>Returns:</h3>

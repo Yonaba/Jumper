@@ -24,7 +24,7 @@
 
 <div id="navigation">
 <br/>
-<h1>Jumper</h1>
+<h1>Jumper(v1.8.1)</h1>
 
 <ul>
   <li><a href="../index.html">Index</a></li>
@@ -43,6 +43,7 @@
   <li><a href="../modules/jumper.core.heuristics.html">jumper.core.heuristics</a></li>
   <li><a href="../modules/jumper.core.node.html">jumper.core.node</a></li>
   <li><a href="../modules/jumper.core.path.html">jumper.core.path</a></li>
+  <li><strong>jumper.grid</strong></li>
   <li><strong>jumper.grid</strong></li>
   <li><a href="../modules/jumper.pathfinder.html">jumper.pathfinder</a></li>
 </ul>
@@ -123,7 +124,7 @@ local grid = Grid(map)
 	<td class="summary">Gets the <a href="../modules/jumper.grid.html#jumper.grid">grid</a>  nodes.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#grid:getNeighbours">grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal])</a></td>
+	<td class="name" nowrap><a href="#grid:getNeighbours">grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal[, tunnel]])</a></td>
 	<td class="summary">Returns the neighbours of a given <code>node</code> on a <a href="../modules/jumper.grid.html#jumper.grid">grid</a> </td>
 	</tr>
 	<tr>
@@ -306,7 +307,7 @@ local grid = Grid(map)
 </dd>
     <dt>
     <a name = "grid:getNeighbours"></a>
-    <strong>grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal])</strong>
+    <strong>grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal[, tunnel]])</strong>
     </dt>
     <dd>
     Returns the neighbours of a given <code>node</code> on a <a href="../modules/jumper.grid.html#jumper.grid">grid</a>
@@ -324,6 +325,9 @@ local grid = Grid(map)
       <li><span class="parameter">allowDiagonal</span>
         <span class="types"><span class="type">bool</span></span>
        whether or not adjacent nodes (8-directions moves) are allowed</li>
+      <li><span class="parameter">tunnel</span>
+        <span class="types"><span class="type">bool</span></span>
+       Whether or not the pathfinder can tunnel though walls diagonally</li>
     </ul>
 
     <h3>Returns:</h3>
