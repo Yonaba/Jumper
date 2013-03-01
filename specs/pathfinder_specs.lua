@@ -271,7 +271,7 @@ context('Module Pathfinder', function()
 	
 	context('Pathfinder:version()', function()
 		
-		test('returns version and release date', function()
+		test('returns version and release date or empty strings', function()
 			local vr, rd = PF:version()
 			assert_equal(type(vr), 'string')
 			assert_not_nil(vr:match('%d+%.%d+%.%d+') or vr == '')
