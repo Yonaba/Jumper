@@ -1,5 +1,20 @@
 #Version history#
 
+##1.8.1 (03/01/2013)
+* Added optionnal `tunneling` feature (not fully compatible with `Jump Point Search` as of now)
+* Fixed path request failure when stepping from an unwalkable location
+* Fixed `getPath()` to keep continuously failing right after an wrong path request
+* Fixed _PATH for compatibility with handheld devices
+* Added handling for nil values pushed into heaps
+* Added `Node` as a syntactic shortcut to `Node:new(...)`
+* Added type & validity checking for grid objects
+* Added type & validity checking for passed-in maps
+* Changed pathfinder initialization args order
+* `PathFinder:setFinder()` now handles nil
+* New implementation of Astar, reused internally for Dijkstra Algorithm
+* Added Telescope specs tests
+* Added Travis-CI validation
+
 ##1.8.0 (01/26/2013)
 * Moved the internal `Grid` module at the top level
 * Separated path handling logic from the pathfinder class
