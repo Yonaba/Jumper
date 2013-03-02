@@ -1,7 +1,7 @@
 Jumper
 ======
 
-[![Build Status](https://travis-ci.org/Yonaba/Jumper.png)](https://travis-ci.org/Yonaba/Jumper)
+[![Build Status](http://travis-ci.org/Yonaba/Jumper.png)](http://travis-ci.org/Yonaba/Jumper)
 
 __Jumper__ is a pathfinding library designed for grid-based games. It aims to be __fast__ and __lightweight__.
 It features a wide range of search algorithms, built within a clean interface with 
@@ -12,16 +12,16 @@ __Jumper__ is written in pure [Lua][]. Thus, it is not __framework-related__ and
 <center><img src="http://ompldr.org/vZjltNQ" alt="" width="500" height="391" border="0" /></center>
 
 ###Contents
-* [Installation](https://github.com/Yonaba/Jumper#installation)
-* [Example of Use](https://github.com/Yonaba/Jumper#example-of-use)
-* [API & Docs](https://github.com/Yonaba/Jumper#api--docs)
-* [Usage](https://github.com/Yonaba/Jumper#usage)
-* [The Grid](https://github.com/Yonaba/Jumper#the-grid)
-* [Handling paths](https://github.com/Yonaba/Jumper#handling-paths)
-* [Chaining](https://github.com/Yonaba/Jumper#chaining)
-* [Specs](https://github.com/Yonaba/Jumper#specs)
-* [Credits and Thanks](https://github.com/Yonaba/Jumper#credits-and-thanks)
-* [License](https://github.com/Yonaba/Jumper#license)
+* [Installation](http://github.com/Yonaba/Jumper#installation)
+* [Example of Use](http://github.com/Yonaba/Jumper#example-of-use)
+* [API & Docs](http://github.com/Yonaba/Jumper#api--docs)
+* [Usage](http://github.com/Yonaba/Jumper#usage)
+* [The Grid](http://github.com/Yonaba/Jumper#the-grid)
+* [Handling paths](http://github.com/Yonaba/Jumper#handling-paths)
+* [Chaining](http://github.com/Yonaba/Jumper#chaining)
+* [Specs](http://github.com/Yonaba/Jumper#specs)
+* [Credits and Thanks](http://github.com/Yonaba/Jumper#credits-and-thanks)
+* [License](http://github.com/Yonaba/Jumper#license)
 
 ##Installation
 The current repository can be retrieved locally on your computer via:
@@ -32,9 +32,9 @@ git clone git://github.com/Yonaba/Jumper.git
 ````
 
 ###Download (latest)
-* __Development release__: [zip](https://github.com/Yonaba/Jumper/zipball/master) | [tar.gz](https://github.com/Yonaba/Jumper/tarball/master)
-* __Stable release (1.8.1)__: [zip](https://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.zip) | [tar.gz](https://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.tar.gz)
-* __All releases__: [tags](https://github.com/Yonaba/Jumper/tags)
+* __Development release__: [zip](http://github.com/Yonaba/Jumper/zipball/master) | [tar.gz](http://github.com/Yonaba/Jumper/tarball/master)
+* __Stable release (1.8.1)__: [zip](http://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.zip) | [tar.gz](http://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.tar.gz)
+* __All releases__: [tags](http://github.com/Yonaba/Jumper/tags)
 
 
 ###LuaRocks
@@ -94,14 +94,14 @@ end
 --> Step: 6 - x: 5 - y: 1
 ````
 
-Find some other examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](https://github.com/Yonaba/Jumper-Examples)
+Find some other examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](http://github.com/Yonaba/Jumper-Examples)
 
 ##API & Docs##
-Find a complete documentation and API description online here: [docs](https://yonaba.github.com/Jumper)
+Find a complete documentation and API description online here: [docs](http://yonaba.github.com/Jumper)
 
 ##Usage##
 ###Adding Jumper to your project###
-Copy the contents of the folder named [jumper](https://github.com/Yonaba/Jumper/blob/master/jumper) and its contents and place it inside your projet. Use *require* function to import any module of the library.
+Copy the contents of the folder named [jumper](http://github.com/Yonaba/Jumper/blob/master/jumper) and its contents and place it inside your projet. Use *require* function to import any module of the library.
 
 ###Setting your collision map
 The collision map is a regular Lua table where each cell holds a value, representing whether or not the corresponding tile in the 2D world is walkable
@@ -152,19 +152,19 @@ xxxxxxxxxxxxxx
 
 ###Initializing Jumper###
 Once your collision map is set, you have to init a `grid` object.
-This is fairly simple, you just have to require the [grid](https://github.com/Yonaba/Jumper/blob/master/jumper/grid.lua) module, and then pass it two arguments.
+This is fairly simple, you just have to require the [grid](http://github.com/Yonaba/Jumper/blob/master/jumper/grid.lua) module, and then pass it two arguments.
 
 ```lua
 local Grid = require 'jumper.grid'
 local grid = Grid(map,processOnDemand)
 ```
 
-Only the first arg `map` is __mandatory__. It refers to the [collision map](https://github.com/Yonaba/Jumper#setting-your-collision-map) previously defined.
-The second arg `processOnDemand` is optional. See [here](https://github.com/Yonaba/Jumper#the-grid-object) for more details.<br/>
+Only the first arg `map` is __mandatory__. It refers to the [collision map](http://github.com/Yonaba/Jumper#setting-your-collision-map) previously defined.
+The second arg `processOnDemand` is optional. See [here](http://github.com/Yonaba/Jumper#the-grid-object) for more details.<br/>
  
 Next, to init a `pathfinder`, you have specify what value in this collision map matches a __walkable__ tile. If you choose for instance *0* for *walkable tiles*, 
 and you happen to assign that value to the `pathfinder`, it will consider __any other value__ as *non walkable*.<br/>
-To initialize a `pathfinder`, you will have to require the [pathfinder](https://github.com/Yonaba/Jumper/blob/master/jumper/pathfinder.lua) module, and then pass it __three arguments__.
+To initialize a `pathfinder`, you will have to require the [pathfinder](http://github.com/Yonaba/Jumper/blob/master/jumper/pathfinder.lua) module, and then pass it __three arguments__.
 
 ```lua
 local myFinder = Pathfinder(grid, finderName, walkable)
@@ -172,7 +172,7 @@ local myFinder = Pathfinder(grid, finderName, walkable)
 
 The first arg is __mandatory__. The others are optional.
 * `grid` refers to the grid object.
-* `finderName` refers to the search algorithm to be used by the pathfinder. See [finders](https://github.com/Yonaba/Jumper#finders) for more details.
+* `finderName` refers to the search algorithm to be used by the pathfinder. See [finders](http://github.com/Yonaba/Jumper#finders) for more details.
 * `walkable` (optional) refers to the value representing walkable tiles. If not given, any tile will be considered *fully walkable* on the grid.
 
 You might want to have __multiple values designing a walkable tile__. 
@@ -200,7 +200,7 @@ local myFinder = Pathfinder(Grid(map), 'ASTAR', walkable)
 ###Finders
 Jumper uses search algorithm to perform a path search from one location to another.
 Actually, there are dozens of search algorithms, each one having its strengths and weaknesses, and this library implements some of these algorithms.
-[Since v1.8.0](https://github.com/Yonaba/Jumper/blob/master/version_history.md#180-01262013), Jumper implements a wide range of search algorithms: 
+[Since v1.8.0](http://github.com/Yonaba/Jumper/blob/master/version_history.md#180-01262013), Jumper implements a wide range of search algorithms: 
 * [A-star](http://en.wikipedia.org/wiki/A-star)
 * [Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)
 * [Breadth-First search](http://en.wikipedia.org/wiki/Breadth-first_search)
@@ -380,7 +380,7 @@ local path = myFinder:getPath(1,3,3,1,tunnel)
 print(path~=nil) --> true
 ```
 
-A __side note__ though, that feature works perfectly with all the available [finders](https://github.com/Yonaba/Jumper#finders) built-in Jumper, __except Jump Point Search algorithm__, as of now.
+A __side note__ though, that feature works perfectly with all the available [finders](http://github.com/Yonaba/Jumper#finders) built-in Jumper, __except Jump Point Search algorithm__, as of now.
 
 ##Chaining##
 All setters can be chained.<br/>
@@ -409,8 +409,8 @@ local path,length = myFinder:setFinder('ASTAR')
 
 ##Specs
 Specs tests have been included.<br/>
-You can run them using [Telescope](https://github.com/norman/telescope) with the following command 
-from the [root](https://github.com/Yonaba/Jumper/blob/master/jumper) folder:
+You can run them using [Telescope](http://github.com/norman/telescope) with the following command 
+from the [root](http://github.com/Yonaba/Jumper/blob/master/jumper) folder:
 
 ```
 tsc -f specs/*
@@ -420,8 +420,8 @@ tsc -f specs/*
 
 * [Daniel Harabor][], [Alban Grastien][] : for [the algorithm and the technical papers][].<br/>
 * [XueXiao Xu][], [Nathan Witmer][]: for their [JavaScript port][] <br/>
-* [Steve Donovan](https://github.com/stevedonovan): for the awesome documentation generator tool [LDoc](https://github.com/stevedonovan/ldoc/).
-* [Srdjan Markovic](https://github.com/srdjan-m), who reported various bugs and feedbacks.
+* [Steve Donovan](http://github.com/stevedonovan): for the awesome documentation generator tool [LDoc](http://github.com/stevedonovan/ldoc/).
+* [Srdjan Markovic](http://github.com/srdjan-m), who reported various bugs and feedbacks.
 
 ##License##
 This work is under [MIT-LICENSE][]<br/>
@@ -447,16 +447,16 @@ Copyright (c) 2012-2013 Roland Yonaba.
 
 [Jump Point Search]: http://harablog.wordpress.com/2011/09/07/jump-point-search/
 [Lua]: http://lua.org
-[Löve]: https://love2d.org
-[Löve2d]: https://love2d.org
-[Löve 0.8.0 Framework]: https://love2d.org
+[Löve]: http://love2d.org
+[Löve2d]: http://love2d.org
+[Löve 0.8.0 Framework]: http://love2d.org
 [Dragon Age : Origins]: http://dragonage.bioware.com
 [Moving AI]: http://movingai.com
-[Nathan Witmer]: https://github.com/aniero
-[XueXiao Xu]: https://github.com/qiao
-[JavaScript port]: https://github.com/qiao/PathFinding.js
+[Nathan Witmer]: http://github.com/aniero
+[XueXiao Xu]: http://github.com/qiao
+[JavaScript port]: http://github.com/qiao/PathFinding.js
 [Alban Grastien]: http://www.grastien.net/ban/
 [Daniel Harabor]: http://users.cecs.anu.edu.au/~dharabor/home.html
 [the algorithm and the technical papers]: http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
 [MIT-LICENSE]: http://www.opensource.org/licenses/mit-license.php
-[heuristics.lua]: https://github.com/Yonaba/Jumper/blob/master/Jumper/core/heuristics.lua
+[heuristics.lua]: http://github.com/Yonaba/Jumper/blob/master/Jumper/core/heuristics.lua
