@@ -7,8 +7,8 @@
 -- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
 -- @module jumper.pathfinder
 
-local _VERSION = "1.8.1"
-local _RELEASEDATE = "03/01/2013"
+local _VERSION = ""
+local _RELEASEDATE = ""
 
 --- @usage
 local usage = [[
