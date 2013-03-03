@@ -30,27 +30,6 @@ if (...) then
   -- Local helpers, these routines will stay private
   -- As they are internally used by the public interface
 
-  -- Check if a node is reachable in diagonal-search mode
-  -- Will prevent from "tunneling" issue when
-  -- the goal node is neighbouring a starting location
-  local step_first = false
-  local function testFirstStep(finder, jNode, node)
-    local is_reachable = true
-    local jx, jy = jNode.x, jNode.y
-    local dx,dy = jx-node.x, jy-node.y
-    if dx <= -1 then
-      if not finder.grid:isWalkableAt(jx+1,jy,finder.walkable) then is_reachable = false end
-    elseif dx >= 1 then
-      if not finder.grid:isWalkableAt(jx-1,jy,finder.walkable) then is_reachable = false end
-    end
-    if dy <= -1 then
-      if not finder.grid:isWalkableAt(jx,jy+1,finder.walkable) then is_reachable = false end
-    elseif dy >= 1 then
-      if not finder.grid:isWalkableAt(jx,jy-1,finder.walkable) then is_reachable = false end
-    end
-    return not is_reachable
- end
-
   -- Resets properties of nodes expanded during a search
   -- This is a lot faster than resetting all nodes
   -- between consecutive pathfinding requests
@@ -254,17 +233,6 @@ end
         if ((jumpNode.x ~= node.x) and (jumpNode.y ~= node.y)) then skip = true end
       end
 
-			--[[
-      -- Hacky trick to discard "tunneling" in diagonal mode search for the first step
-      if jumpNode and finder.allowDiagonal and not step_first then
-        if jumpNode.x == endNode.x and jumpNode.y == endNode.y then
-          step_first = true
-          if not skip then
-            skip = testFirstStep(finder, jumpNode, node)
-          end
-        end
-      end
-			--]]
       -- Performs regular A-star on a set of jump points
       if jumpNode and not skip then
         -- Update the jump node and move it in the closed list if it wasn't there
