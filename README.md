@@ -8,6 +8,9 @@ This allows more realistic movement for grouped units, avoiding  them to stack a
 I wrote it upon a request of a user of Jumper.
 Find more details on this very post on [Corona forums thread](http://developer.coronalabs.com/code/jumper-fast-2d-pathfinder-grid-based-games?page=1#comment-144584).
 
+##Video
+See it in action on Youtube: [Multi Agent Pathfinding using Jumper library ](http://www.youtube.com/watch?v=og7tA4uD1iE)
+
 ##Implementation notes
 The solution I came up with might not be the best. Simulating a "spread-like" behaviour with multiple agents pathing at the same time was easily doable with the way 
 Jumper was implemented.<br/>
