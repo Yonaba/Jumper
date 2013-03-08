@@ -20,6 +20,11 @@ To avoid that "odd", when calculating a first path (for the first unit), we can 
 this path, so that on the next (the second, third, fourth,...n-th) path request, the pathfinder will look for alternatives routes, avoiding nodes (or tiles) being crossed 
 by the previous paths.
 
+## Warnings
+This current version only features [Astar](http://en.wikipedia.org/wiki/A*_search_algorithm) and [Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) search algorithms, as these modifications cannot be applied straight 
+to all the search algorithms that the [full version of Jumper](https://github.com/Yonaba/Jumper) features.
+
+## Usage details
 The current version of Jumper implements such behaviour, yet it remains very simple to use.
 You will just have to implement a field `onPathFound` in the finder __as a function__ that will be called internally right after a path was found.
 That function __must take a path as a single argument__, and is supposed to increase the `weight` property of each single node along the passed-in path.
