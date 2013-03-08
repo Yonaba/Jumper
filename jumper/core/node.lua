@@ -32,7 +32,7 @@ if (...) then
   -- @tparam int y the y-coordinate of the node on the collision map
   -- @treturn node a new `node` object
   function Node:new(x,y)
-    return setmetatable({x = x, y = y}, Node)
+    return setmetatable({x = x, y = y, weight = 0}, Node)
   end
 
   -- Enables the use of operator '<' to compare nodes.
