@@ -22,7 +22,7 @@ if (...) then
 	
 	-- Updates G-cost
 	local function computeCost(node, neighbour, finder)
-		local mCost = Heuristics.EUCLIDIAN(neighbour.x - node.x, neighbour.y - node.y)
+		local mCost = Heuristics.EUCLIDIAN(neighbour.x - node.x, neighbour.y - node.y) + neighbout.weight
 		if node.g + mCost < neighbour.g then
 			neighbour.parent = node
 			neighbour.g = node.g + mCost
@@ -38,7 +38,7 @@ if (...) then
 			if neighbour.opened then
 				neighbour.opened = false
 			end
-			neighbour.h = heuristic(endNode.x - neighbour.x, endNode.y - neighbour.y)
+			neighbour.h = heuristic(endNode.x - neighbour.x, endNode.y - neighbour.y)+neighbour.weight
 			neighbour.f = neighbour.g + neighbour.h
 			finder.openList:push(neighbour)
 			neighbour.opened = true
