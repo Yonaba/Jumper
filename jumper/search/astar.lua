@@ -16,19 +16,19 @@ if (...) then
 	-- Internalization
 	local ipairs = ipairs
 	local huge = math.huge
-	
+
 	-- Depandancies
 	local Heuristics = require ((...):match('(.+)%.search.astar$') .. '.core.heuristics')
-	
+
 	-- Updates G-cost
 	local function computeCost(node, neighbour, finder)
-		local mCost = Heuristics.EUCLIDIAN(neighbour.x - node.x, neighbour.y - node.y) + neighbout.weight
+		local mCost = Heuristics.EUCLIDIAN(neighbour.x - node.x, neighbour.y - node.y) + neighbour.weight
 		if node.g + mCost < neighbour.g then
 			neighbour.parent = node
 			neighbour.g = node.g + mCost
-		end	
+		end
 	end
-	
+
 	-- Updates vertex node-neighbour
 	local function updateVertex(finder, node, neighbour, endNode, heuristic, overrideCostEval)
 		local oldG = neighbour.g
@@ -42,14 +42,14 @@ if (...) then
 			neighbour.f = neighbour.g + neighbour.h
 			finder.openList:push(neighbour)
 			neighbour.opened = true
-		end	
+		end
 	end
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
   return function (finder, startNode, endNode, toClear, tunnel, overrideHeuristic, overrideCostEval)
 		local heuristic = overrideHeuristic or finder.heuristic
-		
+
 		finder.openList:clear()
 		startNode.g = 0
 		startNode.h = heuristic(endNode.x - startNode.x, endNode.y - startNode.y)
@@ -57,7 +57,7 @@ if (...) then
 		finder.openList:push(startNode)
 		toClear[startNode] = true
 		startNode.opened = true
-		
+
 		while not finder.openList:empty() do
 			local node = finder.openList:pop()
 			node.closed = true
@@ -70,16 +70,16 @@ if (...) then
 					toClear[neighbour] = true
 					if not neighbour.opened then
 						neighbour.g = huge
-						neighbour.parent = nil					
+						neighbour.parent = nil
 					end
 					updateVertex(finder, node, neighbour, endNode, heuristic, overrideCostEval)
-				end			
-			end		
-		end		
-		
+				end
+			end
+		end
+
 		return nil
 	end
-	
+
 end
 
 --[[
