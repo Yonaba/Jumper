@@ -135,6 +135,7 @@ if (...) then
         node = node.parent
       else
         t_insert(path,1,startNode)
+				if finder.onPathFound then finder.onPathFound(path) end
         return path
       end
     end
