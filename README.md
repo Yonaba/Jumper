@@ -418,7 +418,7 @@ tsc -f specs/*
 
 ##Credits and Thanks##
 
-* [Daniel Harabor][], [Alban Grastien][] : for [the algorithm and the technical papers][].<br/>
+* [Daniel Harabor][], [Alban Grastien][] : for [their work on Jump Point Search](http://harablog.wordpress.com/2011/09/07/jump-point-search/).<br/>
 * [XueXiao Xu][], [Nathan Witmer][]: for their [JavaScript port][] <br/>
 * [Steve Donovan](http://github.com/stevedonovan): for the awesome documentation generator tool [LDoc](http://github.com/stevedonovan/ldoc/).
 * [Srdjan Markovic](http://github.com/srdjan-m), who reported various bugs and feedbacks.
