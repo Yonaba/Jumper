@@ -97,7 +97,7 @@ end
 Find some other examples of use for __Jumper__, made with various Lua-based frameworks and game engines in this separated repository: [Jumper-Examples](http://github.com/Yonaba/Jumper-Examples)
 
 ##API & Docs##
-Find a complete documentation and API description online here: [docs](http://yonaba.github.com/Jumper)
+Find a complete documentation and API description online here: [docs](http://yonaba.github.com/Jumper/docs)
 
 ##Usage##
 ###Adding Jumper to your project###
@@ -215,7 +215,7 @@ print(myFinder:getFinder()) --> 'JPS'
 ````
 
 Use `pathfinder:getFinders` to get the list of all available finders, and `pathfinder:setFinder` to switch to another search algorithm.
-See the [`pathfinder` class documentation](http://yonaba.github.com/Jumper/modules/jumper.pathfinder.html) for more details.
+See the [`pathfinder` class documentation](http://yonaba.github.com/Jumper/docs/modules/jumper.pathfinder.html) for more details.
 
 ###Distance heuristics###
 `Heuristics` are functions used by the search algorithm to evaluate the optimal path while processing.
@@ -246,7 +246,7 @@ local Pathfinder = require('jumper.pathfinder')
 local myFinder = Pathfinder(Grid(map),'ASTAR')
 myFinder:setHeuristic('CARDINTCARD')
 ```
-See [docs](http://yonaba.github.com/Jumper/modules/jumper.core.heuristics.html) for more details on how to deal with distance heuristics.
+See [docs](http://yonaba.github.com/Jumper/docs/modules/jumper.core.heuristics.html) for more details on how to deal with distance heuristics.
 
 ####Custom heuristics
 You can also cook __your own heuristic__. This custom heuristic should be passed to <tt>Pathfinder:setHeuristic()</tt> as a function 
@@ -314,7 +314,7 @@ path = {
 }
 ```
 
-Each [node](http://yonaba.github.com/Jumper/modules/jumper.core.node.html) has `x` and `y` attributes, corresponding to its location on the grid. That is, a set of nodes makes a complete path.
+Each [node](http://yonaba.github.com/Jumper/docs/modules/jumper.core.node.html) has `x` and `y` attributes, corresponding to its location on the grid. That is, a set of nodes makes a complete path.
 
 You can iterate on nodes along a `path` using <tt>path:iter</tt>
 ```lua
@@ -348,7 +348,7 @@ Given a path, it removes some unecessary nodes to leave a path made of turning p
 path:filter() -- Returns {{x = 1,y = 1},{x = 1,y = 5}}
 ````
 
-See [`path` class documentation](http://yonaba.github.com/Jumper/modules/jumper.core.path.html) for more details.
+See [`path` class documentation](http://yonaba.github.com/Jumper/docs/modules/jumper.core.path.html) for more details.
 
 ### Tunnelling
 Normally, the pathfinder should returns paths avoiding walls, obstacles. But, you can also authorize it to `tunnel through` walls, 
@@ -367,7 +367,7 @@ local map = {
 Let's assume we want to move from location `[x: 1, y:3]` to `[x: 3, y:1]`. Calling `getPath()` would fail, because it can't normally cross
 from `[x: 1, y:3]` to `[x: 2, y:2]` (because tiles `[x: 1, y:2]` and `[x: 2, y:3]` are unwalkable), nor from `[x: 2, y:2]` to `[x: 3, y:1]` (because tiles `[x: 2, y:1]` and `[x: 3, y:2]` are unwalkable).
 
-[Passing a fifth argument](http://yonaba.github.com/Jumper/modules/jumper.pathfinder.html#pathfinder:getPath) `tunnel` will override this behaviour, and cause the pathfinder to *tunnel though* those walls.
+[Passing a fifth argument](http://yonaba.github.com/Jumper/docs/modules/jumper.pathfinder.html#pathfinder:getPath) `tunnel` will override this behaviour, and cause the pathfinder to *tunnel though* those walls.
 
 ```
 local map = {
