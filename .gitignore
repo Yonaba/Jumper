@@ -1,0 +1,7 @@
+*.yml
+*.ld
+*.bat
+tsc
+test*
+ldoc*
+telescope*
