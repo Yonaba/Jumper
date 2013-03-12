@@ -32,13 +32,32 @@ if (...) then
   -- @tparam int y the y-coordinate of the node on the collision map
   -- @treturn node a new `node` object
   function Node:new(x,y)
-    return setmetatable({x = x, y = y}, Node)
+    return setmetatable({_x = x, _y = y}, Node)
   end
 
   -- Enables the use of operator '<' to compare nodes.
   -- Will be used to sort a collection of nodes in a binary heap on the basis of their F-cost
-  function Node.__lt(A,B) return (A.f < B.f) end
+  function Node.__lt(A,B) return (A._f < B._f) end
 
+  --- Inits a new `node` object
+  -- @class function
+  -- @name node:getX
+  -- @treturn number the x-coordinate of the `node`	
+	function Node:getX() return self._x end
+	
+  --- Inits a new `node` object
+  -- @class function
+  -- @name node:getY
+  -- @treturn number the y-coordinate of the `node`	
+	function Node:getY() return self._y end
+	
+  --- Inits a new `node` object
+  -- @class function
+  -- @name node:getPos
+  -- @treturn number the x-coordinate of the `node`
+  -- @treturn number the y-coordinate of the `node`
+	function Node:getPos() return self._x, self._y end
+	
   return setmetatable(Node,
 		{__call = function(self,...) 
 			return Node:new(...) 
