@@ -13,13 +13,13 @@ if (...) then
   local t_remove = table.remove
 
   local function breadth_first_search(finder, node, openList, toClear, tunnel)
-    local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal, tunnel)
+    local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, tunnel)
     for i = 1,#neighbours do
       local neighbour = neighbours[i]
-      if not neighbour.closed and not neighbour.opened then
+      if not neighbour._closed and not neighbour._opened then
         openList[#openList+1] = neighbour
-        neighbour.opened = true
-        neighbour.parent = node
+        neighbour._opened = true
+        neighbour._parent = node
         toClear[neighbour] = true
       end
     end
@@ -32,19 +32,15 @@ if (...) then
 
     local openList = {} -- We'll use a FIFO queue (simple array)
     openList[1] = startNode
-    startNode.opened = true
+    startNode._opened = true
     toClear[startNode] = true
 
     local node
     while (#openList > 0) do
       node = openList[1]
       t_remove(openList,1)
-      node.closed = true
-
-      if node == endNode then
-        return node
-      end
-
+      node._closed = true
+      if node == endNode then return node end
       breadth_first_search(finder, node, openList, toClear, tunnel)
     end
 

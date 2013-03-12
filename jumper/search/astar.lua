@@ -6,7 +6,6 @@
 -- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
 -- @script jumper.search.astar
 
-
 -- This implementation of A-star was based on Nash A. & al. pseudocode
 -- Added override args to support dijkstra and thetaStar
 -- http://aigamedev.com/open/tutorials/theta-star-any-angle-paths/
@@ -17,62 +16,62 @@ if (...) then
 	local ipairs = ipairs
 	local huge = math.huge
 	
-	-- Depandancies
-	local Heuristics = require ((...):match('(.+)%.search.astar$') .. '.core.heuristics')
+	-- Dependancies
+	local _PATH = (...):match('(.+)%.search.astar$')
+	local Heuristics = require (_PATH .. '.core.heuristics')
+	local Heap = require (_PATH.. '.core.bheap')
 	
 	-- Updates G-cost
 	local function computeCost(node, neighbour, finder)
-		local mCost = Heuristics.EUCLIDIAN(neighbour.x - node.x, neighbour.y - node.y)
-		if node.g + mCost < neighbour.g then
-			neighbour.parent = node
-			neighbour.g = node.g + mCost
+		local mCost = Heuristics.EUCLIDIAN(neighbour._x - node._x, neighbour._y - node._y)
+		if node._g + mCost < neighbour._g then
+			neighbour._parent = node
+			neighbour._g = node._g + mCost
 		end	
 	end
 	
 	-- Updates vertex node-neighbour
-	local function updateVertex(finder, node, neighbour, endNode, heuristic, overrideCostEval)
-		local oldG = neighbour.g
+	local function updateVertex(finder, openList, node, neighbour, endNode, heuristic, overrideCostEval)
+		local oldG = neighbour._g
 		local cmpCost = overrideCostEval or computeCost
 		cmpCost(node, neighbour, finder)
-		if neighbour.g < oldG then
-			if neighbour.opened then
-				neighbour.opened = false
+		if neighbour._g < oldG then
+			if neighbour._opened then
+				neighbour._opened = false
 			end
-			neighbour.h = heuristic(endNode.x - neighbour.x, endNode.y - neighbour.y)
-			neighbour.f = neighbour.g + neighbour.h
-			finder.openList:push(neighbour)
-			neighbour.opened = true
+			neighbour._h = heuristic(endNode._x - neighbour._x, endNode._y - neighbour._y)
+			neighbour._f = neighbour._g + neighbour._h
+			openList:push(neighbour)
+			neighbour._opened = true
 		end	
 	end
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
   return function (finder, startNode, endNode, toClear, tunnel, overrideHeuristic, overrideCostEval)
-		local heuristic = overrideHeuristic or finder.heuristic
+		local heuristic = overrideHeuristic or finder._heuristic
 		
-		finder.openList:clear()
-		startNode.g = 0
-		startNode.h = heuristic(endNode.x - startNode.x, endNode.y - startNode.y)
-		startNode.f = startNode.g + startNode.h
-		finder.openList:push(startNode)
+		local openList = Heap()
+		startNode._g = 0
+		startNode._h = heuristic(endNode._x - startNode._x, endNode._y - startNode._y)
+		startNode._f = startNode._g + startNode._h
+		openList:push(startNode)
 		toClear[startNode] = true
-		startNode.opened = true
+		startNode._opened = true
 		
-		while not finder.openList:empty() do
-			local node = finder.openList:pop()
-			node.closed = true
-			if node == endNode then
-				return node
-			end
-			local neighbours = finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal, tunnel)
+		while not openList:empty() do
+			local node = openList:pop()
+			node._closed = true
+			if node == endNode then return node end
+			local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, tunnel)
 			for i, neighbour in ipairs(neighbours) do
-				if not neighbour.closed then
+				if not neighbour._closed then
 					toClear[neighbour] = true
-					if not neighbour.opened then
-						neighbour.g = huge
-						neighbour.parent = nil					
+					if not neighbour._opened then
+						neighbour._g = huge
+						neighbour._parent = nil					
 					end
-					updateVertex(finder, node, neighbour, endNode, heuristic, overrideCostEval)
+					updateVertex(finder, openList, node, neighbour, endNode, heuristic, overrideCostEval)
 				end			
 			end		
 		end		
