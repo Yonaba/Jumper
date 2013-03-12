@@ -73,17 +73,17 @@ if (...) then
 		return isInt(v) or otype(v)
 	end
 	
+  -- Is arg a grid object
+  local function isAGrid(grid)
+    return getmetatable(grid) and getmetatable(getmetatable(grid)) == Grid
+  end
+	
   -- Dependancies
   local _PATH = (...):gsub('%.pathfinder$','')
   local Heap      = require (_PATH .. '.core.bheap')
   local Heuristic = require (_PATH .. '.core.heuristics')
   local Grid      = require (_PATH .. '.grid')
   local Path      = require (_PATH .. '.core.path')
-
-  -- Is arg a grid object
-  local function isAGrid(grid)
-    return getmetatable(grid) and getmetatable(getmetatable(grid)) == Grid
-  end
 
   -- Available search algorithms
   local Finders = {
@@ -110,8 +110,8 @@ if (...) then
   -- between consecutive pathfinding requests
   local function reset()
     for node in pairs(toClear) do
-      node.g, node.h, node.f = nil, nil, nil
-      node.opened, node.closed, node.parent = nil, nil, nil
+      node._g, node._h, node._f = nil, nil, nil
+      node._opened, node._closed, node._parent = nil, nil, nil
     end
     toClear = {}
   end
@@ -126,13 +126,13 @@ if (...) then
   -- Only happens when the path was found
   local function traceBackPath(finder, node, startNode)
     local path = Path:new()
-    path.grid = finder.grid
-    lastPathCost = node.f or path:getLength()
+    path._grid = finder._grid
+    lastPathCost = node._f or path:getLength()
 
     while true do
-      if node.parent then
+      if node._parent then
         t_insert(path,1,node)
-        node = node.parent
+        node = node._parent
       else
         t_insert(path,1,startNode)
         return path
@@ -164,7 +164,6 @@ if (...) then
     newPathfinder:setWalkable(walkable)
     newPathfinder:setMode('DIAGONAL')
     newPathfinder:setHeuristic('MANHATTAN')
-    newPathfinder.openList = Heap()
     return newPathfinder
   end
 
@@ -174,8 +173,8 @@ if (...) then
   -- @tparam grid grid a `grid` object
   function Pathfinder:setGrid(grid)
     assert(isAGrid(grid), 'Bad argument #1. Expected a \'grid\' object')
-    self.grid = grid
-    self.grid.__eval = self.walkable and type(self.walkable) == 'function'
+    self._grid = grid
+    self._grid._eval = self._walkable and type(self._walkable) == 'function'
     return self
   end
 
@@ -184,7 +183,7 @@ if (...) then
   -- @name pathfinder:getGrid
   -- @treturn grid the `grid` object
   function Pathfinder:getGrid()
-    return self.grid
+    return self._grid
   end
 
   --- Sets the `walkable` value or function.
@@ -195,9 +194,9 @@ if (...) then
   -- `true` when value matches a *walkable* node, `false` otherwise.
   function Pathfinder:setWalkable(walkable)
     assert(('stringintfunctionnil'):match(type(walkable)),
-      ('Bad argument #2. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
-    self.walkable = walkable
-    self.grid.__eval = type(self.walkable) == 'function'
+      ('Bad argument #1. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
+    self._walkable = walkable
+    self._grid._eval = type(self._walkable) == 'function'
     return self
   end
 
@@ -206,7 +205,7 @@ if (...) then
   -- @name pathfinder:getWalkable
   -- @treturn string|int|function the `walkable` previously set
   function Pathfinder:getWalkable()
-    return self.walkable
+    return self._walkable
   end
 
   --- Sets a finder. The finder refers to the search algorithm used by the `pathfinder` object.
@@ -216,15 +215,14 @@ if (...) then
   -- @tparam string finderName the name of the finder to be used for further searches.
   -- @see pathfinder:getFinders
   function Pathfinder:setFinder(finderName)
-		local finderName = finderName
 		if not finderName then
-			if not self.finder then 
+			if not self._finder then 
 				finderName = 'ASTAR' 
 			else return 
 			end
 		end
     assert(Finders[finderName],'Not a valid finder name!')
-    self.finder = finderName
+    self._finder = finderName
     return self
   end
 
@@ -233,7 +231,7 @@ if (...) then
   -- @name pathfinder:getFinder
   -- @treturn string the name of the finder to be used for further searches.
   function Pathfinder:getFinder()
-    return self.finder
+    return self._finder
   end
 
   --- Gets the list of all available finders names.
@@ -253,7 +251,7 @@ if (...) then
   -- @see pathfinder:getHeuristics
   function Pathfinder:setHeuristic(heuristic)
     assert(Heuristic[heuristic] or (type(heuristic) == 'function'),'Not a valid heuristic!')
-    self.heuristic = Heuristic[heuristic] or heuristic
+    self._heuristic = Heuristic[heuristic] or heuristic
     return self
   end
 
@@ -262,7 +260,7 @@ if (...) then
   -- @name pathfinder:getHeuristic
   -- @treturn function the heuristic function being used by the `pathfinder` object
   function Pathfinder:getHeuristic()
-    return self.heuristic
+    return self._heuristic
   end
 
   --- Gets the list of all available heuristics.
@@ -283,7 +281,7 @@ if (...) then
   -- @see pathfinder:getModes
   function Pathfinder:setMode(mode)
     assert(searchModes[mode],'Invalid mode')
-    self.allowDiagonal = (mode == 'DIAGONAL')
+    self._allowDiagonal = (mode == 'DIAGONAL')
     return self
   end
 
@@ -292,7 +290,7 @@ if (...) then
   -- @name pathfinder:getMode
   -- @treturn string the current search mode
   function Pathfinder:getMode()
-    return (self.allowDiagonal and 'DIAGONAL' or 'ORTHOGONAL')
+    return (self._allowDiagonal and 'DIAGONAL' or 'ORTHOGONAL')
   end
 
   --- Gets the list of all available search modes.
@@ -301,15 +299,6 @@ if (...) then
   -- @treturn {string,...} array of search modes.
   function Pathfinder:getModes()
     return collect_keys(searchModes)
-  end
-
-  --- Returns version and release date.
-  -- @class function
-  -- @name pathfinder:version
-  -- @treturn string the version of the current implementation
-  -- @treturn string the release of the current implementation
-  function Pathfinder:version()
-    return _VERSION, _RELEASEDATE
   end
 
   --- Calculates a path. Returns the path from location `<startX, startY>` to location `<endX, endY>`.
@@ -325,12 +314,12 @@ if (...) then
   -- @treturn number the path length when found, `0` otherwise
   function Pathfinder:getPath(startX, startY, endX, endY, tunnel)
 		reset()
-    local startNode = self.grid:getNodeAt(startX, startY)
-    local endNode = self.grid:getNodeAt(endX, endY)
+    local startNode = self._grid:getNodeAt(startX, startY)
+    local endNode = self._grid:getNodeAt(endX, endY)
     assert(startNode, ('Invalid location [%d, %d]'):format(startX, startY))
-    assert(endNode and self.grid:isWalkableAt(endX, endY),
+    assert(endNode and self._grid:isWalkableAt(endX, endY),
       ('Invalid or unreachable location [%d, %d]'):format(endX, endY))
-    local _endNode = Finders[self.finder](self, startNode, endNode, toClear, tunnel)
+    local _endNode = Finders[self._finder](self, startNode, endNode, toClear, tunnel)
     if _endNode then 
 			return traceBackPath(self, _endNode, startNode), lastPathCost
     end
@@ -339,6 +328,8 @@ if (...) then
   end
 
   -- Returns Pathfinder class
+	Pathfinder._VERSION = _VERSION
+	Pathfinder._RELEASEDATE = _RELEASEDATE
   return setmetatable(Pathfinder,{
     __call = function(self,...)
       return self:new(...)
@@ -348,24 +339,24 @@ if (...) then
 end
 
 --[[
-Copyright (c) 2012-2013 Roland Yonaba
+	Copyright (c) 2012-2013 Roland Yonaba
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+	Permission is hereby granted, free of charge, to any person obtaining a
+	copy of this software and associated documentation files (the
+	"Software"), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish,
+	distribute, sublicense, and/or sell copies of the Software, and to
+	permit persons to whom the Software is furnished to do so, subject to
+	the following conditions:
 
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
+	The above copyright notice and this permission notice shall be included
+	in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
