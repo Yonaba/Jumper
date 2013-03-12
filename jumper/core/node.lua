@@ -39,19 +39,19 @@ if (...) then
   -- Will be used to sort a collection of nodes in a binary heap on the basis of their F-cost
   function Node.__lt(A,B) return (A._f < B._f) end
 
-  --- Inits a new `node` object
+  --- Returns `x`-coordinate of the `node`
   -- @class function
   -- @name node:getX
   -- @treturn number the x-coordinate of the `node`	
 	function Node:getX() return self._x end
 	
-  --- Inits a new `node` object
+  --- Returns `y`-coordinate of the `node`
   -- @class function
   -- @name node:getY
   -- @treturn number the y-coordinate of the `node`	
 	function Node:getY() return self._y end
 	
-  --- Inits a new `node` object
+  --- Returns `x` and `y` coordinates of the `node`
   -- @class function
   -- @name node:getPos
   -- @treturn number the x-coordinate of the `node`
