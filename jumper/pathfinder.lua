@@ -63,21 +63,7 @@ if (...) then
   local pairs = pairs
   local assert = assert
   local setmetatable, getmetatable = setmetatable, getmetatable
-	
-	-- Type function ovverride, to support integers
-	local otype = type
-	local isInt = function(v) 
-		return otype(v) == 'number' and floor(v) == v and 'int' or nil 
-	end
-	local type = function(v)
-		return isInt(v) or otype(v)
-	end
-	
-  -- Is arg a grid object
-  local function isAGrid(grid)
-    return getmetatable(grid) and getmetatable(getmetatable(grid)) == Grid
-  end
-	
+
   -- Dependancies
   local _PATH = (...):gsub('%.pathfinder$','')
   local Heap      = require (_PATH .. '.core.bheap')
@@ -93,6 +79,20 @@ if (...) then
     ['DFS']       = require (_PATH .. '.search.dfs'),
     ['JPS']       = require (_PATH .. '.search.jps'),
   }
+	
+	-- Type function ovverride, to support integers
+	local otype = type
+	local isInt = function(v) 
+		return otype(v) == 'number' and floor(v) == v and 'int' or nil 
+	end
+	local type = function(v)
+		return isInt(v) or otype(v)
+	end
+	
+  -- Is arg a grid object
+  local function isAGrid(grid)
+    return getmetatable(grid) and getmetatable(getmetatable(grid)) == Grid
+  end
 
   -- Collect keys in an array
   local function collect_keys(t)
