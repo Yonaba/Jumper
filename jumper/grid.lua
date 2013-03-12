@@ -33,12 +33,13 @@ local grid = Grid(map)
 
 if (...) then
   local _PATH = (...):gsub('%.grid$','')
+  local Node = require (_PATH .. '.core.node')
+	
   local pairs = pairs
   local assert = assert
   local next = next
   local floor = math.floor
 	local otype = type
-  local Node = require (_PATH .. '.core.node')
 
   ---------------------------------------------------------------------
   -- Private utilities
@@ -123,7 +124,6 @@ if (...) then
   local function getBounds(map)
     local min_bound_x, max_bound_x
     local min_bound_y, max_bound_y
-
       for y in pairs(map) do
         min_bound_y = not min_bound_y and y or (y<min_bound_y and y or min_bound_y)
         max_bound_y = not max_bound_y and y or (y>max_bound_y and y or max_bound_y)
@@ -188,13 +188,13 @@ if (...) then
   local PreProcessGrid = setmetatable({},Grid)
   local PostProcessGrid = setmetatable({},Grid)
   PreProcessGrid.__index = PreProcessGrid
-  PostProcessGrid.__index = PostProcessGrid
+  PostProcessGrid.__index = PostProcessGrid	
   PreProcessGrid.__call = function (self,x,y)
     return self:getNodeAt(x,y)
   end
   PostProcessGrid.__call = function (self,x,y,create)
     if create then return self:getNodeAt(x,y) end
-    return self.nodes[y] and self.nodes[y][x]
+    return self._nodes[y] and self._nodes[y][x]
   end
 
   --- Inits a new `grid` object
@@ -208,7 +208,6 @@ if (...) then
     assert(isMap(map) or isStringMap(map),('Bad argument #1. Not a valid map'))
     assert(type(processOnDemand) == 'boolean' or not processOnDemand,
       ('Bad argument #2. Expected \'boolean\', got %s.'):format(type(processOnDemand)))
-
     if processOnDemand then
       return PostProcessGrid:new(map,walkable)
     end
@@ -226,13 +225,13 @@ if (...) then
   -- node [x,y] exists, this function return `true`.
   -- @treturn bool `true` if the node exist and is walkable, `false` otherwise
   function Grid:isWalkableAt(x, y, walkable)
-    local nodeValue = self.map[y] and self.map[y][x]
+    local nodeValue = self._map[y] and self._map[y][x]
     if nodeValue then
       if not walkable then return true end
     else 
 			return false
     end
-    if self.__eval then return walkable(nodeValue) end
+    if self._eval then return walkable(nodeValue) end
     return (nodeValue == walkable)
   end
 
@@ -241,7 +240,7 @@ if (...) then
   -- @name grid:getWidth
   -- @treturn int the `grid` object width
   function Grid:getWidth()
-    return self.width
+    return self._width
   end
 
   --- Gets the `grid` height.
@@ -249,7 +248,7 @@ if (...) then
   -- @name grid:getHeight
   -- @treturn int the `grid` object height
   function Grid:getHeight()
-     return self.height
+     return self._height
   end
 
   --- Gets the collision map.
@@ -257,7 +256,7 @@ if (...) then
   -- @name grid:getMap
   -- @treturn {{value},...} the collision map previously passed to the `grid` object on initalization
   function Grid:getMap()
-    return self.map
+    return self._map
   end
 
   --- Gets the `grid` nodes.
@@ -265,10 +264,21 @@ if (...) then
   -- @name grid:getNodes
   -- @treturn {{node},...} the `grid` nodes
   function Grid:getNodes()
-    return self.nodes
+    return self._nodes
   end
 
-  --- Returns the neighbours of a given `node` on a `grid`
+  --- Returns bounds. Values are the upper-left hand and lower-right hand coordinates of the `grid`
+  -- @class function
+  -- @name grid:getBounds
+  -- @treturn int the upper-left hand x-coordinate
+  -- @treturn int the upper-left hand y-coordinate
+  -- @treturn int the lower-right hand x-coordinate
+  -- @treturn int the lower-right hand y-coordinate
+	function Grid:getBounds()
+		return self._min_bound_x, self._min_bound_y,self._max_bound_x, self._max_bound_y
+	end
+	
+  --- Returns neighbours of a given `node`.
   -- @class function
   -- @name grid:getNeighbours
   -- @tparam node node `node` object
@@ -282,10 +292,10 @@ if (...) then
 		local neighbours = {}
     for i = 1,#straightOffsets do
       local n = self:getNodeAt(
-        node.x + straightOffsets[i].x,
-        node.y + straightOffsets[i].y
+        node._x + straightOffsets[i].x,
+        node._y + straightOffsets[i].y
       )
-      if n and self:isWalkableAt(n.x, n.y, walkable) then
+      if n and self:isWalkableAt(n._x, n._y, walkable) then
         neighbours[#neighbours+1] = n
       end
     end
@@ -295,17 +305,17 @@ if (...) then
 		tunnel = not not tunnel
     for i = 1,#diagonalOffsets do
       local n = self:getNodeAt(
-        node.x + diagonalOffsets[i].x,
-        node.y + diagonalOffsets[i].y
+        node._x + diagonalOffsets[i].x,
+        node._y + diagonalOffsets[i].y
       )
-      if n and self:isWalkableAt(n.x, n.y, walkable) then
+      if n and self:isWalkableAt(n._x, n._y, walkable) then
 				if tunnel then
 					neighbours[#neighbours+1] = n
 				else
 					local skipThisNode = false
-					local n1 = self:getNodeAt(node.x+diagonalOffsets[i].x, node.y)
-					local n2 = self:getNodeAt(node.x, node.y+diagonalOffsets[i].y)
-					if ((n1 and n2) and not self:isWalkableAt(n1.x, n1.y, walkable) and not self:isWalkableAt(n2.x, n2.y, walkable)) then
+					local n1 = self:getNodeAt(node._x+diagonalOffsets[i].x, node._y)
+					local n2 = self:getNodeAt(node._x, node._y+diagonalOffsets[i].y)
+					if ((n1 and n2) and not self:isWalkableAt(n1._x, n1._y, walkable) and not self:isWalkableAt(n2._x, n2._y, walkable)) then
 						skipThisNode = true
 					end
 					if not skipThisNode then neighbours[#neighbours+1] = n end
@@ -327,23 +337,23 @@ if (...) then
   -- @tparam[optchain] int ey the bottom-most y-coordinate of the rectangle
   -- @treturn node a node on the collision map, upon each iteration step
   function Grid:iter(lx,ly,ex,ey)
-    local min_x = lx or self.min_bound_x
-    local min_y = ly or self.min_bound_y
-    local max_x = ex or self.max_bound_x
-    local max_y = ey or self.max_bound_y
+    local min_x = lx or self._min_bound_x
+    local min_y = ly or self._min_bound_y
+    local max_x = ex or self._max_bound_x
+    local max_y = ey or self._max_bound_y
 
     local x, y
     y = min_y
     return function()
       x = not x and min_x or x+1
-      if x>max_x then
+      if x > max_x then
         x = min_x
         y = y+1
       end
       if y > max_y then
         y = nil
       end
-      return self.nodes[y] and self.nodes[y][x] or self:getNodeAt(x,y)
+      return self._nodes[y] and self._nodes[y][x] or self:getNodeAt(x,y)
     end
   end
 
@@ -400,21 +410,21 @@ if (...) then
   -- Inits a preprocessed grid
   function PreProcessGrid:new(map)
     local newGrid = {}
-    newGrid.map = map
-    newGrid.nodes, newGrid.min_bound_x, newGrid.max_bound_x, newGrid.min_bound_y, newGrid.max_bound_y = buildGrid(newGrid.map)
-    newGrid.width = (newGrid.max_bound_x-newGrid.min_bound_x)+1
-    newGrid.height = (newGrid.max_bound_y-newGrid.min_bound_y)+1
+    newGrid._map = map
+    newGrid._nodes, newGrid._min_bound_x, newGrid._max_bound_x, newGrid._min_bound_y, newGrid._max_bound_y = buildGrid(newGrid._map)
+    newGrid._width = (newGrid._max_bound_x-newGrid._min_bound_x)+1
+    newGrid._height = (newGrid._max_bound_y-newGrid._min_bound_y)+1
     return setmetatable(newGrid,PreProcessGrid)
   end
 
   -- Inits a postprocessed grid
   function PostProcessGrid:new(map)
     local newGrid = {}
-    newGrid.map = map
-    newGrid.nodes = {}
-    newGrid.min_bound_x, newGrid.max_bound_x, newGrid.min_bound_y, newGrid.max_bound_y = getBounds(newGrid.map)
-    newGrid.width = (newGrid.max_bound_x-newGrid.min_bound_x)+1
-    newGrid.height = (newGrid.max_bound_y-newGrid.min_bound_y)+1
+    newGrid._map = map
+    newGrid._nodes = {}
+    newGrid._min_bound_x, newGrid._max_bound_x, newGrid._min_bound_y, newGrid._max_bound_y = getBounds(newGrid._map)
+    newGrid._width = (newGrid._max_bound_x-newGrid._min_bound_x)+1
+    newGrid._height = (newGrid._max_bound_y-newGrid._min_bound_y)+1
     return setmetatable(newGrid,PostProcessGrid)
   end
 
@@ -426,17 +436,17 @@ if (...) then
   -- @treturn node a `node` object
   -- Gets the node at location <x,y> on a preprocessed grid
   function PreProcessGrid:getNodeAt(x,y)
-    return self.nodes[y] and self.nodes[y][x] or nil
+    return self._nodes[y] and self._nodes[y][x] or nil
   end
 
   -- Gets the node at location <x,y> on a postprocessed grid
   function PostProcessGrid:getNodeAt(x,y)
     if not x or not y then return end
-    if outOfRange(x,self.min_bound_x,self.max_bound_x) then return end
-    if outOfRange(y,self.min_bound_y,self.max_bound_y) then return end
-    if not self.nodes[y] then self.nodes[y] = {} end
-    if not self.nodes[y][x] then self.nodes[y][x] = Node:new(x,y) end
-    return self.nodes[y][x]
+    if outOfRange(x,self._min_bound_x,self._max_bound_x) then return end
+    if outOfRange(y,self._min_bound_y,self._max_bound_y) then return end
+    if not self._nodes[y] then self._nodes[y] = {} end
+    if not self._nodes[y][x] then self._nodes[y][x] = Node:new(x,y) end
+    return self._nodes[y][x]
   end
 
   return setmetatable(Grid,{

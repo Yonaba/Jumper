@@ -122,8 +122,12 @@ local grid = Grid(map)
 	<td class="summary">Gets the <a href="../modules/jumper.grid.html#jumper.grid">grid</a>  nodes.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#grid:getBounds">grid:getBounds&nbsp;()</a></td>
+	<td class="summary">Returns bounds.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#grid:getNeighbours">grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal[, tunnel]])</a></td>
-	<td class="summary">Returns the neighbours of a given <code>node</code> on a <a href="../modules/jumper.grid.html#jumper.grid">grid</a> </td>
+	<td class="summary">Returns neighbours of a given <code>node</code>.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#grid:iter">grid:iter&nbsp;([lx[, ly[, ex[, ey]]]])</a></td>
@@ -304,11 +308,39 @@ local grid = Grid(map)
 
 </dd>
     <dt>
+    <a name = "grid:getBounds"></a>
+    <strong>grid:getBounds&nbsp;()</strong>
+    </dt>
+    <dd>
+    Returns bounds.  Values are the upper-left hand and lower-right hand coordinates of the <a href="../modules/jumper.grid.html#jumper.grid">grid</a>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+          <span class="types"><span class="type">int</span></span>
+        the upper-left hand x-coordinate</li>
+        <li>
+          <span class="types"><span class="type">int</span></span>
+        the upper-left hand y-coordinate</li>
+        <li>
+          <span class="types"><span class="type">int</span></span>
+        the lower-right hand x-coordinate</li>
+        <li>
+          <span class="types"><span class="type">int</span></span>
+        the lower-right hand y-coordinate</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
     <a name = "grid:getNeighbours"></a>
     <strong>grid:getNeighbours&nbsp;(node, walkable[, allowDiagonal[, tunnel]])</strong>
     </dt>
     <dd>
-    Returns the neighbours of a given <code>node</code> on a <a href="../modules/jumper.grid.html#jumper.grid">grid</a>
+    Returns neighbours of a given <code>node</code>.
 
     <h3>Parameters:</h3>
     <ul>
