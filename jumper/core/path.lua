@@ -28,7 +28,7 @@ if (...) then
   -- @name path:new
   -- @treturn path a `path` object
   function Path:new()
-    return setmetatable({}, Path)
+    return setmetatable({_nodes = {}}, Path)
   end
 
   --- Iterates on each single `node` along a `path`. At each step of iteration,
@@ -39,11 +39,11 @@ if (...) then
   -- @treturn int the count for the number of nodes
 	-- @see path:nodes
   function Path:iter()
-    local i,pathLen = 1,#self
+    local i,pathLen = 1,#self._nodes
     return function()
-      if self[i] then
+      if self._nodes[i] then
         i = i+1
-        return self[i-1],i-1
+        return self._nodes[i-1],i-1
       end
     end
   end
@@ -63,9 +63,9 @@ if (...) then
   -- @treturn number the `path` length
   function Path:getLength()
     local len = 0
-    for i = 2,#self do
-      local dx = self[i].x - self[i-1].x
-      local dy = self[i].y - self[i-1].y
+    for i = 2,#self._nodes do
+      local dx = self._nodes[i].x - self._nodes[i-1].x
+      local dy = self._nodes[i].y - self._nodes[i-1].y
       len = len + Heuristic.EUCLIDIAN(dx, dy)
     end
     return len
@@ -80,15 +80,15 @@ if (...) then
   function Path:fill()
     local i = 2
     local xi,yi,dx,dy
-    local N = #self
+    local N = #self._nodes
     local incrX, incrY
     while true do
-      xi,yi = self[i].x,self[i].y
-      dx,dy = xi-self[i-1].x,yi-self[i-1].y
+      xi,yi = self._nodes[i].x,self._nodes[i].y
+      dx,dy = xi-self._nodes[i-1].x,yi-self._nodes[i-1].y
       if (abs(dx) > 1 or abs(dy) > 1) then
         incrX = dx/max(abs(dx),1)
         incrY = dy/max(abs(dy),1)
-        t_insert(self, i, self.grid:getNodeAt(self[i-1].x + incrX, self[i-1].y +incrY))
+        t_insert(self._nodes, i, self.grid:getNodeAt(self._nodes[i-1].x + incrX, self._nodes[i-1].y +incrY))
         N = N+1
       else i=i+1
       end
@@ -104,16 +104,16 @@ if (...) then
   function Path:filter()
     local i = 2
     local xi,yi,dx,dy, olddx, olddy
-    xi,yi = self[i].x, self[i].y
-    dx, dy = xi - self[i-1].x, yi-self[i-1].y
+    xi,yi = self._nodes[i].x, self._nodes[i].y
+    dx, dy = xi - self._nodes[i-1].x, yi-self._nodes[i-1].y
     while true do
       olddx, olddy = dx, dy
-      if self[i+1] then
+      if self._nodes[i+1] then
         i = i+1
-        xi, yi = self[i].x, self[i].y
-        dx, dy = xi - self[i-1].x, yi - self[i-1].y
+        xi, yi = self._nodes[i].x, self._nodes[i].y
+        dx, dy = xi - self._nodes[i-1].x, yi - self._nodes[i-1].y
         if olddx == dx and olddy == dy then
-          t_remove(self, i-1)
+          t_remove(self._nodes, i-1)
           i = i - 1
         end
       else break end

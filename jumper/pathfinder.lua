@@ -131,10 +131,10 @@ if (...) then
 
     while true do
       if node._parent then
-        t_insert(path,1,node)
+        t_insert(path._nodes,1,node)
         node = node._parent
       else
-        t_insert(path,1,startNode)
+        t_insert(path._nodes,1,startNode)
         return path
       end
     end
