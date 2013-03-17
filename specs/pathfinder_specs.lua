@@ -269,18 +269,6 @@ context('Module Pathfinder', function()
 		
 	end)
 	
-	context('Pathfinder:version()', function()
-		
-		test('returns version and release date or empty strings', function()
-			local vr, rd = PF:version()
-			assert_equal(type(vr), 'string')
-			assert_not_nil(vr:match('%d+%.%d+%.%d+') or vr == '')
-			assert_equal(type(rd), 'string')
-			assert_not_nil(rd:match('%d+/%d+/%d+') or rd == '')
-		end)
-		
-	end)
-	
 	context('Pathfinder:getPath()', function()
 		
 		test('returns a path', function()
