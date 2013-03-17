@@ -89,11 +89,14 @@ if (...) then
 		return isInt(v) or otype(v)
 	end
 
-  -- Is arg a grid object
+  -- Is arg a grid object ?
   local function isAGrid(grid)
     return getmetatable(grid) and getmetatable(getmetatable(grid)) == Grid
   end
-
+	
+	-- Is arg a boolean ?
+	local function isABool(b) return b==true or b==false end
+	
   -- Collect keys in an array
   local function collect_keys(t)
     local keys = {}
@@ -164,6 +167,7 @@ if (...) then
     newPathfinder:setWalkable(walkable)
     newPathfinder:setMode('DIAGONAL')
     newPathfinder:setHeuristic('MANHATTAN')
+    newPathfinder:setTunnelling(false)
     return newPathfinder
   end
 
@@ -172,7 +176,7 @@ if (...) then
   -- @name pathfinder:setGrid
   -- @tparam grid grid a `grid` object
   function Pathfinder:setGrid(grid)
-    assert(isAGrid(grid), 'Bad argument #1. Expected a \'grid\' object')
+    assert(isAGrid(grid), 'Wrong argument #1. Expected a \'grid\' object')
     self._grid = grid
     self._grid._eval = self._walkable and type(self._walkable) == 'function'
     return self
@@ -194,7 +198,7 @@ if (...) then
   -- `true` when value matches a *walkable* node, `false` otherwise.
   function Pathfinder:setWalkable(walkable)
     assert(('stringintfunctionnil'):match(type(walkable)),
-      ('Bad argument #1. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
+      ('Wrong argument #1. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
     self._walkable = walkable
     self._grid._eval = type(self._walkable) == 'function'
     return self
@@ -300,6 +304,15 @@ if (...) then
   function Pathfinder:getModes()
     return collect_keys(searchModes)
   end
+	
+  function Pathfinder:setTunnelling(bool)
+    assert(isABool(bool), ('Wrong argument #1. Expected boolean, got %s'):format(otype(bool)))
+		self._tunnel = bool
+  end
+	
+  function Pathfinder:getTunnelling()
+		return self._tunnel
+  end		
 
   --- Calculates a path. Returns the path from location `<startX, startY>` to location `<endX, endY>`.
   -- Both locations must exist on the collision map.
