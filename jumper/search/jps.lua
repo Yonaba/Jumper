@@ -23,6 +23,7 @@ if (...) then
   -- Dependancies
   local _PATH = (...):match('(.+)%.search.jps$')
   local Heuristics = require (_PATH .. '.core.heuristics')
+	local Heap = require (_PATH.. '.core.bheap')
 
   -- Internalization
   local max, abs = math.max, math.abs
@@ -46,85 +47,85 @@ if (...) then
     Otherwise, we add left and right node (perpendicular to the direction
     of move) in the neighbours list.
   --]]
-  local function findNeighbours(finder,node, tunnel)
+  local function findNeighbours(finder, node, tunnel)
 
-    if node.parent then
+    if node._parent then
       local neighbours = {}
-      local x,y = node.x, node.y
+      local x,y = node._x, node._y
       -- Node have a parent, we will prune some neighbours
       -- Gets the direction of move
-      local dx = (x-node.parent.x)/max(abs(x-node.parent.x),1)
-      local dy = (y-node.parent.y)/max(abs(y-node.parent.y),1)
+      local dx = (x-node._parent._x)/max(abs(x-node._parent._x),1)
+      local dy = (y-node._parent._y)/max(abs(y-node._parent._y),1)
 
         -- Diagonal move case
       if dx~=0 and dy~=0 then
         local walkY, walkX
 
         -- Natural neighbours
-        if finder.grid:isWalkableAt(x,y+dy,finder.walkable) then
-          neighbours[#neighbours+1] = finder.grid:getNodeAt(x,y+dy)
+        if finder._grid:isWalkableAt(x,y+dy,finder._walkable) then
+          neighbours[#neighbours+1] = finder._grid:getNodeAt(x,y+dy)
           walkY = true
         end
-        if finder.grid:isWalkableAt(x+dx,y,finder.walkable) then
-          neighbours[#neighbours+1] = finder.grid:getNodeAt(x+dx,y)
+        if finder._grid:isWalkableAt(x+dx,y,finder._walkable) then
+          neighbours[#neighbours+1] = finder._grid:getNodeAt(x+dx,y)
           walkX = true
         end
         if walkX or walkY then
-          neighbours[#neighbours+1] = finder.grid:getNodeAt(x+dx,y+dy)
+          neighbours[#neighbours+1] = finder._grid:getNodeAt(x+dx,y+dy)
         end
 
         -- Forced neighbours
-        if (not finder.grid:isWalkableAt(x-dx,y,finder.walkable)) and walkY then
-          neighbours[#neighbours+1] = finder.grid:getNodeAt(x-dx,y+dy)
+        if (not finder._grid:isWalkableAt(x-dx,y,finder._walkable)) and walkY then
+          neighbours[#neighbours+1] = finder._grid:getNodeAt(x-dx,y+dy)
         end
-        if (not finder.grid:isWalkableAt(x,y-dy,finder.walkable)) and walkX then
-          neighbours[#neighbours+1] = finder.grid:getNodeAt(x+dx,y-dy)
+        if (not finder._grid:isWalkableAt(x,y-dy,finder._walkable)) and walkX then
+          neighbours[#neighbours+1] = finder._grid:getNodeAt(x+dx,y-dy)
         end
 
       else
         -- Move along Y-axis case
         if dx==0 then
           local walkY
-          if finder.grid:isWalkableAt(x,y+dy,finder.walkable) then
-            neighbours[#neighbours+1] = finder.grid:getNodeAt(x,y+dy)
+          if finder._grid:isWalkableAt(x,y+dy,finder._walkable) then
+            neighbours[#neighbours+1] = finder._grid:getNodeAt(x,y+dy)
 
             -- Forced neighbours are left and right ahead along Y
-            if (not finder.grid:isWalkableAt(x+1,y,finder.walkable)) then
-              neighbours[#neighbours+1] = finder.grid:getNodeAt(x+1,y+dy)
+            if (not finder._grid:isWalkableAt(x+1,y,finder._walkable)) then
+              neighbours[#neighbours+1] = finder._grid:getNodeAt(x+1,y+dy)
             end
-            if (not finder.grid:isWalkableAt(x-1,y,finder.walkable)) then
-              neighbours[#neighbours+1] = finder.grid:getNodeAt(x-1,y+dy)
+            if (not finder._grid:isWalkableAt(x-1,y,finder._walkable)) then
+              neighbours[#neighbours+1] = finder._grid:getNodeAt(x-1,y+dy)
             end
           end
           -- In case diagonal moves are forbidden : Needs to be optimized
-          if not finder.allowDiagonal then
-            if finder.grid:isWalkableAt(x+1,y,finder.walkable) then
-              neighbours[#neighbours+1] = finder.grid:getNodeAt(x+1,y)
+          if not finder._allowDiagonal then
+            if finder._grid:isWalkableAt(x+1,y,finder._walkable) then
+              neighbours[#neighbours+1] = finder._grid:getNodeAt(x+1,y)
             end
-            if finder.grid:isWalkableAt(x-1,y,finder.walkable)
-              then neighbours[#neighbours+1] = finder.grid:getNodeAt(x-1,y)
+            if finder._grid:isWalkableAt(x-1,y,finder._walkable)
+              then neighbours[#neighbours+1] = finder._grid:getNodeAt(x-1,y)
             end
           end
         else
         -- Move along X-axis case
-          if finder.grid:isWalkableAt(x+dx,y,finder.walkable) then
-            neighbours[#neighbours+1] = finder.grid:getNodeAt(x+dx,y)
+          if finder._grid:isWalkableAt(x+dx,y,finder._walkable) then
+            neighbours[#neighbours+1] = finder._grid:getNodeAt(x+dx,y)
 
             -- Forced neighbours are up and down ahead along X
-            if (not finder.grid:isWalkableAt(x,y+1,finder.walkable)) then
-              neighbours[#neighbours+1] = finder.grid:getNodeAt(x+dx,y+1)
+            if (not finder._grid:isWalkableAt(x,y+1,finder._walkable)) then
+              neighbours[#neighbours+1] = finder._grid:getNodeAt(x+dx,y+1)
             end
-            if (not finder.grid:isWalkableAt(x,y-1,finder.walkable)) then
-              neighbours[#neighbours+1] = finder.grid:getNodeAt(x+dx,y-1)
+            if (not finder._grid:isWalkableAt(x,y-1,finder._walkable)) then
+              neighbours[#neighbours+1] = finder._grid:getNodeAt(x+dx,y-1)
             end
           end
           -- : In case diagonal moves are forbidden
-          if not finder.allowDiagonal then
-            if finder.grid:isWalkableAt(x,y+1,finder.walkable) then
-              neighbours[#neighbours+1] = finder.grid:getNodeAt(x,y+1)
+          if not finder._allowDiagonal then
+            if finder._grid:isWalkableAt(x,y+1,finder._walkable) then
+              neighbours[#neighbours+1] = finder._grid:getNodeAt(x,y+1)
             end
-            if finder.grid:isWalkableAt(x,y-1,finder.walkable) then
-              neighbours[#neighbours+1] = finder.grid:getNodeAt(x,y-1)
+            if finder._grid:isWalkableAt(x,y-1,finder._walkable) then
+              neighbours[#neighbours+1] = finder._grid:getNodeAt(x,y-1)
             end
           end
         end
@@ -133,7 +134,7 @@ if (...) then
     end
 
     -- Node do not have parent, we return all neighbouring nodes
-    return finder.grid:getNeighbours(node, finder.walkable, finder.allowDiagonal, tunnel)
+    return finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, tunnel)
   end
 
   --[[
@@ -149,11 +150,11 @@ if (...) then
   local function jump(finder, node, parent, endNode)
 	if not node then return end
 
-    local x,y = node.x, node.y
-    local dx, dy = x - parent.x,y - parent.y
+    local x,y = node._x, node._y
+    local dx, dy = x - parent._x,y - parent._y
 
     -- If the node to be examined is unwalkable, return nil
-    if not finder.grid:isWalkableAt(x,y,finder.walkable) then return end
+    if not finder._grid:isWalkableAt(x,y,finder._walkable) then return end
 
     -- If the node to be examined is the endNode, return this node
     if node == endNode then return node end
@@ -161,48 +162,48 @@ if (...) then
     -- Diagonal search case
     if dx~=0 and dy~=0 then
       -- Current node is a jump point if one of his leftside/rightside neighbours ahead is forced
-      if (finder.grid:isWalkableAt(x-dx,y+dy,finder.walkable) and (not finder.grid:isWalkableAt(x-dx,y,finder.walkable))) or
-         (finder.grid:isWalkableAt(x+dx,y-dy,finder.walkable) and (not finder.grid:isWalkableAt(x,y-dy,finder.walkable))) then
+      if (finder._grid:isWalkableAt(x-dx,y+dy,finder._walkable) and (not finder._grid:isWalkableAt(x-dx,y,finder._walkable))) or
+         (finder._grid:isWalkableAt(x+dx,y-dy,finder._walkable) and (not finder._grid:isWalkableAt(x,y-dy,finder._walkable))) then
         return node
       end
     else
       -- Search along X-axis case
       if dx~=0 then
-        if finder.allowDiagonal then
+        if finder._allowDiagonal then
           -- Current node is a jump point if one of his upside/downside neighbours is forced
-          if (finder.grid:isWalkableAt(x+dx,y+1,finder.walkable) and (not finder.grid:isWalkableAt(x,y+1,finder.walkable))) or
-             (finder.grid:isWalkableAt(x+dx,y-1,finder.walkable) and (not finder.grid:isWalkableAt(x,y-1,finder.walkable))) then
+          if (finder._grid:isWalkableAt(x+dx,y+1,finder._walkable) and (not finder._grid:isWalkableAt(x,y+1,finder._walkable))) or
+             (finder._grid:isWalkableAt(x+dx,y-1,finder._walkable) and (not finder._grid:isWalkableAt(x,y-1,finder._walkable))) then
             return node
           end
         else
           -- : in case diagonal moves are forbidden
-          if finder.grid:isWalkableAt(x+1,y,finder.walkable) or finder.grid:isWalkableAt(x-1,y,finder.walkable) then return node end
+          if finder._grid:isWalkableAt(x+1,y,finder._walkable) or finder._grid:isWalkableAt(x-1,y,finder._walkable) then return node end
         end
       else
       -- Search along Y-axis case
         -- Current node is a jump point if one of his leftside/rightside neighbours is forced
-        if finder.allowDiagonal then
-          if (finder.grid:isWalkableAt(x+1,y+dy,finder.walkable) and (not finder.grid:isWalkableAt(x+1,y,finder.walkable))) or
-             (finder.grid:isWalkableAt(x-1,y+dy,finder.walkable) and (not finder.grid:isWalkableAt(x-1,y,finder.walkable))) then
+        if finder._allowDiagonal then
+          if (finder._grid:isWalkableAt(x+1,y+dy,finder._walkable) and (not finder._grid:isWalkableAt(x+1,y,finder._walkable))) or
+             (finder._grid:isWalkableAt(x-1,y+dy,finder._walkable) and (not finder._grid:isWalkableAt(x-1,y,finder._walkable))) then
             return node
           end
         else
           -- : in case diagonal moves are forbidden
-          if finder.grid:isWalkableAt(x,y+1,finder.walkable) or finder.grid:isWalkableAt(x,y-1,finder.walkable) then return node end
+          if finder._grid:isWalkableAt(x,y+1,finder._walkable) or finder._grid:isWalkableAt(x,y-1,finder._walkable) then return node end
         end
       end
     end
 
     -- Recursive horizontal/vertical search
     if dx~=0 and dy~=0 then
-      if jump(finder,finder.grid:getNodeAt(x+dx,y),node,endNode) then return node end
-      if jump(finder,finder.grid:getNodeAt(x,y+dy),node,endNode) then return node end
+      if jump(finder,finder._grid:getNodeAt(x+dx,y),node,endNode) then return node end
+      if jump(finder,finder._grid:getNodeAt(x,y+dy),node,endNode) then return node end
     end
 
     -- Recursive diagonal search
-    if finder.allowDiagonal then
-      if finder.grid:isWalkableAt(x+dx,y,finder.walkable) or finder.grid:isWalkableAt(x,y+dy,finder.walkable) then
-        return jump(finder,finder.grid:getNodeAt(x+dx,y+dy),node,endNode)
+    if finder._allowDiagonal then
+      if finder._grid:isWalkableAt(x+dx,y,finder._walkable) or finder._grid:isWalkableAt(x,y+dy,finder._walkable) then
+        return jump(finder,finder._grid:getNodeAt(x+dx,y+dy),node,endNode)
       end
     end
 end
@@ -217,7 +218,7 @@ end
     In case a jump point was found, and this node happened to be diagonal to the
     node currently expanded in a straight mode search, we skip this jump point.
   --]]
-  local function identifySuccessors(finder,node,endNode,toClear, tunnel)
+  local function identifySuccessors(finder, openList, node,endNode,toClear, tunnel)
 
     -- Gets the valid neighbours of the given node
     -- Looks for a jump point in the direction of each neighbour
@@ -229,29 +230,28 @@ end
       local jumpNode = jump(finder,neighbour,node,endNode)
 
       -- : in case a diagonal jump point was found in straight mode, skip it.
-      if jumpNode and not finder.allowDiagonal then
-        if ((jumpNode.x ~= node.x) and (jumpNode.y ~= node.y)) then skip = true end
+      if jumpNode and not finder._allowDiagonal then
+        if ((jumpNode._x ~= node._x) and (jumpNode._y ~= node._y)) then skip = true end
       end
 
       -- Performs regular A-star on a set of jump points
       if jumpNode and not skip then
         -- Update the jump node and move it in the closed list if it wasn't there
-        if not jumpNode.closed then
-          local extraG = Heuristics.EUCLIDIAN(jumpNode.x-node.x,jumpNode.y-node.y)
-          local newG = node.g + extraG
-          if not jumpNode.opened or newG < jumpNode.g then
+        if not jumpNode._closed then
+          local extraG = Heuristics.EUCLIDIAN(jumpNode._x-node._x,jumpNode._y-node._y)
+          local newG = node._g + extraG
+          if not jumpNode._opened or newG < jumpNode._g then
             toClear[jumpNode] = true -- Records this node to reset its properties later.
-            jumpNode.g = newG
-            jumpNode.h = jumpNode.h or
-              (finder.heuristic(jumpNode.x-endNode.x,jumpNode.y-endNode.y))
-            jumpNode.f = jumpNode.g+jumpNode.h
-            jumpNode.parent = node
-            if not jumpNode.opened then
-              finder.openList:push(jumpNode)
-              jumpNode.opened = true
-              if not step_first then step_first = true end
+            jumpNode._g = newG
+            jumpNode._h = jumpNode._h or
+              (finder._heuristic(jumpNode._x-endNode._x,jumpNode._y-endNode._y))
+            jumpNode._f = jumpNode._g+jumpNode._h
+            jumpNode._parent = node
+            if not jumpNode._opened then
+              openList:push(jumpNode)
+              jumpNode._opened = true
             else
-              finder.openList:heapify(jumpNode)
+              openList:heapify(jumpNode)
             end
           end
         end
@@ -263,24 +263,23 @@ end
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
   return function(finder, startNode, endNode, toClear, tunnel)
 
-    step_first = false
-    startNode.g, startNode.f = 0,0
-    finder.openList:clear()
-    finder.openList:push(startNode)
-    startNode.opened = true
+    startNode._g, startNode._f, startNode._h = 0,0,0
+		local openList = Heap()
+    openList:push(startNode)
+    startNode._opened = true
     toClear[startNode] = true
 
     local node
-    while not finder.openList:empty() do
+    while not openList:empty() do
       -- Pops the lowest F-cost node, moves it in the closed list
-      node = finder.openList:pop()
-      node.closed = true
+      node = openList:pop()
+      node._closed = true
         -- If the popped node is the endNode, return it
         if node == endNode then
           return node
         end
       -- otherwise, identify successors of the popped node
-      identifySuccessors(finder, node, endNode, toClear, tunnel)
+      identifySuccessors(finder, openList, node, endNode, toClear, tunnel)
     end
 
     -- No path found, return nil
