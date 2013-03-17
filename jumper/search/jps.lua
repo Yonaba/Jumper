@@ -47,7 +47,7 @@ if (...) then
     Otherwise, we add left and right node (perpendicular to the direction
     of move) in the neighbours list.
   --]]
-  local function findNeighbours(finder, node, tunnel)
+  local function findNeighbours(finder, node)
 
     if node._parent then
       local neighbours = {}
@@ -134,7 +134,7 @@ if (...) then
     end
 
     -- Node do not have parent, we return all neighbouring nodes
-    return finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, tunnel)
+    return finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, finder._tunnel)
   end
 
   --[[
@@ -218,11 +218,11 @@ end
     In case a jump point was found, and this node happened to be diagonal to the
     node currently expanded in a straight mode search, we skip this jump point.
   --]]
-  local function identifySuccessors(finder, openList, node,endNode,toClear, tunnel)
+  local function identifySuccessors(finder, openList, node,endNode,toClear)
 
     -- Gets the valid neighbours of the given node
     -- Looks for a jump point in the direction of each neighbour
-    local neighbours = findNeighbours(finder,node, tunnel)
+    local neighbours = findNeighbours(finder,node)
     for i = #neighbours,1,-1 do
 
       local skip = false
@@ -261,7 +261,7 @@ end
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
-  return function(finder, startNode, endNode, toClear, tunnel)
+  return function(finder, startNode, endNode, toClear)
 
     startNode._g, startNode._f, startNode._h = 0,0,0
 		local openList = Heap()
@@ -279,7 +279,7 @@ end
           return node
         end
       -- otherwise, identify successors of the popped node
-      identifySuccessors(finder, openList, node, endNode, toClear, tunnel)
+      identifySuccessors(finder, openList, node, endNode, toClear)
     end
 
     -- No path found, return nil
