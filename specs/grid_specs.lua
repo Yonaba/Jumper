@@ -33,8 +33,8 @@ context('Module Grid', function()
 			local map = {{0,0},{0,0}}
 			local grid = Grid(map)
 			local grid2 = Grid(map)
-			assert_equal(grid.width, 2)
-			assert_equal(grid2.width, 2)	
+			assert_equal(grid:getWidth(), 2)
+			assert_equal(grid2:getWidth(), 2)	
 		end)	
 		
 		test('Grid and map should have the same height', function()
@@ -42,8 +42,8 @@ context('Module Grid', function()
 			local map2 = {{0,0},{0,0},{0,0},{0,0}}
 			local grid = Grid(map)
 			local grid2 = Grid(map2)
-			assert_equal(grid.height, 3)
-			assert_equal(grid2.height, 4)	
+			assert_equal(grid:getHeight(), 3)
+			assert_equal(grid2:getHeight(), 4)	
 		end)
 		
 		test('Each value on the map matches a node on the grid', function()
@@ -100,7 +100,7 @@ context('Module Grid', function()
 				assert_equal(getmetatable(node), Node)
 				count = count+1
 			end
-			assert_equal(count, pgrid.width*pgrid.height)
+			assert_equal(count, pgrid:getWidth()*pgrid:getHeight())
 		end)
 		
 	end)
@@ -181,8 +181,8 @@ context('Module Grid', function()
 			test('returns the node at a given position', function()
 				local node = grid:getNodeAt(1,1)
 				assert_equal(getmetatable(node),Node)
-				assert_equal(node.x,1)
-				assert_equal(node.y,1)
+				assert_equal(node._x,1)
+				assert_equal(node._y,1)
 			end)
 			
 			test('returns nil if the node does not exist', function()
@@ -259,7 +259,7 @@ context('Module Grid', function()
 				local record = {}
 				for n in grid:iter() do
 					assert_equal(getmetatable(n), Node)
-					assert_not_nil(map[n.y] and map[n.y][n.x])
+					assert_not_nil(map[n._y] and map[n._y][n._x])
 					assert_nil(record[n])
 					record[n] = true
 				end
@@ -276,11 +276,11 @@ context('Module Grid', function()
 				local record = {}
 				for n in grid:iter(2,2,3,3) do
 					assert_equal(getmetatable(n), Node)
-					assert_not_nil(map[n.y] and map[n.y][n.x])					
-					assert_gte(n.x, 2)
-					assert_gte(n.y, 2)
-					assert_lte(n.x, 3)
-					assert_lte(n.y, 3)
+					assert_not_nil(map[n._y] and map[n._y][n._x])					
+					assert_gte(n._x, 2)
+					assert_gte(n._y, 2)
+					assert_lte(n._x, 3)
+					assert_lte(n._y, 3)
 					assert_nil(record[n])
 					record[n] = true
 				end
@@ -303,7 +303,7 @@ context('Module Grid', function()
 				grid:each(f, 3)
 				for n in grid:iter() do
 					assert_equal(getmetatable(n), Node)
-					assert_not_nil(map[n.y] and map[n.y][n.x])
+					assert_not_nil(map[n._y] and map[n._y][n._x])
 					assert_equal(n.value,3)
 					assert_nil(record[n])
 					record[n] = true
@@ -326,13 +326,13 @@ context('Module Grid', function()
 				local function f(node,i) node.value = i end
 				grid:eachRange(1,1,2,2,f,3)
 				for n in grid:iter() do
-					if n.x <= 2 and n.y <= 2 then
+					if n._x <= 2 and n._y <= 2 then
 						assert_equal(n.value,3)
 					else
 						assert_nil(n.value)
 					end
 					assert_equal(getmetatable(n), Node)
-					assert_not_nil(map[n.y] and map[n.y][n.x])
+					assert_not_nil(map[n._y] and map[n._y][n._x])
 					assert_nil(record[n])
 					record[n] = true
 				end
@@ -358,7 +358,7 @@ context('Module Grid', function()
 				grid:imap(f, 5)
 				for n in grid:iter() do
 					assert_equal(getmetatable(n), Node)
-					assert_not_nil(map[n.y] and map[n.y][n.x])
+					assert_not_nil(map[n._y] and map[n._y][n._x])
 					assert_equal(n.v,5)
 					assert_nil(record[n])
 					record[n] = true
@@ -384,13 +384,13 @@ context('Module Grid', function()
 				end
 				grid:imapRange(3,3,4,4,f,7)
 				for n in grid:iter() do
-					if n.x >= 3 and n.y >= 3 then
+					if n._x >= 3 and n._y >= 3 then
 						assert_equal(n.v,7)
 					else
 						assert_nil(n.v)
 					end
 					assert_equal(getmetatable(n), Node)
-					assert_not_nil(map[n.y] and map[n.y][n.x])
+					assert_not_nil(map[n._y] and map[n._y][n._x])
 					assert_nil(record[n])
 					record[n] = true
 				end
