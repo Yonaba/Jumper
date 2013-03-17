@@ -12,7 +12,7 @@ if (...) then
   -- Internalization
   local t_remove = table.remove
 
-  local function breadth_first_search(finder, node, openList, toClear,)
+  local function breadth_first_search(finder, node, openList, toClear)
     local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, finder._tunnel)
     for i = 1,#neighbours do
       local neighbour = neighbours[i]
