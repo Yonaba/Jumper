@@ -64,7 +64,8 @@ if (...) then
 			node._closed = true
 			if node == endNode then return node end
 			local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, tunnel)
-			for i, neighbour in ipairs(neighbours) do
+			for i = 1,#neighbours do
+				local neighbour = neighbours[i]
 				if not neighbour._closed then
 					toClear[neighbour] = true
 					if not neighbour._opened then
