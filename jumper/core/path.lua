@@ -64,8 +64,8 @@ if (...) then
   function Path:getLength()
     local len = 0
     for i = 2,#self._nodes do
-      local dx = self._nodes[i].x - self._nodes[i-1].x
-      local dy = self._nodes[i].y - self._nodes[i-1].y
+      local dx = self._nodes[i]._x - self._nodes[i-1]._x
+      local dy = self._nodes[i]._y - self._nodes[i-1]._y
       len = len + Heuristic.EUCLIDIAN(dx, dy)
     end
     return len
@@ -83,12 +83,12 @@ if (...) then
     local N = #self._nodes
     local incrX, incrY
     while true do
-      xi,yi = self._nodes[i].x,self._nodes[i].y
-      dx,dy = xi-self._nodes[i-1].x,yi-self._nodes[i-1].y
+      xi,yi = self._nodes[i]._x,self._nodes[i]._y
+      dx,dy = xi-self._nodes[i-1]._x,yi-self._nodes[i-1]._y
       if (abs(dx) > 1 or abs(dy) > 1) then
         incrX = dx/max(abs(dx),1)
         incrY = dy/max(abs(dy),1)
-        t_insert(self._nodes, i, self.grid:getNodeAt(self._nodes[i-1].x + incrX, self._nodes[i-1].y +incrY))
+        t_insert(self._nodes, i, self._grid:getNodeAt(self._nodes[i-1]._x + incrX, self._nodes[i-1]._y +incrY))
         N = N+1
       else i=i+1
       end
@@ -104,14 +104,14 @@ if (...) then
   function Path:filter()
     local i = 2
     local xi,yi,dx,dy, olddx, olddy
-    xi,yi = self._nodes[i].x, self._nodes[i].y
-    dx, dy = xi - self._nodes[i-1].x, yi-self._nodes[i-1].y
+    xi,yi = self._nodes[i]._x, self._nodes[i]._y
+    dx, dy = xi - self._nodes[i-1]._x, yi-self._nodes[i-1]._y
     while true do
       olddx, olddy = dx, dy
       if self._nodes[i+1] then
         i = i+1
-        xi, yi = self._nodes[i].x, self._nodes[i].y
-        dx, dy = xi - self._nodes[i-1].x, yi - self._nodes[i-1].y
+        xi, yi = self._nodes[i]._x, self._nodes[i]._y
+        dx, dy = xi - self._nodes[i-1]._x, yi - self._nodes[i-1]._y
         if olddx == dx and olddy == dy then
           t_remove(self._nodes, i-1)
           i = i - 1
