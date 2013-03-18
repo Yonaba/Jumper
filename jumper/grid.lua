@@ -1,5 +1,5 @@
 --- The grid class
--- @module jumper.grid
+-- @module grid
 --
 -- Implementation of the `grid` class.
 -- The `grid` is a implicit graph which represents the 2D 
