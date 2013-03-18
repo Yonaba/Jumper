@@ -5,8 +5,7 @@
 -- The `grid` is a implicit graph which represents the 2D 
 -- world map layout on which the `pathfinder` object will run.
 -- During a search, the `pathfinder` object needs to save some critical values. These values are cached within each `node`
--- object, and the whole set of nodes are tight inside the `grid` object iself.
-
+-- object, and the whole set of nodes are tight inside the `grid` object itself.
 
 if (...) then
   local _PATH = (...):gsub('%.grid$','')
@@ -356,6 +355,7 @@ if (...) then
   -- @class function
   -- @tparam func f a function prototyped as __f(node,...)__
   -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @treturn grid self (the calling `grid` itself, can be chained)
 	-- @usage
 	-- local function printNode(node)
 	--   print(node:getX(), node:getY())
@@ -363,6 +363,7 @@ if (...) then
 	-- myGrid:each(printNode)
   function Grid:each(f,...)
     for node in self:iter() do f(node,...) end
+		return self
   end
 
   --- Each (in range) transformation. Calls a function on each `node` in the range of a rectangle of cells,
@@ -374,6 +375,7 @@ if (...) then
   -- @tparam int ey the bottom-most y-coordinate of the rectangle
   -- @tparam func f a function prototyped as __f(node,...)__
   -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @treturn grid self (the calling `grid` itself, can be chained)	
 	-- @usage
 	-- local function printNode(node)
 	--   print(node:getX(), node:getY())
@@ -381,6 +383,7 @@ if (...) then
 	-- myGrid:eachRange(1,1,8,8,printNode)
   function Grid:eachRange(lx,ly,ex,ey,f,...)
     for node in self:iter(lx,ly,ex,ey) do f(node,...) end
+		return self
   end
 
   --- Map transformation.
@@ -389,6 +392,7 @@ if (...) then
   -- @class function
   -- @tparam func f a function prototyped as __f(node,...)__
   -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @treturn grid self (the calling `grid` itself, can be chained)	
 	-- @usage
 	-- local function nothing(node)
 	--   return node
@@ -398,6 +402,7 @@ if (...) then
     for node in self:iter() do
       node = f(node,...)
     end
+		return self
   end
 
   --- Map in range transformation. 
@@ -410,6 +415,7 @@ if (...) then
   -- @tparam int ey the bottom-most y-coordinate of the rectangle
   -- @tparam func f a function prototyped as __f(node,...)__
   -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @treturn grid self (the calling `grid` itself, can be chained)	
 	-- @usage
 	-- local function nothing(node)
 	--   return node
@@ -419,6 +425,7 @@ if (...) then
     for node in self:iter(lx,ly,ex,ey) do
       node = f(node,...)
     end
+		return self
   end
 
   -- Specialized grids
