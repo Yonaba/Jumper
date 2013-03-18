@@ -1,35 +1,12 @@
---- <strong>The <code>grid</code> class API</strong>.
---
--- Implementation of a `grid` class, which represents the 2D map (graph) on which a `pathfinder` will perform.
---
--- During a search, the pathfinder evaluates __costs values__ for each node being processed, in order to
--- select, after each step of iteration, what node should be expanded next to reach the target
--- optimally. Those values are cached within an array of nodes inside the `grid` object.
---
--- @author Roland Yonaba
--- @copyright 2012-2013
--- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
+--- The grid class
 -- @module jumper.grid
+--
+-- Implementation of the `grid` class.
+-- The `grid` is a implicit graph which represents the 2D 
+-- world map layout on which the `pathfinder` object will run.
+-- During a search, the `pathfinder` object needs to save some critical values. These values are cached within each `node`
+-- object, and the whole set of nodes are tight inside the `grid` object iself.
 
---- @usage
-local usage = [[
--- Usage Example
--- First, set a collision map
-local map = {
-	{0,1,0,1,0},
-	{0,1,0,1,0},
-	{0,1,1,1,0},
-	{0,0,0,0,0},
-}
--- Value for walkable tiles
-local walkable = 0
-
--- Library setup
-local Grid = require ("jumper.grid") -- The grid class
-
--- Creates a grid object
-local grid = Grid(map)
-]]
 
 if (...) then
   local _PATH = (...):gsub('%.grid$','')
@@ -173,14 +150,10 @@ if (...) then
     {x = -1, y =  1} --[[SW]], {x = 1, y =  1}, --[[SE]]
   }
 
-  ---------------------------------------------------------------------
-  --- The `grid` class
-  -- @class table
-  -- @name grid
-  -- @field width The grid width
-  -- @field height The grid height
-  -- @field map A reference to the collision map
-  -- @field nodes A 2D array of nodes, each node matching a cell on the collision map
+	--- The `Grid` class.<br/>
+	-- _This class is callable.
+	-- Therefore,_ <code>Grid(...)</code> _acts as a shortcut to_ <code>Grid:new(...)</code>.
+	-- @type Grid
   local Grid = {}
   Grid.__index = Grid
 
@@ -197,33 +170,46 @@ if (...) then
     return self._nodes[y] and self._nodes[y][x]
   end
 
-  --- Inits a new `grid` object
+  --- Inits a new `grid`
   -- @class function
-  -- @name grid:new
-  -- @tparam table|string map A collision map - (2D array) with consecutive integer indices or a string with line-break symbol as a row delimiter.
-  -- @tparam[optchain] bool processOnDemand whether or not caching nodes in the internal grid should be processed on-demand
-  -- @treturn grid a new `grid` object
-  function Grid:new(map, processOnDemand)
+  -- @tparam table|string map A collision map - (2D array) with consecutive indices (starting at 0 or 1) 
+	-- or a `string` with line-break chars (<code>\n</code> or <code>\r</code>) as row delimiters.
+  -- @tparam[opt] bool memorySafe When __true__, returns an empty `grid` instance, so that
+	-- later on, indexing a non-cached `node` will cause it to be created on purpose.
+	-- Defaults to __false__ when omitted.
+  -- @treturn grid a new `grid` instance
+	-- @usage
+	-- -- A simple 3x3 grid
+	-- local myGrid = Grid:new({{0,0,0},{0,0,0},{0,0,0}})
+	--
+	-- -- A memory-safe 3x3 grid
+	-- myGrid = Grid('000\n000\n000', true)
+  function Grid:new(map, memorySafe)
 		map = type(map)=='string' and parseStringMap(map) or map
     assert(isMap(map) or isStringMap(map),('Bad argument #1. Not a valid map'))
-    assert(type(processOnDemand) == 'boolean' or not processOnDemand,
-      ('Bad argument #2. Expected \'boolean\', got %s.'):format(type(processOnDemand)))
-    if processOnDemand then
+    assert(type(memorySafe) == 'boolean' or not memorySafe,
+      ('Bad argument #2. Expected \'boolean\', got %s.'):format(type(memorySafe)))
+    if memorySafe then
       return PostProcessGrid:new(map,walkable)
     end
     return PreProcessGrid:new(map,walkable)
   end
 
-  --- Checks walkability. Tests if `node` [x,y] exists on the collision map and is walkable
+  --- Checks if `node` at [x,y] is __walkable__.
+	-- Will check if `node` at location [x,y] both *exists* on the collision map and *is walkable*
   -- @class function
-  -- @name grid:isWalkableAt
-  -- @tparam int x the x-coordinate of the node
-  -- @tparam int y the y-coordinate of the node
-  -- @tparam string|int|function walkable the value for walkable nodes on the passed-in map array.
-  -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean:
-  -- `true` when value matches a *walkable* node, `false` otherwise. If this parameter is not given and
-  -- node [x,y] exists, this function return `true`.
-  -- @treturn bool `true` if the node exist and is walkable, `false` otherwise
+  -- @tparam int x the x-location of the node
+  -- @tparam int y the y-location of the node
+  -- @tparam[opt] string|int|func walkable the value for walkable locations in the collision map array (see @{Grid:new}).
+	-- Defaults to __false__ when omitted.
+  -- If this parameter is a function, it should be prototyped as __f(value)__ and return a `boolean`:
+  -- __true__ when value matches a __walkable__ `node`, __false__ otherwise. If this parameter is not given
+  -- while location [x,y] __is valid__, this actual function returns __true__.
+  -- @treturn bool __true__ if `node` exists and is __walkable__, __false__ otherwise
+	-- @usage 
+	-- print(myGrid:isWalkableAt(2,3)) --> always true
+	-- print(myGrid:isWalkableAt(2,3,0)) --> true if node at [2,3] value is 0
+	--
   function Grid:isWalkableAt(x, y, walkable)
     local nodeValue = self._map[y] and self._map[y][x]
     if nodeValue then
@@ -235,59 +221,63 @@ if (...) then
     return (nodeValue == walkable)
   end
 
-  --- Gets the `grid` width.
+  --- Returns the `grid` width.
   -- @class function
-  -- @name grid:getWidth
-  -- @treturn int the `grid` object width
+  -- @treturn int the `grid` width
+	-- @usage print(myGrid:getWidth())
   function Grid:getWidth()
     return self._width
   end
 
-  --- Gets the `grid` height.
+  --- Returns the `grid` height.
   -- @class function
-  -- @name grid:getHeight
-  -- @treturn int the `grid` object height
+  -- @treturn int the `grid` height
+	-- @usage print(myGrid:getHeight())
   function Grid:getHeight()
      return self._height
   end
 
-  --- Gets the collision map.
+  --- Returns the collision map.
   -- @class function
-  -- @name grid:getMap
-  -- @treturn {{value},...} the collision map previously passed to the `grid` object on initalization
+  -- @treturn map the collision map (see @{Grid:new})
+	-- @usage local map = myGrid:getMap()	
   function Grid:getMap()
     return self._map
   end
 
-  --- Gets the `grid` nodes.
+  --- Returns the set of nodes.
   -- @class function
-  -- @name grid:getNodes
-  -- @treturn {{node},...} the `grid` nodes
+  -- @treturn {{node,...},...} an array of nodes
+	-- @usage local nodes = myGrid:getNodes()		
   function Grid:getNodes()
     return self._nodes
   end
 
-  --- Returns bounds. Values are the upper-left hand and lower-right hand coordinates of the `grid`
+  --- Returns the `grid` bounds. Returned values corresponds to the upper-left 
+	-- and lower-right coordinates (in tile units) of the actual `grid` instance.
   -- @class function
-  -- @name grid:getBounds
-  -- @treturn int the upper-left hand x-coordinate
-  -- @treturn int the upper-left hand y-coordinate
-  -- @treturn int the lower-right hand x-coordinate
-  -- @treturn int the lower-right hand y-coordinate
+  -- @treturn int the upper-left corner x-coordinate
+  -- @treturn int the upper-left corner y-coordinate
+  -- @treturn int the lower-right corner x-coordinate
+  -- @treturn int the lower-right corner y-coordinate
+	-- @usage local left_x, left_y, right_x, right_y = myGrid:getBounds()
 	function Grid:getBounds()
 		return self._min_bound_x, self._min_bound_y,self._max_bound_x, self._max_bound_y
 	end
 	
-  --- Returns neighbours of a given `node`.
+  --- Returns neighbours. The returned value is an array of __walkable__ nodes neighbouring a given `node`.
   -- @class function
-  -- @name grid:getNeighbours
-  -- @tparam node node `node` object
-  -- @tparam string|int|function walkable the value for walkable nodes on the passed-in map array.
-  -- If this parameter is a function, it should be prototyped as `f(value)`, returning a boolean:
-  -- `true` when value matches a *walkable* node, `false` otherwise.
-  -- @tparam[opt] bool allowDiagonal whether or not adjacent nodes (8-directions moves) are allowed
-  -- @tparam[optchain] bool tunnel Whether or not the pathfinder can tunnel though walls diagonally
-  -- @treturn {node,...} an array of nodes neighbouring a passed-in node on the collision map
+  -- @tparam node node a given `node`
+  -- @tparam[opt] string|int|func walkable the value for walkable locations in the collision map array (see @{Grid:new}).
+	-- Defaults to __false__ when omitted.
+  -- @tparam[optchain] bool allowDiagonal when __true__, allows adjacent nodes are included (8-neighbours). 
+	-- Defaults to __false__ when omitted.
+  -- @tparam[optchain] bool tunnel When __true__, allows the `pathfinder` to tunnel through walls when heading diagonally.
+	-- Defaults to __false__ when omitted.
+  -- @treturn {node,...} an array of nodes neighbouring a given node
+	-- @usage
+	-- local aNode = myGrid:getNodeAt(5,6)
+	-- local neighbours = myGrid:getNeighbours(aNode, 0, true)
   function Grid:getNeighbours(node, walkable, allowDiagonal, tunnel)
 		local neighbours = {}
     for i = 1,#straightOffsets do
@@ -326,16 +316,20 @@ if (...) then
     return neighbours
   end
 
-  --- Iterates on nodes on the grid. When given no args, will iterate on every single node
-  -- on the grid, in case the grid is pre-processed. Passing `lx, ly, ex, ey` args will iterate
-  -- on nodes inside a bounding-rectangle delimited by those coordinates.
+  --- Nodes iterator. Iterates on every single node
+  -- in the `grid`. Passing __lx, ly, ex, ey__ arguments will iterate
+  -- only on nodes inside the bounding-rectangle delimited by those given coordinates.
   -- @class function
-  -- @name grid:iter
-  -- @tparam[opt] int lx the leftmost x-coordinate coordinate of the rectangle
-  -- @tparam[optchain] int ly the topmost y-coordinate of the rectangle
-  -- @tparam[optchain] int ex the rightmost x-coordinate of the rectangle
-  -- @tparam[optchain] int ey the bottom-most y-coordinate of the rectangle
-  -- @treturn node a node on the collision map, upon each iteration step
+  -- @tparam[opt] int lx the leftmost x-coordinate of the rectangle. Default to the `grid` leftmost x-coordinate (see @{Grid:getBounds}).
+  -- @tparam[optchain] int ly the topmost y-coordinate of the rectangle. Default to the `grid` topmost y-coordinate (see @{Grid:getBounds}).
+  -- @tparam[optchain] int ex the rightmost x-coordinate of the rectangle. Default to the `grid` rightmost x-coordinate (see @{Grid:getBounds}).
+  -- @tparam[optchain] int ey the bottom-most y-coordinate of the rectangle. Default to the `grid` bottom-most y-coordinate (see @{Grid:getBounds}).
+  -- @treturn node a `node` on the collision map, upon each iteration step
+  -- @treturn int the iteration count
+	-- @usage
+	-- for node, count in myGrid:iter() do
+	--   print(node:getX(), node:getY(), count)
+	-- end
   function Grid:iter(lx,ly,ex,ey)
     local min_x = lx or self._min_bound_x
     local min_y = ly or self._min_bound_y
@@ -357,54 +351,75 @@ if (...) then
     end
   end
 
-  --- Each transformation. Executes a function on each `node` in the `grid`, passing the `node` as the first arg to function `f`.
+  --- Each transformation. Calls the given function on each `node` in the `grid`,
+	-- passing the `node` as the first argument to function __f__.
   -- @class function
-  -- @name grid:each
-  -- @tparam function f a function prototyped as `f(node,...)`
-  -- @tparam[opt] vararg ... args to be passed to function `f`
+  -- @tparam func f a function prototyped as __f(node,...)__
+  -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @usage
+	-- local function printNode(node)
+	--   print(node:getX(), node:getY())
+	-- end
+	-- myGrid:each(printNode)
   function Grid:each(f,...)
     for node in self:iter() do f(node,...) end
   end
 
-  --- Each in range transformation. Executes a function on each `node` in the range of a rectangle of cells, passing the `node` as the first arg to function `f`.
+  --- Each (in range) transformation. Calls a function on each `node` in the range of a rectangle of cells,
+	-- passing the `node` as the first argument to function __f__.
   -- @class function
-  -- @name grid:eachRange
   -- @tparam int lx the leftmost x-coordinate coordinate of the rectangle
   -- @tparam int ly the topmost y-coordinate of the rectangle
   -- @tparam int ex the rightmost x-coordinate of the rectangle
   -- @tparam int ey the bottom-most y-coordinate of the rectangle
-  -- @tparam function f a function prototyped as `f(node,...)`
-  -- @tparam[opt] vararg ... args to be passed to function `f`
+  -- @tparam func f a function prototyped as __f(node,...)__
+  -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @usage
+	-- local function printNode(node)
+	--   print(node:getX(), node:getY())
+	-- end
+	-- myGrid:eachRange(1,1,8,8,printNode)
   function Grid:eachRange(lx,ly,ex,ey,f,...)
     for node in self:iter(lx,ly,ex,ey) do f(node,...) end
   end
 
-  --- Map transformation. Maps function `f(node,...)` on each `node` in a given range, passing the `node` as the first arg to function `f`. The passed-in function should return a `node` object.
+  --- Map transformation.
+	-- Calls function __f(node,...)__ on each `node` in a given range, passing the `node` as the first arg to function __f__ and replaces
+	-- it with the returned value. Therefore, the function should return a `node`.
   -- @class function
-  -- @name grid:imap
-  -- @tparam function f a function prototyped as `f(node,...)`
-  -- @tparam[opt] vararg ... args to be passed to function `f`
+  -- @tparam func f a function prototyped as __f(node,...)__
+  -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @usage
+	-- local function nothing(node)
+	--   return node
+	-- end
+	-- myGrid:imap(nothing)	
   function Grid:imap(f,...)
     for node in self:iter() do
       node = f(node,...)
     end
   end
 
-  --- Map in range transformation. Maps `f(node,...)` on each `nod`e in the range of a rectangle of cells, passing the `node` as the first arg to function `f`. The passed-in function should return a `node` object.
-  -- @class function
-  -- @name grid:imapRange
+  --- Map in range transformation. 
+	-- Calls function __f(node,...)__ on each `node` in a rectangle range, passing the `node` as the first argument to the function and replaces
+	-- it with the returned value. Therefore, the function should return a `node`. 
+	-- @class function
   -- @tparam int lx the leftmost x-coordinate coordinate of the rectangle
   -- @tparam int ly the topmost y-coordinate of the rectangle
   -- @tparam int ex the rightmost x-coordinate of the rectangle
   -- @tparam int ey the bottom-most y-coordinate of the rectangle
-  -- @tparam function f a function prototyped as `f(node,...)`
-  -- @tparam[opt] vararg ... args to be passed to function `f`
+  -- @tparam func f a function prototyped as __f(node,...)__
+  -- @tparam[opt] vararg ... args to be passed to function __f__
+	-- @usage
+	-- local function nothing(node)
+	--   return node
+	-- end
+	-- myGrid:imap(1,1,6,6,nothing)		
   function Grid:imapRange(lx,ly,ex,ey,f,...)
     for node in self:iter(lx,ly,ex,ey) do
       node = f(node,...)
     end
   end
-
 
   -- Specialized grids
   -- Inits a preprocessed grid
@@ -428,12 +443,14 @@ if (...) then
     return setmetatable(newGrid,PostProcessGrid)
   end
 
-  --- Returns the `node`[x,y] on a `grid`.
+  --- Returns the `node` at location [x,y].
   -- @class function
-  -- @name grid:getNodeAt
+  -- @name Grid:getNodeAt
   -- @tparam int x the x-coordinate coordinate
   -- @tparam int y the y-coordinate coordinate
-  -- @treturn node a `node` object
+  -- @treturn node a `node`
+	-- @usage local aNode = myGrid:getNodeAt(2,2)
+	
   -- Gets the node at location <x,y> on a preprocessed grid
   function PreProcessGrid:getNodeAt(x,y)
     return self._nodes[y] and self._nodes[y][x] or nil
