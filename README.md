@@ -1,7 +1,7 @@
 Jumper
 ======
 
-[![Build Status](http://travis-ci.org/Yonaba/Jumper.png)](http://travis-ci.org/Yonaba/Jumper)
+[![Build Status](https://secure.travis-ci.org/Yonaba/Jumper.png)](http://travis-ci.org/Yonaba/Jumper)
 
 __Jumper__ is a pathfinding library designed for grid-based games. It aims to be __fast__ and __lightweight__.
 It features a wide range of search algorithms, built within a clean interface with 
