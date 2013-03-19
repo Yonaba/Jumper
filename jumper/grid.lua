@@ -150,7 +150,7 @@ if (...) then
   }
 
 	--- The `Grid` class.<br/>
-	-- _This class is callable.
+	-- This class is callable.
 	-- Therefore,_ <code>Grid(...)</code> _acts as a shortcut to_ <code>Grid:new(...)</code>.
 	-- @type Grid
   local Grid = {}
