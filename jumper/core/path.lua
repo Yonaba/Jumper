@@ -1,12 +1,11 @@
---- <strong>The <code>path</code> class</strong>.
--- The `path` class represents a path from a `start` location to a `goal`.
--- An instance from this class would be a result of a request addressed to `pathfinder:getPath`.
--- A `path` is basically a set of `nodes`, aligned in a specific order, defining a way to follow for moving agents.
+--- The Path class.
+-- The `path` class is a structure which represents a path (ordered set of nodes) from a start location to a goal.
+-- An instance from this class would be a result of a request addressed to `Pathfinder:getPath`.
 --
--- @author Roland Yonaba
--- @copyright 2012-2013
--- @license <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a>
--- @module jumper.core.path
+-- This module is internally used by the library on purpose.
+-- It should normally not be used explicitely, yet it remains fully accessible.
+--
+-- @module path
 
 if (...) then
 
@@ -17,27 +16,31 @@ if (...) then
   -- Depandancies
   local Heuristic = require ((...):gsub('%.path$','.heuristics'))
 
-  --- The `path` class
-  -- @class table
-  -- @name path
+	--- The `Path` class.<br/>
+	-- This class is callable.
+	-- Therefore,_ <code>Path(...)</code> _acts as a shortcut to_ <code>Path:new(...)</code>.
+	-- @type Path
   local Path = {}
   Path.__index = Path
 
-  --- Inits a new `path` object.
+  --- Inits a new `path`.
   -- @class function
-  -- @name path:new
-  -- @treturn path a `path` object
+  -- @treturn path a `path`
+	-- @usage local p = Path()
   function Path:new()
     return setmetatable({_nodes = {}}, Path)
   end
 
   --- Iterates on each single `node` along a `path`. At each step of iteration,
-  -- returns a `node` and plus a count value. Aliased as @{path:nodes}
+  -- returns the `node` plus a count value. Aliased as @{Path:nodes}
   -- @class function
-  -- @name path:iter
   -- @treturn node a `node`
   -- @treturn int the count for the number of nodes
-	-- @see path:nodes
+	-- @see Path:nodes
+	-- @usage
+	-- for node, count in p:iter() do
+	--   ...
+	-- end
   function Path:iter()
     local i,pathLen = 1,#self._nodes
     return function()
@@ -49,18 +52,22 @@ if (...) then
   end
   
   --- Iterates on each single `node` along a `path`. At each step of iteration,
-  -- returns a `node` and plus a count value. Aliased for @{path:iter}
+  -- returns a `node` plus a count value. Alias for @{Path:iter}
   -- @class function
-  -- @name path:nodes
+  -- @name Path:nodes
   -- @treturn node a `node`
   -- @treturn int the count for the number of nodes
-	-- @see path:iter	
+	-- @see Path:iter	
+	-- @usage
+	-- for node, count in p:nodes() do
+	--   ...
+	-- end	
 	Path.nodes = Path.iter
 	
   --- Evaluates the `path` length
   -- @class function
-  -- @name path:getLength
   -- @treturn number the `path` length
+	-- @usage local len = p:getLength()
   function Path:getLength()
     local len = 0
     for i = 2,#self._nodes do
@@ -71,12 +78,12 @@ if (...) then
     return len
   end
 
-  --- Path filling function. Interpolates between non contiguous locations along a `path`
-  -- to build a fully continuous `path`. This maybe useful when using `Jump Point Search` finder.
-  -- Does the opposite of @{path:filter}
+  --- `Path` filling modifier. Interpolates between non contiguous nodes along a `path`
+  -- to build a fully continuous `path`. This maybe useful when using search algorithms such as Jump Point Search.
+  -- Does the opposite of @{Path:filter}
   -- @class function
-  -- @name path:fill
-  -- @see path:filter
+  -- @see Path:filter
+	-- @usage p:fill()
   function Path:fill()
     local i = 2
     local xi,yi,dx,dy
@@ -96,11 +103,11 @@ if (...) then
     end
   end
 
-  --- Path compression. Given a `path`, eliminates useless nodes to return a lighter `path`. Does
-  -- the opposite of @{path:fill}
+  --- `Path` compression modifier. Given a `path`, eliminates useless nodes to return a lighter `path` 
+	-- consisting of straight moves. Does the opposite of @{Path:fill}
   -- @class function
-  -- @name path:filter
-  -- @see path:fill
+  -- @see Path:fill
+	-- @usage p:filter()
   function Path:filter()
     local i = 2
     local xi,yi,dx,dy, olddx, olddy
@@ -126,26 +133,3 @@ if (...) then
     end
   })
 end
-
---[[
-Copyright (c) 2012-2013 Roland Yonaba
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
---]]
