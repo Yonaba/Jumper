@@ -1,4 +1,4 @@
---- The grid class
+--- The Grid class
 -- @module grid
 --
 -- Implementation of the `grid` class.
