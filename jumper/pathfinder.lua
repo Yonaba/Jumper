@@ -332,7 +332,7 @@ if (...) then
   -- @tparam number startY the y-coordinate for the starting location
   -- @tparam number endX the x-coordinate for the goal location
   -- @tparam number endY the y-coordinate for the goal location
-  -- @treturn {node,...} a path (array of nodes) when found, otherwise nil
+  -- @treturn path a path (array of nodes) when found, otherwise nil
   -- @treturn number the path length when found, 0 otherwise
 	-- @usage local path, len = myFinder:getPath(1,1,5,5)
   function Pathfinder:getPath(startX, startY, endX, endY)
