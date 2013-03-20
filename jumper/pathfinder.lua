@@ -1,5 +1,5 @@
 --- The Pathfinder class
--- @module pathfinder
+
 --
 -- Implementation of the `pathfinder` class.
 

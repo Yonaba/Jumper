@@ -1,6 +1,4 @@
---- The Grid class
--- @module grid
---
+--- The Grid class.
 -- Implementation of the `grid` class.
 -- The `grid` is a implicit graph which represents the 2D 
 -- world map layout on which the `pathfinder` object will run.

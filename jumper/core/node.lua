@@ -5,9 +5,8 @@
 --
 -- In the following implementation, nodes can be compared using the `<` operator. The comparison is
 -- made with regards of their `f` cost. From a given node being examined, the `pathfinder` will expand the search 
--- to the next neighbouring node having the lowest `f` cost. See `bheap` for more details.
+-- to the next neighbouring node having the lowest `f` cost. See `core.bheap` for more details.
 -- 
--- @module node
 
 if (...) then
 

@@ -5,7 +5,7 @@
 -- This module is internally used by the library on purpose.
 -- It should normally not be used explicitely, yet it remains fully accessible.
 --
--- @module path
+
 
 if (...) then
 

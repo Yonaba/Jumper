@@ -7,15 +7,12 @@
 --
 -- Distance functions are internally used by the `pathfinder` to evaluate the optimal path
 -- from the start location to the goal. These functions share the same prototype:
--- <ul>
--- <pre class="example">
--- local function myHeuristic(dx, dy)
---   -- function body
--- end
--- </pre></ul>
+--     local function myHeuristic(dx, dy)
+--       -- function body
+--     end
 -- Jumper features some built-in distance heuristics, namely `MANHATTAN`, `EUCLIDIAN`, `DIAGONAL`, `CARDINTCARD`.
 -- You can also supply your own heuristic function, following the same template as above.
--- @module heuristics
+
 
 local abs = math.abs
 local sqrt = math.sqrt
