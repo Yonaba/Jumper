@@ -14,7 +14,8 @@ if (...) then
   local next = next
   local floor = math.floor
 	local otype = type
-
+	local coroutine = coroutine
+	
   ---------------------------------------------------------------------
   -- Private utilities
 	
@@ -129,6 +130,28 @@ if (...) then
 			 (min_bound_x or 0), (max_bound_x or 0),
 			 (min_bound_y or 0), (max_bound_y or 0)
   end
+	
+	-- Stateless iterator, to be wrapped within a coroutine function
+	local function around(x0, y0, s)
+		local x, y = x0-s, y0-s
+		coroutine.yield(x, y)
+		repeat
+			x = x + 1
+			coroutine.yield(x,y)
+		until x == x0+s
+		repeat
+			y = y + 1
+			coroutine.yield(x,y)
+		until y == y0 + s
+		repeat
+			x = x - 1
+			coroutine.yield(x, y)
+		until x == x0-s
+		repeat
+			y = y - 1
+			coroutine.yield(x,y)
+		until y == y0-s+1
+	end	
 
   -- Checks if a value is out of and interval [lowerBound,upperBound]
   local function outOfRange(i,lowerBound,upperBound)
@@ -313,7 +336,7 @@ if (...) then
     return neighbours
   end
 
-  --- Nodes iterator. Iterates on every single node
+  --- Grid iterator. Iterates on every single node
   -- in the `grid`. Passing __lx, ly, ex, ey__ arguments will iterate
   -- only on nodes inside the bounding-rectangle delimited by those given coordinates.
   -- @class function
@@ -348,6 +371,32 @@ if (...) then
     end
   end
 
+	--- Grid iterator. Iterates on each node along the outline (border) of a squared area
+	-- centered on the given node.
+	-- @tparam node node a given `node`
+	-- @tparam[opt] int radius the area radius (half-length). Defaults to __1__ when not given.
+	-- @treturn node a `node` at each iteration step
+	-- @usage
+	-- for node in myGrid:around(node, 2) do
+	--   ...
+	-- end
+	function Grid:around(node, radius)
+		local x, y = node._x, node._y
+		radius = radius or 1
+		local _around = coroutine.create(around)
+		local _nodes = {}
+		repeat
+			local state, x, y = coroutine.resume(_around,x,y,radius)
+			local nodeAt = state and self:getNodeAt(x, y)
+			if nodeAt then _nodes[#_nodes+1] = nodeAt end
+		until (not state)
+		local _i = 0
+		return function()
+			_i = _i+1
+			return _nodes[_i]
+		end
+	end
+	
   --- Each transformation. Calls the given function on each `node` in the `grid`,
 	-- passing the `node` as the first argument to function __f__.
   -- @class function
