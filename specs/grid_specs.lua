@@ -287,6 +287,73 @@ context('Module Grid', function()
 			end)			
 		
 	end)
+	
+	context('Grid:around()', function()
+			
+			test('iterates on nodes following a square pattern', function()
+				local map = {
+					{0,0,0},
+					{0,0,0},
+					{0,0,0}
+				}
+				local m = {{1,1},{2,1},{3,1},{3,2},{3,3},{2,3},{1,3},{1,2}}
+				local grid = Grid(map)
+				local record = {}
+				local i = 0
+				for n in grid:around(Node(2,2),1) do
+					i = i + 1
+					assert_equal(getmetatable(n), Node)
+					assert_not_nil(map[n._y] and map[n._y][n._x])
+					assert_equal(n._x, m[i][1])
+					assert_equal(n._y, m[i][2])
+					assert_nil(record[n])
+					record[n] = true
+				end
+			end)
+			
+			test('arg spacing defaults to 1 when not given', function()
+				local map = {
+					{0,0,0},
+					{0,0,0},
+					{0,0,0}
+				}
+				local m = {{1,1},{2,1},{3,1},{3,2},{3,3},{2,3},{1,3},{1,2}}
+				local grid = Grid(map)
+				local record = {}
+				local i = 0
+				for n in grid:around(Node(2,2)) do
+					i = i + 1
+					assert_equal(getmetatable(n), Node)
+					assert_not_nil(map[n._y] and map[n._y][n._x])
+					assert_equal(n._x, m[i][1])
+					assert_equal(n._y, m[i][2])
+					assert_nil(record[n])
+					record[n] = true
+				end
+			end)
+
+			test('skips unexisting nodes', function()
+				local map = {
+					{0,0,0},
+					{0,0,0},
+					{0,0,0}
+				}
+				local m = {{2,1},{2,2},{1,2}}
+				local grid = Grid(map)
+				local record = {}
+				local i = 0
+				for n in grid:around(Node(1,1)) do
+					i = i + 1
+					assert_equal(getmetatable(n), Node)
+					assert_not_nil(map[n._y] and map[n._y][n._x])
+					assert_equal(n._x, m[i][1])
+					assert_equal(n._y, m[i][2])
+					assert_nil(record[n])
+					record[n] = true
+				end
+			end)				
+		
+	end)	
 		
 	context('Grid:each()', function()
 			
