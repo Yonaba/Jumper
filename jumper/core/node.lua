@@ -26,7 +26,7 @@ if (...) then
   -- @treturn node a new `node`
 	-- @usage local node = Node(3,4)
   function Node:new(x,y)
-    return setmetatable({_x = x, _y = y}, Node)
+    return setmetatable({_x = x, _y = y, _clearance = {}}, Node)
   end
 
   -- Enables the use of operator '<' to compare nodes.
@@ -41,18 +41,28 @@ if (...) then
 	
   --- Returns y-coordinate of a `node`
   -- @class function
-  -- @name node:getY
   -- @treturn number the y-coordinate of the `node`	
 	-- @usage local y = node:getY()		
 	function Node:getY() return self._y end
 	
   --- Returns x and y coordinates of a `node`
   -- @class function
-  -- @name node:getPos
   -- @treturn number the x-coordinate of the `node`
   -- @treturn number the y-coordinate of the `node`
 	-- @usage local x, y = node:getPos()		
 	function Node:getPos() return self._x, self._y end
+	
+  --- Returns the amount of [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric) 
+	-- for a given `node`
+  -- @class function
+  -- @tparam string|int|func walkable the value for walkable locations in the collision map array.
+  -- @treturn int the clearance of the `node`
+	-- @usage
+	--  -- Assuming walkable was 0	
+	-- local clearance = node:getClearance(0)		
+	function Node:getClearance(walkable)
+		return self._clearance[walkable]
+	end
 	
   return setmetatable(Node,
 		{__call = function(self,...) 
