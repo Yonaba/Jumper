@@ -1,6 +1,6 @@
 --- The Grid class.
 -- Implementation of the `grid` class.
--- The `grid` is a implicit graph which represents the 2D 
+-- The `grid` is a implicit graph which represents the 2D
 -- world map layout on which the `pathfinder` object will run.
 -- During a search, the `pathfinder` object needs to save some critical values. These values are cached within each `node`
 -- object, and the whole set of nodes are tight inside the `grid` object itself.
@@ -8,28 +8,28 @@
 if (...) then
   local _PATH = (...):gsub('%.grid$','')
   local Node = require (_PATH .. '.core.node')
-	
+
   local pairs = pairs
   local assert = assert
   local next = next
   local floor = math.floor
 	local otype = type
 	local coroutine = coroutine
-	
+
   ---------------------------------------------------------------------
   -- Private utilities
-	
+
 	-- Is i and integer ?
 	local isInt = function(i)
 		return otype(i) =='number' and floor(i)==i
 	end
-	
+
 	-- Override type to report integers
 	local type = function(v)
 		if isInt(v) then return 'int' end
 		return otype(v)
 	end
-	
+
 	-- Real count of for values in an array
 	local size = function(t)
 		local count = 0
@@ -87,8 +87,8 @@ if (...) then
         assert(#line == w, 'Error parsing map, rows must have the same size!')
         h = (h or 0) + 1
         map[h] = {}
-        for char in line:gmatch('.') do 
-					map[h][#map[h]+1] = char 
+        for char in line:gmatch('.') do
+					map[h][#map[h]+1] = char
 				end
       end
     end
@@ -130,8 +130,8 @@ if (...) then
 			 (min_bound_x or 0), (max_bound_x or 0),
 			 (min_bound_y or 0), (max_bound_y or 0)
   end
-	
-	-- Stateless iterator, to be wrapped within a coroutine function
+
+	-- Stateless iterator, to be wrapped within a coroutine
 	local function around(x0, y0, s)
 		local x, y = x0-s, y0-s
 		coroutine.yield(x, y)
@@ -151,7 +151,21 @@ if (...) then
 			y = y - 1
 			coroutine.yield(x,y)
 		until y == y0-s+1
-	end	
+	end
+
+	-- Side growing edge iterator, tobe wrapped within a coroutine
+	local function rightAround(x0, y0, s)
+		local x, y = x0+s, y0
+		coroutine.yield(x, y)
+		repeat
+			y = y + 1
+			coroutine.yield(x,y)
+		until y == y0 + s
+		repeat
+			x = x - 1
+			coroutine.yield(x, y)
+		until x == x0
+	end
 
   -- Checks if a value is out of and interval [lowerBound,upperBound]
   local function outOfRange(i,lowerBound,upperBound)
@@ -181,7 +195,7 @@ if (...) then
   local PreProcessGrid = setmetatable({},Grid)
   local PostProcessGrid = setmetatable({},Grid)
   PreProcessGrid.__index = PreProcessGrid
-  PostProcessGrid.__index = PostProcessGrid	
+  PostProcessGrid.__index = PostProcessGrid
   PreProcessGrid.__call = function (self,x,y)
     return self:getNodeAt(x,y)
   end
@@ -192,7 +206,7 @@ if (...) then
 
   --- Inits a new `grid`
   -- @class function
-  -- @tparam table|string map A collision map - (2D array) with consecutive indices (starting at 0 or 1) 
+  -- @tparam table|string map A collision map - (2D array) with consecutive indices (starting at 0 or 1)
 	-- or a `string` with line-break chars (<code>\n</code> or <code>\r</code>) as row delimiters.
   -- @tparam[opt] bool memorySafe When __true__, returns an empty `grid` instance, so that
 	-- later on, indexing a non-cached `node` will cause it to be created on purpose.
@@ -226,7 +240,7 @@ if (...) then
   -- __true__ when value matches a __walkable__ `node`, __false__ otherwise. If this parameter is not given
   -- while location [x,y] __is valid__, this actual function returns __true__.
   -- @treturn bool __true__ if `node` exists and is __walkable__, __false__ otherwise
-	-- @usage 
+	-- @usage
 	-- print(myGrid:isWalkableAt(2,3)) --> always true
 	-- print(myGrid:isWalkableAt(2,3,0)) --> true if node at [2,3] value is 0
 	--
@@ -234,7 +248,7 @@ if (...) then
     local nodeValue = self._map[y] and self._map[y][x]
     if nodeValue then
       if not walkable then return true end
-    else 
+    else
 			return false
     end
     if self._eval then return walkable(nodeValue) end
@@ -260,7 +274,7 @@ if (...) then
   --- Returns the collision map.
   -- @class function
   -- @treturn map the collision map (see @{Grid:new})
-	-- @usage local map = myGrid:getMap()	
+	-- @usage local map = myGrid:getMap()
   function Grid:getMap()
     return self._map
   end
@@ -268,12 +282,12 @@ if (...) then
   --- Returns the set of nodes.
   -- @class function
   -- @treturn {{node,...},...} an array of nodes
-	-- @usage local nodes = myGrid:getNodes()		
+	-- @usage local nodes = myGrid:getNodes()
   function Grid:getNodes()
     return self._nodes
   end
 
-  --- Returns the `grid` bounds. Returned values corresponds to the upper-left 
+  --- Returns the `grid` bounds. Returned values corresponds to the upper-left
 	-- and lower-right coordinates (in tile units) of the actual `grid` instance.
   -- @class function
   -- @treturn int the upper-left corner x-coordinate
@@ -284,13 +298,13 @@ if (...) then
 	function Grid:getBounds()
 		return self._min_bound_x, self._min_bound_y,self._max_bound_x, self._max_bound_y
 	end
-	
+
   --- Returns neighbours. The returned value is an array of __walkable__ nodes neighbouring a given `node`.
   -- @class function
   -- @tparam node node a given `node`
   -- @tparam[opt] string|int|func walkable the value for walkable locations in the collision map array (see @{Grid:new}).
 	-- Defaults to __false__ when omitted.
-  -- @tparam[optchain] bool allowDiagonal when __true__, allows adjacent nodes are included (8-neighbours). 
+  -- @tparam[optchain] bool allowDiagonal when __true__, allows adjacent nodes are included (8-neighbours).
 	-- Defaults to __false__ when omitted.
   -- @tparam[optchain] bool tunnel When __true__, allows the `pathfinder` to tunnel through walls when heading diagonally.
 	-- Defaults to __false__ when omitted.
@@ -311,7 +325,7 @@ if (...) then
     end
 
     if not allowDiagonal then return neighbours end
-		
+
 		tunnel = not not tunnel
     for i = 1,#diagonalOffsets do
       local n = self:getNodeAt(
@@ -396,7 +410,7 @@ if (...) then
 			return _nodes[_i]
 		end
 	end
-	
+
   --- Each transformation. Calls the given function on each `node` in the `grid`,
 	-- passing the `node` as the first argument to function __f__.
   -- @class function
@@ -422,7 +436,7 @@ if (...) then
   -- @tparam int ey the bottom-most y-coordinate of the rectangle
   -- @tparam func f a function prototyped as __f(node,...)__
   -- @tparam[opt] vararg ... args to be passed to function __f__
-	-- @treturn grid self (the calling `grid` itself, can be chained)	
+	-- @treturn grid self (the calling `grid` itself, can be chained)
 	-- @usage
 	-- local function printNode(node)
 	--   print(node:getX(), node:getY())
@@ -439,12 +453,12 @@ if (...) then
   -- @class function
   -- @tparam func f a function prototyped as __f(node,...)__
   -- @tparam[opt] vararg ... args to be passed to function __f__
-	-- @treturn grid self (the calling `grid` itself, can be chained)	
+	-- @treturn grid self (the calling `grid` itself, can be chained)
 	-- @usage
 	-- local function nothing(node)
 	--   return node
 	-- end
-	-- myGrid:imap(nothing)	
+	-- myGrid:imap(nothing)
   function Grid:imap(f,...)
     for node in self:iter() do
       node = f(node,...)
@@ -452,9 +466,9 @@ if (...) then
 		return self
   end
 
-  --- Map in range transformation. 
+  --- Map in range transformation.
 	-- Calls function __f(node,...)__ on each `node` in a rectangle range, passing the `node` as the first argument to the function and replaces
-	-- it with the returned value. Therefore, the function should return a `node`. 
+	-- it with the returned value. Therefore, the function should return a `node`.
 	-- @class function
   -- @tparam int lx the leftmost x-coordinate coordinate of the rectangle
   -- @tparam int ly the topmost y-coordinate of the rectangle
@@ -462,18 +476,54 @@ if (...) then
   -- @tparam int ey the bottom-most y-coordinate of the rectangle
   -- @tparam func f a function prototyped as __f(node,...)__
   -- @tparam[opt] vararg ... args to be passed to function __f__
-	-- @treturn grid self (the calling `grid` itself, can be chained)	
+	-- @treturn grid self (the calling `grid` itself, can be chained)
 	-- @usage
 	-- local function nothing(node)
 	--   return node
 	-- end
-	-- myGrid:imap(1,1,6,6,nothing)		
+	-- myGrid:imap(1,1,6,6,nothing)
   function Grid:imapRange(lx,ly,ex,ey,f,...)
     for node in self:iter(lx,ly,ex,ey) do
       node = f(node,...)
     end
 		return self
   end
+
+	--- Sets the clearance. 
+	-- See [Clearance metrics](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric)
+	-- for more details.
+	-- @class function
+	-- @tparam node node a node
+  -- @tparam string|int|func walkable the value for walkable locations in the collision map array.
+	-- @treturn grid self (the calling `grid` itself, can be chained)
+	-- @usage
+	-- local node = Node(1,1)
+	-- myGrid:setClearance(node, walkable)
+	-- print(node:getClearance(walkable))
+	function Grid:setClearance(node, walkable)
+		if not self:isWalkableAt(node._x, node._y, walkable) then
+			node._clearance[walkable] = 1
+			return
+		end
+		local radius = 0
+		repeat
+			local increaseClearance = true
+			local _around = coroutine.create(rightAround)
+			radius = radius + 1
+			while true do
+				local state, x, y = coroutine.resume(_around, node._x, node._y, radius)
+				local nodeAt = state and self:getNodeAt(x, y)
+				if state then
+					if nodeAt and not self:isWalkableAt(nodeAt._x, nodeAt._y, walkable) then
+						increaseClearance = false
+						break
+					end
+				else break end
+			end
+		until (not increaseClearance)
+		node._clearance[walkable] = radius
+		return self
+	end
 
   -- Specialized grids
   -- Inits a preprocessed grid
@@ -504,7 +554,7 @@ if (...) then
   -- @tparam int y the y-coordinate coordinate
   -- @treturn node a `node`
 	-- @usage local aNode = myGrid:getNodeAt(2,2)
-	
+
   -- Gets the node at location <x,y> on a preprocessed grid
   function PreProcessGrid:getNodeAt(x,y)
     return self._nodes[y] and self._nodes[y][x] or nil
