@@ -64,6 +64,19 @@ if (...) then
 		return self._clearance[walkable]
 	end
 	
+	--- Clears temporary cached attributes of a `node`.
+	-- Deletes the attributes cached within a given node after a pathfinding call.
+	-- @class function
+	-- @treturn node self (the calling `node` itself, can be chained)
+	-- @usage
+	-- local thisNode = Node(1,2)
+	-- thisNode:reset()
+	function Node:reset()
+		self._g, self._h, self._f = nil, nil, nil
+		self._opened, self._closed, self._parent = nil, nil, nil
+		return self
+	end
+	
   return setmetatable(Node,
 		{__call = function(self,...) 
 			return Node:new(...) 
