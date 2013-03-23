@@ -8,29 +8,32 @@ local _RELEASEDATE = ""
 
 if (...) then
 
+  -- Dependencies
+  local _PATH = (...):gsub('%.pathfinder$','')
+	local Utils     = require (_PATH .. '.core.utils')
+	local Assert    = require (_PATH .. '.core.assert')
+  local Heap      = require (_PATH .. '.core.bheap')
+  local Heuristic = require (_PATH .. '.core.heuristics')
+  local Grid      = require (_PATH .. '.grid')
+  local Path      = require (_PATH .. '.core.path')
+
   -- Internalization
   local t_insert, t_remove = table.insert, table.remove
 	local floor = math.floor
   local pairs = pairs
   local assert = assert
+	local type = type
   local setmetatable, getmetatable = setmetatable, getmetatable
 
-  -- Dependancies
-  local _PATH = (...):gsub('%.pathfinder$','')
-  local Heap      = require (_PATH .. '.core.bheap')
-  local Heuristic = require (_PATH .. '.core.heuristics')
-  local Grid      = require (_PATH .. '.grid')
-  local Path      = require (_PATH .. '.core.path')
-	
 	--- Finders (search algorithms implemented). Refers to the search algorithms actually implemented in Jumper.
-	-- 
+	--
 	-- <li>[A*](http://en.wikipedia.org/wiki/A*_search_algorithm)</li>
 	-- <li>[Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)</li>
 	-- <li>[BFS](http://en.wikipedia.org/wiki/Breadth-first_search)</li>
 	-- <li>[DFS](http://en.wikipedia.org/wiki/Depth-first_search)</li>
 	-- <li>[JPS](http://harablog.wordpress.com/2011/09/07/jump-point-search/)</li>
 	-- @finder Finders
-	-- @see Pathfinder:getFinders	
+	-- @see Pathfinder:getFinders
   local Finders = {
     ['ASTAR']     = require (_PATH .. '.search.astar'),
     ['DIJKSTRA']  = require (_PATH .. '.search.dijkstra'),
@@ -39,52 +42,17 @@ if (...) then
     ['JPS']       = require (_PATH .. '.search.jps')
   }
 
-	-- Type function ovverride, to support integers
-	local otype = type
-	local isInt = function(v)
-		return otype(v) == 'number' and floor(v) == v and 'int' or nil
-	end
-	local type = function(v)
-		return isInt(v) or otype(v)
-	end
-
-  -- Is arg a grid object ?
-  local function isAGrid(grid)
-    return getmetatable(grid) and getmetatable(getmetatable(grid)) == Grid
-  end
-	
-	-- Is arg a boolean ?
-	local function isABool(b) return b==true or b==false end
-	
-  -- Collect keys in an array
-  local function collect_keys(t)
-    local keys = {}
-    for k,v in pairs(t) do keys[#keys+1] = k end
-    return keys
-  end
-
   -- Will keep track of all nodes expanded during the search
   -- to easily reset their properties for the next pathfinding call
   local toClear = {}
 
-  -- Resets properties of nodes expanded during a search
-  -- This is a lot faster than resetting all nodes
-  -- between consecutive pathfinding requests
-  local function reset()
-    for node in pairs(toClear) do
-      node._g, node._h, node._f = nil, nil, nil
-      node._opened, node._closed, node._parent = nil, nil, nil
-    end
-    toClear = {}
-  end
-
   -- Keeps track of the last computed path cost
   local lastPathCost = 0
 
-	--- Search modes. Refers to the search modes. In ORTHOGONAL mode, 4-directions are only possible when moving, 
-	-- including North, East, West, South. In DIAGONAL mode, 8-directions are possible when moving, 
+	--- Search modes. Refers to the search modes. In ORTHOGONAL mode, 4-directions are only possible when moving,
+	-- including North, East, West, South. In DIAGONAL mode, 8-directions are possible when moving,
 	-- including North, East, West, South and adjacent directions.
-	-- 
+	--
 	-- <li>ORTHOGNAL</li>
 	-- <li>DIAGONAL</li>
 	-- @mode Modes
@@ -93,21 +61,6 @@ if (...) then
 
   -- Performs a traceback from the goal node to the start node
   -- Only happens when the path was found
-  local function traceBackPath(finder, node, startNode)
-    local path = Path:new()
-    path._grid = finder._grid
-    lastPathCost = node._f or path:getLength()
-
-    while true do
-      if node._parent then
-        t_insert(path._nodes,1,node)
-        node = node._parent
-      else
-        t_insert(path._nodes,1,startNode)
-        return path
-      end
-    end
-  end
 
 	--- The `Pathfinder` class.<br/>
 	-- This class is callable.
@@ -125,13 +78,13 @@ if (...) then
   -- If this parameter is a function, it should be prototyped as __f(value)__, returning a boolean:
   -- __true__ when value matches a __walkable__ `node`, __false__ otherwise.
   -- @treturn pathfinder a new `pathfinder` instance
-	-- @usage 
+	-- @usage
 	-- -- Example one
-	-- local finder = Pathfinder:new(myGrid, 'ASTAR', 0) 
-	--  
+	-- local finder = Pathfinder:new(myGrid, 'ASTAR', 0)
+	--
 	-- -- Example two
-	-- local function walkable(value) 
-	--   return value > 0 
+	-- local function walkable(value)
+	--   return value > 0
 	-- end
 	-- local finder = Pathfinder(myGrid, 'JPS', walkable)
   function Pathfinder:new(grid, finderName, walkable)
@@ -152,7 +105,7 @@ if (...) then
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
 	-- @usage myFinder:setGrid(myGrid)
   function Pathfinder:setGrid(grid)
-    assert(isAGrid(grid), 'Wrong argument #1. Expected a \'grid\' object')
+    assert(Assert.inherits(grid, Grid), 'Wrong argument #1. Expected a \'grid\' object')
     self._grid = grid
     self._grid._eval = self._walkable and type(self._walkable) == 'function'
     return self
@@ -179,7 +132,7 @@ if (...) then
 	--   return n>0
 	-- end
   function Pathfinder:setWalkable(walkable)
-    assert(('stringintfunctionnil'):match(type(walkable)),
+    assert(Assert.matchType(walkable,'stringintfunctionnil'),
       ('Wrong argument #1. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
     self._walkable = walkable
     self._grid._eval = type(self._walkable) == 'function'
@@ -232,7 +185,7 @@ if (...) then
 	--   print(i, finderName)
 	-- end
   function Pathfinder:getFinders()
-    return collect_keys(Finders)
+    return Utils.getKeys(Finders)
   end
 
   --- Sets a heuristic. This is a function internally used by the `pathfinder` to find the optimal path during a search.
@@ -240,7 +193,7 @@ if (...) then
   -- his own `heuristic` function.
   -- @class function
   -- @tparam func|string heuristic `heuristic` function, prototyped as __f(dx,dy)__ or as a `string`.
-	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)	
+	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
   -- @see Pathfinder:getHeuristics
 	-- @usage myFinder:setHeuristic('MANHATTAN')
   function Pathfinder:setHeuristic(heuristic)
@@ -266,7 +219,7 @@ if (...) then
 	--   ...
 	-- end
   function Pathfinder:getHeuristics()
-    return collect_keys(Heuristic)
+    return Utils.getKeys(Heuristic)
   end
 
   --- Defines the search `mode`.
@@ -275,7 +228,7 @@ if (...) then
   -- Use @{Pathfinder:getModes} to get the list of all available search modes.
   -- @class function
   -- @tparam string mode the new search `mode`.
-	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)		
+	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
   -- @see Pathfinder:getModes
 	-- @see Modes
 	-- @usage myFinder:setMode('ORTHOGNAL')
@@ -303,27 +256,28 @@ if (...) then
 	--   ...
 	-- end
   function Pathfinder:getModes()
-    return collect_keys(searchModes)
+    return Utils.getKeys(searchModes)
   end
-	
+
   --- Enables tunnelling. Defines the ability for the `pathfinder` to tunnel through walls when heading diagonally.
 	-- This feature __is not compatible__ with Jump Point Search algorithm (i.e. enabling it will not affect Jump Point Search)
   -- @class function
   -- @tparam bool bool a boolean
-	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)		
+	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
 	-- @usage myFinder:setTunnelling(true)
   function Pathfinder:setTunnelling(bool)
-    assert(isABool(bool), ('Wrong argument #1. Expected boolean, got %s'):format(otype(bool)))
+    assert(Assert.isBool(bool), ('Wrong argument #1. Expected boolean, got %s'):format(type(bool)))
 		self._tunnel = bool
 		return self
   end
-	
+
   --- Returns tunnelling feature state.
   -- @class function
-	-- @usage local isTunnellingEnabled = myFinder:getTunnelling()	
+	-- @treturn bool tunnelling feature actual state
+	-- @usage local isTunnellingEnabled = myFinder:getTunnelling()
   function Pathfinder:getTunnelling()
 		return self._tunnel
-  end		
+  end
 
   --- Calculates a `path`. Returns the `path` from location __[startX, startY]__ to location __[endX, endY]__.
   -- Both locations must exist on the collision map. The starting location can be unwalkable.
@@ -336,7 +290,7 @@ if (...) then
   -- @treturn number the path length when found, 0 otherwise
 	-- @usage local path, len = myFinder:getPath(1,1,5,5)
   function Pathfinder:getPath(startX, startY, endX, endY)
-		reset()
+		self:reset()
     local startNode = self._grid:getNodeAt(startX, startY)
     local endNode = self._grid:getNodeAt(endX, endY)
     assert(startNode, ('Invalid location [%d, %d]'):format(startX, startY))
@@ -344,11 +298,22 @@ if (...) then
       ('Invalid or unreachable location [%d, %d]'):format(endX, endY))
     local _endNode = Finders[self._finder](self, startNode, endNode, toClear)
     if _endNode then
-			return traceBackPath(self, _endNode, startNode), lastPathCost
+			return Utils.traceBackPath(self, _endNode, startNode), lastPathCost
     end
     lastPathCost = 0
     return nil, lastPathCost
   end
+
+  --- Resets the `pathfinder` for new pathfinding calls. It is normally called internally, so one is not supposed
+	-- to call it explicitely, unless under specific circumstances.
+  -- @class function
+	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
+	-- @usage local path, len = myFinder:getPath(1,1,5,5)
+	function Pathfinder:reset()
+    for node in pairs(toClear) do node:reset() end
+    toClear = {}
+		return self
+	end
 
   -- Returns Pathfinder class
 	Pathfinder._VERSION = _VERSION
