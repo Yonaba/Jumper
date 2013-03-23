@@ -6,171 +6,22 @@
 -- object, and the whole set of nodes are tight inside the `grid` object itself.
 
 if (...) then
+
+	-- Dependencies
   local _PATH = (...):gsub('%.grid$','')
+
+	-- Local references
+  local Utils = require (_PATH .. '.core.utils')
+  local Assert = require (_PATH .. '.core.assert')
   local Node = require (_PATH .. '.core.node')
 
+	-- Local references
   local pairs = pairs
   local assert = assert
   local next = next
+	local setmetatable = setmetatable
   local floor = math.floor
-	local otype = type
 	local coroutine = coroutine
-
-  ---------------------------------------------------------------------
-  -- Private utilities
-
-	-- Is i and integer ?
-	local isInt = function(i)
-		return otype(i) =='number' and floor(i)==i
-	end
-
-	-- Override type to report integers
-	local type = function(v)
-		if isInt(v) then return 'int' end
-		return otype(v)
-	end
-
-	-- Real count of for values in an array
-	local size = function(t)
-		local count = 0
-		for k,v in pairs(t) do count = count+1 end
-		return count
-	end
-
-	-- Checks array contents
-	local check_contents = function(t,...)
-		local n_count = size(t)
-		if n_count < 1 then return false end
-		local init_count = t[0] and 0 or 1
-		local n_count = (t[0] and n_count-1 or n_count)
-		local types = {...}
-		if types then types = table.concat(types) end
-		for i=init_count,n_count,1 do
-			if not t[i] then return false end
-			if types then
-				if not types:match(type(t[i])) then return false end
-			end
-		end
-		return true
-	end
-
-	-- Checks if m is a regular map
-  local function isMap(m)
-		if not check_contents(m, 'table') then return false end
-		local lsize = size(m[next(m)])
-		for k,v in pairs(m) do
-			if not check_contents(m[k], 'string', 'int') then return false end
-			if size(v)~=lsize then return false end
-		end
-		return true
-  end
-
-  -- Is arg a valid string map
-  local function isStringMap(s)
-    if type(m) ~= 'string' then return false end
-    local w
-    for row in s:gmatch('[^\n\r]+') do
-      if not row then return false end
-      w = w or #row
-      if w ~= #row then return false end
-    end
-    return true
-  end
-
-  -- Parses a map
-  local function parseStringMap(str)
-		local map = {}
-		local w, h
-    for line in str:gmatch('[^\n\r]+') do
-      if line then
-        w = not w and #line or w
-        assert(#line == w, 'Error parsing map, rows must have the same size!')
-        h = (h or 0) + 1
-        map[h] = {}
-        for char in line:gmatch('.') do
-					map[h][#map[h]+1] = char
-				end
-      end
-    end
-    return map
-  end
-
-  -- Postprocessing : Get map bounds
-  local function getBounds(map)
-    local min_bound_x, max_bound_x
-    local min_bound_y, max_bound_y
-      for y in pairs(map) do
-        min_bound_y = not min_bound_y and y or (y<min_bound_y and y or min_bound_y)
-        max_bound_y = not max_bound_y and y or (y>max_bound_y and y or max_bound_y)
-        for x in pairs(map[y]) do
-          min_bound_x = not min_bound_x and x or (x<min_bound_x and x or min_bound_x)
-          max_bound_x = not max_bound_x and x or (x>max_bound_x and x or max_bound_x)
-        end
-      end
-    return min_bound_x,max_bound_x,min_bound_y,max_bound_y
-  end
-
-  -- Preprocessing
-  local function buildGrid(map)
-    local min_bound_x, max_bound_x
-    local min_bound_y, max_bound_y
-
-    local nodes = {}
-      for y in pairs(map) do
-        min_bound_y = not min_bound_y and y or (y<min_bound_y and y or min_bound_y)
-        max_bound_y = not max_bound_y and y or (y>max_bound_y and y or max_bound_y)
-        nodes[y] = {}
-        for x in pairs(map[y]) do
-          min_bound_x = not min_bound_x and x or (x<min_bound_x and x or min_bound_x)
-          max_bound_x = not max_bound_x and x or (x>max_bound_x and x or max_bound_x)
-          nodes[y][x] = Node:new(x,y)
-        end
-      end
-    return nodes,
-			 (min_bound_x or 0), (max_bound_x or 0),
-			 (min_bound_y or 0), (max_bound_y or 0)
-  end
-
-	-- Stateless iterator, to be wrapped within a coroutine
-	local function around(x0, y0, s)
-		local x, y = x0-s, y0-s
-		coroutine.yield(x, y)
-		repeat
-			x = x + 1
-			coroutine.yield(x,y)
-		until x == x0+s
-		repeat
-			y = y + 1
-			coroutine.yield(x,y)
-		until y == y0 + s
-		repeat
-			x = x - 1
-			coroutine.yield(x, y)
-		until x == x0-s
-		repeat
-			y = y - 1
-			coroutine.yield(x,y)
-		until y == y0-s+1
-	end
-
-	-- Side growing edge iterator, tobe wrapped within a coroutine
-	local function rightAround(x0, y0, s)
-		local x, y = x0+s, y0
-		coroutine.yield(x, y)
-		repeat
-			y = y + 1
-			coroutine.yield(x,y)
-		until y == y0 + s
-		repeat
-			x = x - 1
-			coroutine.yield(x, y)
-		until x == x0
-	end
-
-  -- Checks if a value is out of and interval [lowerBound,upperBound]
-  local function outOfRange(i,lowerBound,upperBound)
-    return (i< lowerBound or i > upperBound)
-  end
 
   -- Offsets for straights moves
   local straightOffsets = {
@@ -208,8 +59,9 @@ if (...) then
   -- @class function
   -- @tparam table|string map A collision map - (2D array) with consecutive indices (starting at 0 or 1)
 	-- or a `string` with line-break chars (<code>\n</code> or <code>\r</code>) as row delimiters.
-  -- @tparam[opt] bool memorySafe When __true__, returns an empty `grid` instance, so that
-	-- later on, indexing a non-cached `node` will cause it to be created on purpose.
+  -- @tparam[opt] bool cacheNodeAtRuntime When __true__, returns an empty `grid` instance, so that
+	-- later on, indexing a non-cached `node` will cause it to be created and cache within the `grid` on purpose (i.e, when needed).
+	-- This is a __memory-safe__ option, in case your dealing with some tight memory constraints.
 	-- Defaults to __false__ when omitted.
   -- @treturn grid a new `grid` instance
 	-- @usage
@@ -218,12 +70,19 @@ if (...) then
 	--
 	-- -- A memory-safe 3x3 grid
 	-- myGrid = Grid('000\n000\n000', true)
-  function Grid:new(map, memorySafe)
-		map = type(map)=='string' and parseStringMap(map) or map
-    assert(isMap(map) or isStringMap(map),('Bad argument #1. Not a valid map'))
-    assert(type(memorySafe) == 'boolean' or not memorySafe,
-      ('Bad argument #2. Expected \'boolean\', got %s.'):format(type(memorySafe)))
-    if memorySafe then
+  function Grid:new(map, cacheNodeAtRuntime)
+		if type(map) == 'string' then
+			print('map', map)
+			print('stringmap', Assert.isStrMap(map))
+			assert(Assert.isStrMap(map), 'Wrong argument #1. Not a valid string map')
+			map = Utils.strToMap(map)
+		end
+		print('map is', map)
+		print('isMap',Assert.isMap(map))
+    assert(Assert.isMap(map),('Bad argument #1. Not a valid map'))
+    assert(Assert.isBool(cacheNodeAtRuntime) or Assert.isNil(cacheNodeAtRuntime),
+      ('Bad argument #2. Expected \'boolean\', got %s.'):format(type(cacheNodeAtRuntime)))
+    if cacheNodeAtRuntime then
       return PostProcessGrid:new(map,walkable)
     end
     return PreProcessGrid:new(map,walkable)
@@ -296,7 +155,7 @@ if (...) then
   -- @treturn int the lower-right corner y-coordinate
 	-- @usage local left_x, left_y, right_x, right_y = myGrid:getBounds()
 	function Grid:getBounds()
-		return self._min_bound_x, self._min_bound_y,self._max_bound_x, self._max_bound_y
+		return self._min_x, self._min_y,self._max_x, self._max_y
 	end
 
   --- Returns neighbours. The returned value is an array of __walkable__ nodes neighbouring a given `node`.
@@ -365,10 +224,10 @@ if (...) then
 	--   print(node:getX(), node:getY(), count)
 	-- end
   function Grid:iter(lx,ly,ex,ey)
-    local min_x = lx or self._min_bound_x
-    local min_y = ly or self._min_bound_y
-    local max_x = ex or self._max_bound_x
-    local max_y = ey or self._max_bound_y
+    local min_x = lx or self._min_x
+    local min_y = ly or self._min_y
+    local max_x = ex or self._max_x
+    local max_y = ey or self._max_y
 
     local x, y
     y = min_y
@@ -397,7 +256,7 @@ if (...) then
 	function Grid:around(node, radius)
 		local x, y = node._x, node._y
 		radius = radius or 1
-		local _around = coroutine.create(around)
+		local _around = Utils.around()
 		local _nodes = {}
 		repeat
 			local state, x, y = coroutine.resume(_around,x,y,radius)
@@ -489,7 +348,7 @@ if (...) then
 		return self
   end
 
-	--- Sets the clearance. 
+	--- Sets the clearance.
 	-- See [Clearance metrics](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric)
 	-- for more details.
 	-- @class function
@@ -508,7 +367,7 @@ if (...) then
 		local radius = 0
 		repeat
 			local increaseClearance = true
-			local _around = coroutine.create(rightAround)
+			local _around = Utils.drAround()
 			radius = radius + 1
 			while true do
 				local state, x, y = coroutine.resume(_around, node._x, node._y, radius)
@@ -530,9 +389,9 @@ if (...) then
   function PreProcessGrid:new(map)
     local newGrid = {}
     newGrid._map = map
-    newGrid._nodes, newGrid._min_bound_x, newGrid._max_bound_x, newGrid._min_bound_y, newGrid._max_bound_y = buildGrid(newGrid._map)
-    newGrid._width = (newGrid._max_bound_x-newGrid._min_bound_x)+1
-    newGrid._height = (newGrid._max_bound_y-newGrid._min_bound_y)+1
+    newGrid._nodes, newGrid._min_x, newGrid._max_x, newGrid._min_y, newGrid._max_y = Utils.arrayToNodes(newGrid._map)
+    newGrid._width = (newGrid._max_x-newGrid._min_x)+1
+    newGrid._height = (newGrid._max_y-newGrid._min_y)+1
     return setmetatable(newGrid,PreProcessGrid)
   end
 
@@ -541,9 +400,9 @@ if (...) then
     local newGrid = {}
     newGrid._map = map
     newGrid._nodes = {}
-    newGrid._min_bound_x, newGrid._max_bound_x, newGrid._min_bound_y, newGrid._max_bound_y = getBounds(newGrid._map)
-    newGrid._width = (newGrid._max_bound_x-newGrid._min_bound_x)+1
-    newGrid._height = (newGrid._max_bound_y-newGrid._min_bound_y)+1
+    newGrid._min_x, newGrid._max_x, newGrid._min_y, newGrid._max_y = Utils.getArrayBounds(newGrid._map)
+    newGrid._width = (newGrid._max_x-newGrid._min_x)+1
+    newGrid._height = (newGrid._max_y-newGrid._min_y)+1
     return setmetatable(newGrid,PostProcessGrid)
   end
 
@@ -563,8 +422,8 @@ if (...) then
   -- Gets the node at location <x,y> on a postprocessed grid
   function PostProcessGrid:getNodeAt(x,y)
     if not x or not y then return end
-    if outOfRange(x,self._min_bound_x,self._max_bound_x) then return end
-    if outOfRange(y,self._min_bound_y,self._max_bound_y) then return end
+    if Utils.outOfRange(x,self._min_x,self._max_x) then return end
+    if Utils.outOfRange(y,self._min_y,self._max_y) then return end
     if not self._nodes[y] then self._nodes[y] = {} end
     if not self._nodes[y][x] then self._nodes[y][x] = Node:new(x,y) end
     return self._nodes[y][x]
