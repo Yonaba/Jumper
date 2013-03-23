@@ -8,14 +8,14 @@
 
 
 if (...) then
+	
+  -- Dependencies
+  local Heuristic = require ((...):gsub('%.path$','.heuristics'))
 
-  -- Internalization
+	 -- Local references
   local abs, max = math.abs, math.max
 	local t_insert, t_remove = table.insert, table.remove
 	
-  -- Depandancies
-  local Heuristic = require ((...):gsub('%.path$','.heuristics'))
-
 	--- The `Path` class.<br/>
 	-- This class is callable.
 	-- Therefore,_ <code>Path(...)</code> _acts as a shortcut to_ <code>Path:new(...)</code>.
