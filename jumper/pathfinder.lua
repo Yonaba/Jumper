@@ -195,6 +195,7 @@ if (...) then
   -- @tparam func|string heuristic `heuristic` function, prototyped as __f(dx,dy)__ or as a `string`.
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
   -- @see Pathfinder:getHeuristics
+	-- @see core.heuristics
 	-- @usage myFinder:setHeuristic('MANHATTAN')
   function Pathfinder:setHeuristic(heuristic)
     assert(Heuristic[heuristic] or (type(heuristic) == 'function'),'Not a valid heuristic!')
@@ -205,6 +206,7 @@ if (...) then
   --- Returns the `heuristic` used. Returns the function itself.
   -- @class function
   -- @treturn func the `heuristic` function being used by the `pathfinder`
+	-- @see core.heuristics	
 	-- @usage local h = myFinder:getHeuristic()
   function Pathfinder:getHeuristic()
     return self._heuristic
@@ -213,6 +215,7 @@ if (...) then
   --- Gets the list of all available `heuristics`.
   -- @class function
   -- @treturn {string,...} array of heuristic names.
+	-- @see core.heuristics	
 	-- @usage
 	-- local heur = myFinder:getHeuristic()
 	-- for i, heuristicName in ipairs(heur) do
