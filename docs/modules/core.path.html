@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Jumper documentation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Jumper</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Class_Path">Class Path</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul>
+  <li><a href="../modules/core.bheap.html">core.bheap</a></li>
+  <li><a href="../modules/core.heuristics.html">core.heuristics</a></li>
+  <li><a href="../modules/core.node.html">core.node</a></li>
+  <li><strong>core.path</strong></li>
+  <li><a href="../modules/grid.html">grid</a></li>
+  <li><a href="../modules/pathfinder.html">pathfinder</a></li>
+</ul>
+<h2>Examples</h2>
+<ul>
+  <li><a href="../examples/heuristics.lua.html">heuristics.lua</a></li>
+  <li><a href="../examples/minimal.lua.html">minimal.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>core.path</code></h1>
+
+<p>The Path class.</p>
+<p> The <a href="../modules/core.path.html#core.path">path</a>  class is a structure which represents a path (ordered set of nodes) from a start location to a goal.
+ An instance from this class would be a result of a request addressed to <code>Pathfinder:getPath</code>.</p>
+
+<p> This module is internally used by the library on purpose.
+ It should normally not be used explicitely, yet it remains fully accessible.</p>
+
+
+<h2><a href="#Class_Path">Class Path</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Path:new">Path:new&nbsp;()</a></td>
+	<td class="summary">Inits a new <a href="../modules/core.path.html#core.path">path</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:iter">Path:iter&nbsp;()</a></td>
+	<td class="summary">Iterates on each single <a href="../modules/core.path.html#core.node">node</a>  along a <a href="../modules/core.path.html#core.path">path</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:nodes">Path:nodes&nbsp;()</a></td>
+	<td class="summary">Iterates on each single <a href="../modules/core.path.html#core.node">node</a>  along a <a href="../modules/core.path.html#core.path">path</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:getLength">Path:getLength&nbsp;()</a></td>
+	<td class="summary">Evaluates the <a href="../modules/core.path.html#core.path">path</a>  length</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:fill">Path:fill&nbsp;()</a></td>
+	<td class="summary"><a href="../modules/core.path.html#Class_Path">Path</a>  filling modifier.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:filter">Path:filter&nbsp;()</a></td>
+	<td class="summary"><a href="../modules/core.path.html#Class_Path">Path</a>  compression modifier.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Class_Path"></a>Class Path</h2>
+        The <a href="../modules/core.path.html#Class_Path">Path</a>  class.<br/>
+ This class is callable.
+ Therefore,_ <code>Path(...)</code> <em>acts as a shortcut to</em> <code>Path:new(...)</code>.
+    <dl class="function">
+    <dt>
+    <a name = "Path:new"></a>
+    <strong>Path:new&nbsp;()</strong>
+    </dt>
+    <dd>
+    Inits a new <a href="../modules/core.path.html#core.path">path</a> .
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.path.html#core.path">path</a></span>
+        a <a href="../modules/core.path.html#core.path">path</a>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> p = Path()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Path:iter"></a>
+    <strong>Path:iter&nbsp;()</strong>
+    </dt>
+    <dd>
+    Iterates on each single <a href="../modules/core.path.html#core.node">node</a>  along a <a href="../modules/core.path.html#core.path">path</a> .  At each step of iteration,
+ returns the <a href="../modules/core.path.html#core.node">node</a>  plus a count value. Aliased as <a href="../modules/core.path.html#Path:nodes">Path:nodes</a>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+          <span class="types"><a class="type" href="../modules/core.path.html#core.node">node</a></span>
+        a <a href="../modules/core.path.html#core.node">node</a> </li>
+        <li>
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+        the count for the number of nodes</li>
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/core.path.html#Path:nodes">Path:nodes</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">for</span> node, count <span class="keyword">in</span> p:iter() <span class="keyword">do</span>
+   ...
+ <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Path:nodes"></a>
+    <strong>Path:nodes&nbsp;()</strong>
+    </dt>
+    <dd>
+    Iterates on each single <a href="../modules/core.path.html#core.node">node</a>  along a <a href="../modules/core.path.html#core.path">path</a> .  At each step of iteration,
+ returns a <a href="../modules/core.path.html#core.node">node</a>  plus a count value. Alias for <a href="../modules/core.path.html#Path:iter">Path:iter</a>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+          <span class="types"><a class="type" href="../modules/core.path.html#core.node">node</a></span>
+        a <a href="../modules/core.path.html#core.node">node</a> </li>
+        <li>
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+        the count for the number of nodes</li>
+    </ol>
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/core.path.html#Path:iter">Path:iter</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ <span class="keyword">for</span> node, count <span class="keyword">in</span> p:nodes() <span class="keyword">do</span>
+   ...
+ <span class="keyword">end</span>	</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Path:getLength"></a>
+    <strong>Path:getLength&nbsp;()</strong>
+    </dt>
+    <dd>
+    Evaluates the <a href="../modules/core.path.html#core.path">path</a>  length
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><span class="type">number</span></span>
+        the <a href="../modules/core.path.html#core.path">path</a>  length
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> len = p:getLength()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Path:fill"></a>
+    <strong>Path:fill&nbsp;()</strong>
+    </dt>
+    <dd>
+    <a href="../modules/core.path.html#Class_Path">Path</a>  filling modifier.  Interpolates between non contiguous nodes along a <a href="../modules/core.path.html#core.path">path</a>
+ to build a fully continuous <a href="../modules/core.path.html#core.path">path</a> . This maybe useful when using search algorithms such as Jump Point Search.
+ Does the opposite of <a href="../modules/core.path.html#Path:filter">Path:filter</a>
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/core.path.html#Path:filter">Path:filter</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">p:fill()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Path:filter"></a>
+    <strong>Path:filter&nbsp;()</strong>
+    </dt>
+    <dd>
+    <a href="../modules/core.path.html#Class_Path">Path</a>  compression modifier.  Given a <a href="../modules/core.path.html#core.path">path</a> , eliminates useless nodes to return a lighter <a href="../modules/core.path.html#core.path">path</a> <br/>
+ consisting of straight moves. Does the opposite of <a href="../modules/core.path.html#Path:fill">Path:fill</a>
+
+
+
+
+    <h3>see also:</h3>
+    <ul>
+         <a href="../modules/core.path.html#Path:fill">Path:fill</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">p:filter()</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
