@@ -72,7 +72,7 @@
 	<td class="summary">Inits a new <a href="../modules/grid.html#">grid</a> </td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Grid:isWalkableAt">Grid:isWalkableAt&nbsp;(x, y [, walkable])</a></td>
+	<td class="name" nowrap><a href="#Grid:isWalkableAt">Grid:isWalkableAt&nbsp;(x, y [, walkable [, clearance]])</a></td>
 	<td class="summary">Checks if <code>node</code> at [x,y] is <strong>walkable</strong>.</td>
 	</tr>
 	<tr>
@@ -185,7 +185,7 @@
 </dd>
     <dt>
     <a name = "Grid:isWalkableAt"></a>
-    <strong>Grid:isWalkableAt&nbsp;(x, y [, walkable])</strong>
+    <strong>Grid:isWalkableAt&nbsp;(x, y [, walkable [, clearance]])</strong>
     </dt>
     <dd>
     Checks if <code>node</code> at [x,y] is <strong>walkable</strong>.
@@ -206,6 +206,9 @@
  If this parameter is a function, it should be prototyped as <strong>f(value)</strong> and return a <a href="http://www.lua.org/manual/5.1/manual.html#2.2">boolean</a> :
  <strong>true</strong> when value matches a <strong>walkable</strong> <code>node</code>, <strong>false</strong> otherwise. If this parameter is not given
  while location [x,y] <strong>is valid</strong>, this actual function returns <strong>true</strong>.</li>
+        <li><span class="parameter">clearance</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+         the amount of clearance needed. Defaults to 1 (normal clearance) when not given.</li>
     </ul>
 
     <h3>Returns:</h3>
@@ -220,9 +223,14 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example">
- <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>)) <span class="comment">--&gt; always true
-</span> <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>,<span class="number">0</span>)) <span class="comment">--&gt; true if node at [2,3] value is 0
-</span></pre>
+ <span class="comment">-- Always true
+</span> <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>))
+
+ <span class="comment">-- True if node at [2,3] collision map value is 0
+</span> <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>,<span class="number">0</span>))
+
+ <span class="comment">-- True if node at [2,3] collision map value is 0 and has a clearance higher or equal to 2
+</span> <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">2</span>))</pre>
     </ul>
 
 </dd>

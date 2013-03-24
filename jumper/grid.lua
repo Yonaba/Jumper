@@ -94,10 +94,17 @@ if (...) then
   -- If this parameter is a function, it should be prototyped as __f(value)__ and return a `boolean`:
   -- __true__ when value matches a __walkable__ `node`, __false__ otherwise. If this parameter is not given
   -- while location [x,y] __is valid__, this actual function returns __true__.
+  -- @tparam[optchain] int clearance the amount of clearance needed. Defaults to 1 (normal clearance) when not given.	
   -- @treturn bool __true__ if `node` exists and is __walkable__, __false__ otherwise
 	-- @usage
-	-- print(myGrid:isWalkableAt(2,3)) --> always true
-	-- print(myGrid:isWalkableAt(2,3,0)) --> true if node at [2,3] value is 0
+	-- -- Always true
+	-- print(myGrid:isWalkableAt(2,3))
+	--
+	-- -- True if node at [2,3] collision map value is 0
+	-- print(myGrid:isWalkableAt(2,3,0)) 
+	--
+	-- -- True if node at [2,3] collision map value is 0 and has a clearance higher or equal to 2
+	-- print(myGrid:isWalkableAt(2,3,0,2))
 	--
   function Grid:isWalkableAt(x, y, walkable, clearance)
     local nodeValue = self._map[y] and self._map[y][x]
