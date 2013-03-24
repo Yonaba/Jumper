@@ -72,13 +72,9 @@ if (...) then
 	-- myGrid = Grid('000\n000\n000', true)
   function Grid:new(map, cacheNodeAtRuntime)
 		if type(map) == 'string' then
-			print('map', map)
-			print('stringmap', Assert.isStrMap(map))
 			assert(Assert.isStrMap(map), 'Wrong argument #1. Not a valid string map')
 			map = Utils.strToMap(map)
 		end
-		print('map is', map)
-		print('isMap',Assert.isMap(map))
     assert(Assert.isMap(map),('Bad argument #1. Not a valid map'))
     assert(Assert.isBool(cacheNodeAtRuntime) or Assert.isNil(cacheNodeAtRuntime),
       ('Bad argument #2. Expected \'boolean\', got %s.'):format(type(cacheNodeAtRuntime)))
