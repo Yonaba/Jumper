@@ -269,6 +269,47 @@ context('Module Pathfinder', function()
 		
 	end)
 	
+	
+	context('Pathfinder:setTunnelling()', function()
+		
+		test('Enables or disables tunnelling feature', function()
+			PF:setTunnelling(true)
+			assert_true(PF:getTunnelling())
+			PF:setTunnelling(false)
+			assert_false(PF:getTunnelling())
+		end)
+		
+		test('Enables or disables tunnelling feature', function()
+			PF:setTunnelling(true)
+			assert_true(PF:getTunnelling())
+			PF:setTunnelling(false)
+			assert_false(PF:getTunnelling())
+		end)
+		
+		test('When on, finder goes through walls heading diagonally', function()
+			local map = {{0,0,0},{1,0,0},{0,2,0}}
+			local grid = Grid(map)
+			local finder = PF(grid, 'ASTAR',0)
+			finder:setTunnelling(true)
+			local path = finder:getPath(1,3,3,1)
+			assert_equal(path._nodes[1]._x,1)
+			assert_equal(path._nodes[1]._y,3)
+			assert_equal(path._nodes[2]._x,2)
+			assert_equal(path._nodes[2]._y,2)
+			assert_equal(path._nodes[3]._x,3)
+			assert_equal(path._nodes[3]._y,1)			
+		end)
+		
+	end)
+	
+	context('Pathfinder:getTunnelling()', function()
+		
+		test('Returns the actual state of tunnelling feature', function()
+			assert_false(PF:getTunnelling())
+		end)
+		
+	end)
+	
 	context('Pathfinder:getPath()', function()
 		
 		test('returns a path', function()
