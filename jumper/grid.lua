@@ -94,14 +94,14 @@ if (...) then
   -- If this parameter is a function, it should be prototyped as __f(value)__ and return a `boolean`:
   -- __true__ when value matches a __walkable__ `node`, __false__ otherwise. If this parameter is not given
   -- while location [x,y] __is valid__, this actual function returns __true__.
-  -- @tparam[optchain] int clearance the amount of clearance needed. Defaults to 1 (normal clearance) when not given.	
+  -- @tparam[optchain] int clearance the amount of clearance needed. Defaults to 1 (normal clearance) when not given.
   -- @treturn bool __true__ if `node` exists and is __walkable__, __false__ otherwise
 	-- @usage
 	-- -- Always true
 	-- print(myGrid:isWalkableAt(2,3))
 	--
 	-- -- True if node at [2,3] collision map value is 0
-	-- print(myGrid:isWalkableAt(2,3,0)) 
+	-- print(myGrid:isWalkableAt(2,3,0))
 	--
 	-- -- True if node at [2,3] collision map value is 0 and has a clearance higher or equal to 2
 	-- print(myGrid:isWalkableAt(2,3,0,2))
@@ -117,9 +117,9 @@ if (...) then
 		if not hasEnoughClearance then
 			local node = self:getNodeAt(x,y)
 			local nodeClearance = node:getClearance(walkable) or self:evalClearance(node, walkable)
-			hasEnoughClearance = (nodeClearance >= clearance)			
+			hasEnoughClearance = (nodeClearance >= clearance)
 		end
-    if self._eval then 
+    if self._eval then
 			return walkable(nodeValue) and hasEnoughClearance
 		end
     return ((nodeValue == walkable) and hasEnoughClearance)
@@ -374,22 +374,23 @@ if (...) then
 			node._clearance[walkable] = 1
 			return 1
 		end
+		local increase = true
 		local radius = 0
 		repeat
-			local increaseClearance = true
-			local _around = Utils.drAround()
 			radius = radius + 1
-			while true do
-				local state, x, y = coroutine.resume(_around, node._x, node._y, radius)
-				local nodeAt = state and self:getNodeAt(x, y)
-				if state then
-					if nodeAt and not self:isWalkableAt(nodeAt._x, nodeAt._y, walkable) then
-						increaseClearance = false
-						break
+			local coords = Utils.drAround(node._x, node._y, radius)
+			for i = 1,#coords do
+				local p = coords[i]
+				local nodeAt = self:getNodeAt(p[1], p[2])
+				if not nodeAt then 
+					increase = false 
+				else
+					if not self:isWalkableAt(nodeAt._x, nodeAt._y,walkable) then
+						increase = false
 					end
-				else break end
+				end
 			end
-		until (not increaseClearance)
+		until not increase
 		node._clearance[walkable] = radius
 		return radius
 	end
