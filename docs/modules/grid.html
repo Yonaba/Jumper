@@ -124,7 +124,7 @@
 	<td class="summary">Map in range transformation.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Grid:setClearance">Grid:setClearance&nbsp;(node, walkable)</a></td>
+	<td class="name" nowrap><a href="#Grid:evalClearance">Grid:evalClearance&nbsp;(node, walkable)</a></td>
 	<td class="summary">Sets the clearance.</td>
 	</tr>
 	<tr>
@@ -651,8 +651,8 @@
 
 </dd>
     <dt>
-    <a name = "Grid:setClearance"></a>
-    <strong>Grid:setClearance&nbsp;(node, walkable)</strong>
+    <a name = "Grid:evalClearance"></a>
+    <strong>Grid:evalClearance&nbsp;(node, walkable)</strong>
     </dt>
     <dd>
     Sets the clearance.
@@ -672,8 +672,8 @@
     <h3>Returns:</h3>
     <ol>
 
-          <span class="types"><a class="type" href="../modules/grid.html#">grid</a></span>
-        self (the calling <a href="../modules/grid.html#">grid</a>  itself, can be chained)
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+        the amount of clearance of the given node
     </ol>
 
 
@@ -682,8 +682,7 @@
     <ul>
         <pre class="example">
  <span class="keyword">local</span> node = Node(<span class="number">1</span>,<span class="number">1</span>)
- myGrid:setClearance(node, walkable)
- <span class="global">print</span>(node:getClearance(walkable))</pre>
+ <span class="keyword">local</span> clearance = myGrid:evalClearance(node, walkable)</pre>
     </ul>
 
 </dd>
