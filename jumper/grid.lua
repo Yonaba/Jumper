@@ -372,7 +372,7 @@ if (...) then
 	function Grid:evalClearance(node, walkable)
 		if not self:isWalkableAt(node._x, node._y, walkable) then
 			node._clearance[walkable] = 1
-			return
+			return 1
 		end
 		local radius = 0
 		repeat
@@ -391,7 +391,7 @@ if (...) then
 			end
 		until (not increaseClearance)
 		node._clearance[walkable] = radius
-		return self
+		return radius
 	end
 
   -- Specialized grids
