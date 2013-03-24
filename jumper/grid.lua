@@ -107,7 +107,7 @@ if (...) then
 			return false
     end
 		local hasEnoughClearance = not clearance and true or false
-		if not hasEnoughClearance or then
+		if not hasEnoughClearance then
 			local node = self:getNodeAt(x,y)
 			local nodeClearance = node:getClearance(walkable) or self:evalClearance(node, walkable)
 			hasEnoughClearance = (nodeClearance >= clearance)			
