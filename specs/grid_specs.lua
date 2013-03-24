@@ -46,6 +46,27 @@ context('Module Grid', function()
 			assert_equal(grid2:getHeight(), 4)	
 		end)
 		
+		test('Grid:getBounds() returns the grid corners coordinates', function()
+			local map = {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}
+			local grid = Grid(map)
+			local lx,ly,rx,ry = grid:getBounds()
+			assert_equal(lx,1)
+			assert_equal(ly,1)
+			assert_equal(rx,3)
+			assert_equal(ry,4)
+			
+			local map = {}
+			for y = 0,2 do map[y] = {}
+				for x = 0,2 do map[y][x] = 0 end
+			end
+			grid = Grid(map)
+			local lx,ly,rx,ry = grid:getBounds()
+			assert_equal(lx,0)
+			assert_equal(ly,0)
+			assert_equal(rx,2)
+			assert_equal(ry,2)			
+		end)
+		
 		test('Each value on the map matches a node on the grid', function()
 			local map = {{0,0},{0,0},{0,0},{0,0}}
 			local grid = Grid(map)
@@ -83,14 +104,14 @@ context('Module Grid', function()
 	
 	context('Grid types', function()
 		
-		test('passing a 2nd arg to Grid:new() or Grid() returns a postprocessed grid', function()
+		test('passing a 2nd arg to Grid:new() or Grid() returns a safe-memory grid', function()
 			local grid = Grid({{0}})
 			local pgrid = Grid({{0}},true)
 			assert_not_equal(getmetatable(grid), getmetatable(pgrid))
 			assert_equal(getmetatable(getmetatable(grid)), getmetatable(getmetatable(pgrid)))
 		end)
 		
-		test('postprocessed grids are memory safe, as nodes are cached on purpose', function()
+		test('those grids are memory safe, as nodes are cached on purpose', function()
 			local map = {{0,0,0},{0,0,0},{0,0,0}}
 			local pgrid = Grid(map, true)
 			
@@ -148,7 +169,15 @@ context('Module Grid', function()
 					end
 				end
 			end)
-		
+			
+			test('Handles clearance', function()
+				local map = {{0,0,0},{0,1,0},{0,0,0}}
+				local grid = Grid(map)
+				local bigAgentClearance = 2
+				local littleAgentClearance = 1
+				assert_false(grid:isWalkableAt(1,2,0,bigAgentClearance))
+				assert_true(grid:isWalkableAt(1,2,0,littleAgentClearance))
+			end)
 	end)
 		
 	context('Grid:getMap()', function()
@@ -159,7 +188,7 @@ context('Module Grid', function()
 				assert_equal(grid:getMap(), map)
 			end)
 		
-			test('returns the array parsed from a given that string',function()
+			test('returns the array parsed from a given string',function()
 				local map = '00\n00'
 				local grid = Grid(map)
 				assert_equal(type(grid:getMap()), 'table')
@@ -229,7 +258,7 @@ context('Module Grid', function()
 				assert_equal(nb[2], grid:getNodeAt(1,2))
 			end)
 			
-			test('passing a true as a third arg includes ajacent nodes', function()
+			test('passing true as a third arg includes ajacent nodes', function()
 				local map = {{0,0},{0,0},}
 				local grid = Grid(map)
 				local walkable, allowDiag = 0, true
@@ -242,7 +271,19 @@ context('Module Grid', function()
 				assert_equal(nb[1], grid:getNodeAt(2,1))
 				assert_equal(nb[2], grid:getNodeAt(1,2))
 				assert_equal(nb[3], grid:getNodeAt(2,2))
-			end)		
+			end)
+
+			test('passing arg tunnel includes adjacent nodes that cannot be reached diagonnally', function()
+				local map = {{0,0,0},{1,0,0},{0,2,0}}
+				local grid = Grid(map)
+				local walkable, allowDiag, tunnel = 0, true, true
+				
+				local node = grid:getNodeAt(1,3)
+				local nb = grid:getNeighbours(node, walkable, allowDiag, tunnel)
+				assert_equal(type(nb), 'table')
+				assert_equal(#nb, 1)
+				assert_equal(nb[1], grid:getNodeAt(2,2))				
+			end)
 			
 	end)
 		
@@ -285,12 +326,12 @@ context('Module Grid', function()
 					record[n] = true
 				end
 			end)			
-		
+			
 	end)
 	
 	context('Grid:around()', function()
 			
-			test('iterates on nodes following a square pattern', function()
+			test('iterates on nodes following a square outline pattern', function()
 				local map = {
 					{0,0,0},
 					{0,0,0},
@@ -464,5 +505,22 @@ context('Module Grid', function()
 			end)
 		
 	end)		
+	
+	context('Grid:evalClearance()', function()
 		
+		test('returns the amount of clearance for the given node', function()
+			local map = {{0,0,0,0},{1,0,0,0},{0,0,0,0}}
+			local grid = Grid(map)
+			local walkable = 0
+			local NodeA = grid:getNodeAt(1,1)
+			local NodeB = grid:getNodeAt(1,2)
+			local NodeC = grid:getNodeAt(2,2)
+			local NodeD = grid:getNodeAt(3,2)
+			assert_equal(grid:evalClearance(NodeA,walkable),1)
+			assert_equal(grid:evalClearance(NodeB,walkable),1)
+			assert_equal(grid:evalClearance(NodeC,walkable),2)
+			assert_equal(grid:evalClearance(NodeD,walkable),2)
+		end)
+	end)
+	
 end)
