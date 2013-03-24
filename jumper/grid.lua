@@ -99,15 +99,23 @@ if (...) then
 	-- print(myGrid:isWalkableAt(2,3)) --> always true
 	-- print(myGrid:isWalkableAt(2,3,0)) --> true if node at [2,3] value is 0
 	--
-  function Grid:isWalkableAt(x, y, walkable)
+  function Grid:isWalkableAt(x, y, walkable, clearance)
     local nodeValue = self._map[y] and self._map[y][x]
     if nodeValue then
       if not walkable then return true end
     else
 			return false
     end
-    if self._eval then return walkable(nodeValue) end
-    return (nodeValue == walkable)
+		local hasEnoughClearance = not clearance and true or false
+		if not hasEnoughClearance or then
+			local node = self:getNodeAt(x,y)
+			local nodeClearance = node:getClearance(walkable) or self:evalClearance(node, walkable)
+			hasEnoughClearance = (nodeClearance >= clearance)			
+		end
+    if self._eval then 
+			return walkable(nodeValue) and hasEnoughClearance
+		end
+    return ((nodeValue == walkable) and hasEnoughClearance)
   end
 
   --- Returns the `grid` width.
@@ -350,12 +358,11 @@ if (...) then
 	-- @class function
 	-- @tparam node node a node
   -- @tparam string|int|func walkable the value for walkable locations in the collision map array.
-	-- @treturn grid self (the calling `grid` itself, can be chained)
+	-- @treturn int the amount of clearance of the given node
 	-- @usage
 	-- local node = Node(1,1)
-	-- myGrid:setClearance(node, walkable)
-	-- print(node:getClearance(walkable))
-	function Grid:setClearance(node, walkable)
+	-- local clearance = myGrid:evalClearance(node, walkable)
+	function Grid:evalClearance(node, walkable)
 		if not self:isWalkableAt(node._x, node._y, walkable) then
 			node._clearance[walkable] = 1
 			return
