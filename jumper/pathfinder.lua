@@ -99,6 +99,31 @@ if (...) then
     return newPathfinder
   end
 
+	--- Evaluates true clearance values for the entire `grid`. It should be called only once, unless the collision map or the
+	-- __walkable__ attribute changes. The clearance values are calculated and cached within the grid nodes.
+  -- @class function
+	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
+	-- @usage myFinder:evalGridClearance()
+	function Pathfinder:evalGridClearance()
+		assert(self._walkable, 'Finder must implement a walkable value')
+		for node in self._grid:iter() do
+			self._grid:evalClearance(node, self._walkable)
+		end
+		return self
+	end
+
+	--- Clears all true clearance values cached in the entire `grid`
+  -- @class function
+	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
+	-- @usage myFinder:clearGridClearance()	
+	function Pathfinder:removeClearance()
+		assert(self._walkable, 'Finder must implement a walkable value')
+		for node in self._grid:iter() do
+			self._grid:removeClearance(node, self._walkable)
+		end
+		return self
+	end
+	
   --- Sets the `grid`. Defines the given `grid` as the one on which the `pathfinder` will perform the search.
   -- @class function
   -- @tparam grid grid a `grid`
@@ -206,7 +231,7 @@ if (...) then
   --- Returns the `heuristic` used. Returns the function itself.
   -- @class function
   -- @treturn func the `heuristic` function being used by the `pathfinder`
-	-- @see core.heuristics	
+	-- @see core.heuristics
 	-- @usage local h = myFinder:getHeuristic()
   function Pathfinder:getHeuristic()
     return self._heuristic
@@ -215,7 +240,7 @@ if (...) then
   --- Gets the list of all available `heuristics`.
   -- @class function
   -- @treturn {string,...} array of heuristic names.
-	-- @see core.heuristics	
+	-- @see core.heuristics
 	-- @usage
 	-- local heur = myFinder:getHeuristic()
 	-- for i, heuristicName in ipairs(heur) do
