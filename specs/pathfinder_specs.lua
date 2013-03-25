@@ -268,8 +268,7 @@ context('Module Pathfinder', function()
 		end)
 		
 	end)
-	
-	
+		
 	context('Pathfinder:setTunnelling()', function()
 		
 		test('Enables or disables tunnelling feature', function()
@@ -306,6 +305,60 @@ context('Module Pathfinder', function()
 		
 		test('Returns the actual state of tunnelling feature', function()
 			assert_false(PF:getTunnelling())
+		end)
+		
+	end)
+
+	context('Pathfinder:evalGridClearance()', function()
+		
+		test('Calculates clearance for the entire grid', function()
+			local map = {
+			{0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,1,0},
+			{0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,1,0,0,0,0,0,0},
+			{0,0,1,0,0,0,0,0,2,0},
+			{0,0,1,1,1,0,0,2,0,0},
+			{0,0,0,1,1,0,2,0,0,2},
+			{0,0,0,0,1,0,0,0,0,2},
+			{0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0}
+		}
+		local clearances = {
+			{6,6,5,5,4,4,4,3,2,1},
+			{6,5,5,4,4,3,3,3,2,1},
+			{6,5,4,4,3,3,2,2,2,1},
+			{6,5,4,3,3,2,2,1,1,1},
+			{6,5,4,3,2,2,1,1,1,1},
+			{5,5,4,3,2,1,1,1,1,1},
+			{4,4,4,3,2,1,1,2,1,1},
+			{3,3,3,3,3,3,3,2,1,1},
+			{2,2,2,2,2,2,2,2,2,1},
+			{1,1,1,1,1,1,1,1,1,1}
+		}
+		local grid = Grid(map)
+		local walkable = function(v) return v~=2 end
+		local finder = PF(grid, 'ASTAR', walkable)
+		finder:evalGridClearance()
+		for node in grid:iter() do
+			assert_equal(node:getClearance(walkable), clearances[node._y][node._x])
+		end			
+		end)
+		
+	end)
+
+	context('Pathfinder:removeClerance()', function()
+		
+		test('Clears cached clearance values for the entire grid', function()
+			local map = {{0,1,0},{0,0,0},{1,1,0}}
+			local grid = Grid(map)
+			local walkable = 0
+			local finder = PF(grid, 'ASTAR', walkable)
+			finder:evalGridClearance()
+			finder:removeClearance()
+			for node in grid:iter() do
+				assert_nil(node:getClearance(walkable))
+			end			
 		end)
 		
 	end)

@@ -522,5 +522,18 @@ context('Module Grid', function()
 			assert_equal(grid:evalClearance(NodeD,walkable),2)
 		end)
 	end)
+
+	context('Grid:removeClearance()', function()
+		
+		test('clears the cached clearance value', function()
+			local map = {{0,0,0,0},{1,0,0,0},{0,0,0,0}}
+			local grid = Grid(map)
+			local walkable = 0
+			local NodeA = grid:getNodeAt(1,1)
+			assert_equal(grid:evalClearance(NodeA,walkable),1)
+			grid:removeClearance(NodeA,walkable)
+			assert_nil(NodeA:getClearance(walkable))
+		end)
+	end)
 	
 end)
