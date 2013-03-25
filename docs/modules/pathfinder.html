@@ -86,6 +86,15 @@
 	<td class="summary">Inits a new <a href="../modules/pathfinder.html#">pathfinder</a> </td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Pathfinder:evalGridClearance">Pathfinder:evalGridClearance&nbsp;()</a></td>
+	<td class="summary">Evaluates <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">true clearance</a>
+ values for the entire <a href="../modules/grid.html#">grid</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Pathfinder:removeClearance">Pathfinder:removeClearance&nbsp;()</a></td>
+	<td class="summary">Clears all true clearance values</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Pathfinder:setGrid">Pathfinder:setGrid&nbsp;(grid)</a></td>
 	<td class="summary">Sets the <a href="../modules/grid.html#">grid</a> .</td>
 	</tr>
@@ -258,6 +267,54 @@
    <span class="keyword">return</span> value &gt; <span class="number">0</span>
  <span class="keyword">end</span>
  <span class="keyword">local</span> finder = Pathfinder(myGrid, <span class="string">'JPS'</span>, walkable)</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Pathfinder:evalGridClearance"></a>
+    <strong>Pathfinder:evalGridClearance&nbsp;()</strong>
+    </dt>
+    <dd>
+    Evaluates <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">true clearance</a>
+ values for the entire <a href="../modules/grid.html#">grid</a> .  It should be called only once, unless the collision map or the
+ <strong>walkable</strong> attribute changes. The clearance values are calculated and cached within the grid nodes.
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/pathfinder.html#">pathfinder</a></span>
+        self (the calling <a href="../modules/pathfinder.html#">pathfinder</a>  itself, can be chained)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:evalGridClearance()</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Pathfinder:removeClearance"></a>
+    <strong>Pathfinder:removeClearance&nbsp;()</strong>
+    </dt>
+    <dd>
+    Clears all true clearance values
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/pathfinder.html#">pathfinder</a></span>
+        self (the calling <a href="../modules/pathfinder.html#">pathfinder</a>  itself, can be chained)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:clearGridClearance()</pre>
     </ul>
 
 </dd>
