@@ -382,8 +382,8 @@ if (...) then
 			for i = 1,#coords do
 				local p = coords[i]
 				local nodeAt = self:getNodeAt(p[1], p[2])
-				if not nodeAt then 
-					increase = false 
+				if not nodeAt then
+					increase = false
 				else
 					if not self:isWalkableAt(nodeAt._x, nodeAt._y,walkable) then
 						increase = false
@@ -393,6 +393,18 @@ if (...) then
 		until not increase
 		node._clearance[walkable] = radius
 		return radius
+	end
+	
+	--- Clears a true clearance value
+	-- @class function
+	-- @tparam node node a node
+  -- @tparam string|int|func walkable the value for walkable locations in the collision map array.
+	-- @treturn grid self (the calling `grid` itself, can be chained)
+	-- @usage
+	-- myGrid:removeClearance(node, walkable)	
+	function Grid:removeClearance(node, walkable)
+		node._clearance[walkable] = nil
+		return self
 	end
 
   -- Specialized grids
