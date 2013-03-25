@@ -76,7 +76,7 @@ if (...) then
 	
 	-- Is arg a boolean
 	local function isBoolean(b) 
-		return b==true or b==false 
+		return (b==true or b==false)
 	end
 	
 	-- Is arg nil ?
