@@ -99,7 +99,8 @@ if (...) then
     return newPathfinder
   end
 
-	--- Evaluates true clearance values for the entire `grid`. It should be called only once, unless the collision map or the
+	--- Evaluates [true clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric) 
+	-- values for the entire `grid`. It should be called only once, unless the collision map or the
 	-- __walkable__ attribute changes. The clearance values are calculated and cached within the grid nodes.
   -- @class function
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
@@ -112,8 +113,8 @@ if (...) then
 		return self
 	end
 
-	--- Clears all true clearance values cached in the entire `grid`
-  -- @class function
+	--- Clears all true clearance values
+	-- @class function
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
 	-- @usage myFinder:clearGridClearance()	
 	function Pathfinder:removeClearance()
