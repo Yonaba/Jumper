@@ -70,7 +70,7 @@ if (...) then
 	-- Produces a new heap
 	local function newHeap(template,comp)
 		return setmetatable({_heap = {},
-			_sort = comp or f_min, size = 0},
+			_sort = comp or f_min, _size = 0},
 		template)
 	end
 

@@ -18,7 +18,7 @@ context('Module BHeap', function()
 		test('items can be pushed inside', function()
 			local h = BHeap()
 			h:push(1):push(2):push(3)
-			assert_equal(h.size, 3)
+			assert_equal(h._size, 3)
 		end)
 		
 		test('popping returns the lowest element by default (< operator)', function()
@@ -82,7 +82,7 @@ context('Module BHeap', function()
 			h:push(1):push()
 			
 			assert_false(h:empty())
-			assert_equal(h.size,1)
+			assert_equal(h._size,1)
 		end)
 		
 		test('popping an empty heap returns nil', function()

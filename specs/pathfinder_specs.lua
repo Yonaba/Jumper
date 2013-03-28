@@ -384,13 +384,6 @@ context('Module Pathfinder', function()
 			assert_error(pcall(pf.getPath, pf, 0,0, 3, 3))
 		end)
 		
-		test('returns also the path length', function()
-			local pf = PF(grid, 'ASTAR', 0)
-			local path, len = pf:getPath(1,1,3,3)
-			assert_equal(type(len), 'number')
-			assert_gte(len, 0)
-		end)
-		
 	end)	
 	
 end)
