@@ -39,9 +39,9 @@ if (...) then
 			pIndex =  index/2
 		else pIndex = (index-1)/2
 		end
-		if not heap.sort(heap.__heap[pIndex], heap.__heap[index]) then
-			heap.__heap[pIndex], heap.__heap[index] = 
-				heap.__heap[index], heap.__heap[pIndex]
+		if not heap._sort(heap._heap[pIndex], heap._heap[index]) then
+			heap._heap[pIndex], heap._heap[index] = 
+				heap._heap[index], heap._heap[pIndex]
 			percolate_up(heap, pIndex)
 		end
 	end
@@ -51,26 +51,26 @@ if (...) then
 		local lfIndex,rtIndex,minIndex
 		lfIndex = 2*index
 		rtIndex = lfIndex + 1
-		if rtIndex > heap.size then
-			if lfIndex > heap.size then return
+		if rtIndex > heap._size then
+			if lfIndex > heap._size then return
 			else minIndex = lfIndex  end
 		else
-			if heap.sort(heap.__heap[lfIndex],heap.__heap[rtIndex]) then
+			if heap._sort(heap._heap[lfIndex],heap._heap[rtIndex]) then
 				minIndex = lfIndex
 			else
 				minIndex = rtIndex
 			end
 		end
-		if not heap.sort(heap.__heap[index],heap.__heap[minIndex]) then
-			heap.__heap[index],heap.__heap[minIndex] = heap.__heap[minIndex],heap.__heap[index]
+		if not heap._sort(heap._heap[index],heap._heap[minIndex]) then
+			heap._heap[index],heap._heap[minIndex] = heap._heap[minIndex],heap._heap[index]
 			percolate_down(heap,minIndex)
 		end
 	end
 
 	-- Produces a new heap
 	local function newHeap(template,comp)
-		return setmetatable({__heap = {},
-			sort = comp or f_min, size = 0},
+		return setmetatable({_heap = {},
+			_sort = comp or f_min, size = 0},
 		template)
 	end
 
@@ -93,7 +93,7 @@ if (...) then
 	--   print('Heap is empty!')
 	-- end
 	function heap:empty()
-		return (self.size==0)
+		return (self._size==0)
 	end
 
 	--- Clears the `heap` (removes all items queued in the heap)
@@ -101,9 +101,9 @@ if (...) then
 	-- @treturn heap self (the calling `heap` itself, can be chained)
 	-- @usage myHeap:clear()
 	function heap:clear()
-		self.__heap = {}
-		self.size = 0
-		self.sort = self.sort or f_min
+		self._heap = {}
+		self._size = 0
+		self._sort = self._sort or f_min
 		return self
 	end
 
@@ -117,9 +117,9 @@ if (...) then
 	-- myHeap:push(1):push(2):push(4)
 	function heap:push(item)
 		if item then
-			self.size = self.size + 1
-			self.__heap[self.size] = item
-			percolate_up(self, self.size)
+			self._size = self._size + 1
+			self._heap[self._size] = item
+			percolate_up(self, self._size)
 		end
 		return self
 	end
@@ -135,12 +135,12 @@ if (...) then
 	-- end
 	function heap:pop()
 		local root
-		if self.size > 0 then
-			root = self.__heap[1]
-			self.__heap[1] = self.__heap[self.size]
-			self.__heap[self.size] = nil
-			self.size = self.size-1
-			if self.size>1 then
+		if self._size > 0 then
+			root = self._heap[1]
+			self._heap[1] = self._heap[self._size]
+			self._heap[self._size] = nil
+			self._size = self._size-1
+			if self._size>1 then
 				percolate_down(self, 1)
 			end
 		end
@@ -156,15 +156,16 @@ if (...) then
 	-- @treturn heap self (the calling `heap` itself, can be chained)
 	-- @usage myHeap:heapify() 
 	function heap:heapify(item)
+		if self._size == 0 then return end
 		if item then
-			local i = Utils.indexOf(self.__heap,item)
+			local i = Utils.indexOf(self._heap,item)
 			if i then 
 				percolate_down(self, i)
 				percolate_up(self, i)
 			end
 			return
 		end
-		for i = floor(self.size/2),1,-1 do
+		for i = floor(self._size/2),1,-1 do
 			percolate_down(self,i)
 		end
 		return self
