@@ -8,8 +8,8 @@ if (...) then
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
-  return function (finder, startNode, endNode, toClear)
-    return astar_search(finder, startNode, endNode, toClear, dijkstraHeuristic)
+  return function (finder, startNode, endNode, clearance, toClear)
+    return astar_search(finder, startNode, endNode, clearance, toClear, dijkstraHeuristic)
   end
 
 end
