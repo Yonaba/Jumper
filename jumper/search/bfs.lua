@@ -4,15 +4,19 @@ if (...) then
   -- Internalization
   local t_remove = table.remove
 
-  local function breadth_first_search(finder, node, openList, toClear)
+  local function breadth_first_search(finder, openList, node, clearance, toClear)
     local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, finder._tunnel)
     for i = 1,#neighbours do
       local neighbour = neighbours[i]
       if not neighbour._closed and not neighbour._opened then
-        openList[#openList+1] = neighbour
-        neighbour._opened = true
-        neighbour._parent = node
-        toClear[neighbour] = true
+				local nClearance = neighbour._clearance[finder._walkable] or finder._grid:evalClearance(neighbour, finder._walkable)
+				local pushThisNode = clearance and nClearance and (nClearance >= clearance)			
+        if (clearance and pushThisNode) or (not clearance) then
+					openList[#openList+1] = neighbour
+					neighbour._opened = true
+					neighbour._parent = node
+					toClear[neighbour] = true
+				end
       end
     end
 
@@ -20,7 +24,7 @@ if (...) then
 
   -- Calculates a path.
   -- Returns the path from location `<startX, startY>` to location `<endX, endY>`.
-  return function (finder, startNode, endNode, toClear)
+  return function (finder, startNode, endNode, clearance, toClear)
 
     local openList = {} -- We'll use a FIFO queue (simple array)
     openList[1] = startNode
@@ -33,7 +37,7 @@ if (...) then
       t_remove(openList,1)
       node._closed = true
       if node == endNode then return node end
-      breadth_first_search(finder, node, openList, toClear)
+      breadth_first_search(finder, openList, node, clearance, toClear)
     end
 
     return nil
