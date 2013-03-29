@@ -29,6 +29,7 @@ if (...) then
 	--
 	-- <li>[A*](http://en.wikipedia.org/wiki/A*_search_algorithm)</li>
 	-- <li>[Dijkstra](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm)</li>
+	-- <li>[Theta Astar](http://aigamedev.com/open/tutorials/theta-star-any-angle-paths/)</li>
 	-- <li>[BFS](http://en.wikipedia.org/wiki/Breadth-first_search)</li>
 	-- <li>[DFS](http://en.wikipedia.org/wiki/Depth-first_search)</li>
 	-- <li>[JPS](http://harablog.wordpress.com/2011/09/07/jump-point-search/)</li>
