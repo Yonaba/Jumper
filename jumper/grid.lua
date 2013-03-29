@@ -182,14 +182,14 @@ if (...) then
 	-- @usage
 	-- local aNode = myGrid:getNodeAt(5,6)
 	-- local neighbours = myGrid:getNeighbours(aNode, 0, true)
-  function Grid:getNeighbours(node, walkable, allowDiagonal, tunnel)
+  function Grid:getNeighbours(node, walkable, allowDiagonal, tunnel, clearance)
 		local neighbours = {}
     for i = 1,#straightOffsets do
       local n = self:getNodeAt(
         node._x + straightOffsets[i].x,
         node._y + straightOffsets[i].y
       )
-      if n and self:isWalkableAt(n._x, n._y, walkable) then
+      if n and self:isWalkableAt(n._x, n._y, walkable, clearance) then
         neighbours[#neighbours+1] = n
       end
     end
@@ -202,14 +202,14 @@ if (...) then
         node._x + diagonalOffsets[i].x,
         node._y + diagonalOffsets[i].y
       )
-      if n and self:isWalkableAt(n._x, n._y, walkable) then
+      if n and self:isWalkableAt(n._x, n._y, walkable, clearance) then
 				if tunnel then
 					neighbours[#neighbours+1] = n
 				else
 					local skipThisNode = false
 					local n1 = self:getNodeAt(node._x+diagonalOffsets[i].x, node._y)
 					local n2 = self:getNodeAt(node._x, node._y+diagonalOffsets[i].y)
-					if ((n1 and n2) and not self:isWalkableAt(n1._x, n1._y, walkable) and not self:isWalkableAt(n2._x, n2._y, walkable)) then
+					if ((n1 and n2) and not self:isWalkableAt(n1._x, n1._y, walkable, clearance) and not self:isWalkableAt(n2._x, n2._y, walkable, clearance)) then
 						skipThisNode = true
 					end
 					if not skipThisNode then neighbours[#neighbours+1] = n end
@@ -394,14 +394,14 @@ if (...) then
 		node._clearance[walkable] = radius
 		return radius
 	end
-	
+
 	--- Clears a true clearance value
 	-- @class function
 	-- @tparam node node a node
   -- @tparam string|int|func walkable the value for walkable locations in the collision map array.
 	-- @treturn grid self (the calling `grid` itself, can be chained)
 	-- @usage
-	-- myGrid:removeClearance(node, walkable)	
+	-- myGrid:removeClearance(node, walkable)
 	function Grid:removeClearance(node, walkable)
 		node._clearance[walkable] = nil
 		return self
