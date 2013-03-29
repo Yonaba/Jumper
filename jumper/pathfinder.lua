@@ -46,9 +46,6 @@ if (...) then
   -- to easily reset their properties for the next pathfinding call
   local toClear = {}
 
-  -- Keeps track of the last computed path cost
-  local lastPathCost = 0
-
 	--- Search modes. Refers to the search modes. In ORTHOGONAL mode, 4-directions are only possible when moving,
 	-- including North, East, West, South. In DIAGONAL mode, 8-directions are possible when moving,
 	-- including North, East, West, South and adjacent directions.
@@ -316,21 +313,19 @@ if (...) then
   -- @tparam number endX the x-coordinate for the goal location
   -- @tparam number endY the y-coordinate for the goal location
   -- @treturn path a path (array of nodes) when found, otherwise nil
-  -- @treturn number the path length when found, 0 otherwise
-	-- @usage local path, len = myFinder:getPath(1,1,5,5)
-  function Pathfinder:getPath(startX, startY, endX, endY)
+	-- @usage local path = myFinder:getPath(1,1,5,5)
+  function Pathfinder:getPath(startX, startY, endX, endY, clearance)
 		self:reset()
     local startNode = self._grid:getNodeAt(startX, startY)
     local endNode = self._grid:getNodeAt(endX, endY)
     assert(startNode, ('Invalid location [%d, %d]'):format(startX, startY))
     assert(endNode and self._grid:isWalkableAt(endX, endY),
       ('Invalid or unreachable location [%d, %d]'):format(endX, endY))
-    local _endNode = Finders[self._finder](self, startNode, endNode, toClear)
+    local _endNode = Finders[self._finder](self, startNode, endNode, clearance, toClear)
     if _endNode then
-			return Utils.traceBackPath(self, _endNode, startNode), lastPathCost
+			return Utils.traceBackPath(self, _endNode, startNode)
     end
-    lastPathCost = 0
-    return nil, lastPathCost
+    return nil
   end
 
   --- Resets the `pathfinder` for new pathfinding calls. It is normally called internally, so one is not supposed
