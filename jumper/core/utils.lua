@@ -130,7 +130,6 @@ if (...) then
   local function traceBackPath(finder, node, startNode)
     local path = Path:new()
     path._grid = finder._grid
-    lastPathCost = node._f or path:getLength()
     while true do
       if node._parent then
         t_insert(path._nodes,1,node)
