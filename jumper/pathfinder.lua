@@ -37,6 +37,7 @@ if (...) then
   local Finders = {
     ['ASTAR']     = require (_PATH .. '.search.astar'),
     ['DIJKSTRA']  = require (_PATH .. '.search.dijkstra'),
+    ['THETASTAR'] = require (_PATH .. '.search.thetastar'),
     ['BFS']       = require (_PATH .. '.search.bfs'),
     ['DFS']       = require (_PATH .. '.search.dfs'),
     ['JPS']       = require (_PATH .. '.search.jps')

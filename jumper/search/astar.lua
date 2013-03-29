@@ -14,7 +14,7 @@ if (...) then
 	local Heap = require (_PATH.. '.core.bheap')
 
 	-- Updates G-cost
-	local function computeCost(node, neighbour, finder)
+	local function computeCost(node, neighbour, finder, clearance)
 		local mCost = Heuristics.EUCLIDIAN(neighbour._x - node._x, neighbour._y - node._y)
 		if node._g + mCost < neighbour._g then
 			neighbour._parent = node
@@ -26,7 +26,7 @@ if (...) then
 	local function updateVertex(finder, openList, node, neighbour, endNode, clearance, heuristic, overrideCostEval)
 		local oldG = neighbour._g
 		local cmpCost = overrideCostEval or computeCost
-		cmpCost(node, neighbour, finder)
+		cmpCost(node, neighbour, finder, clearance)
 		if neighbour._g < oldG then
 			local nClearance = neighbour._clearance[finder._walkable] or finder._grid:evalClearance(neighbour, finder._walkable)
 			local pushThisNode = clearance and nClearance and (nClearance >= clearance)
