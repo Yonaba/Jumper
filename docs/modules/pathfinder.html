@@ -49,9 +49,10 @@
 </ul>
 <h2>Examples</h2>
 <ul>
-  <li><a href="../examples/clearance.lua.html">clearance.lua</a></li>
-  <li><a href="../examples/heuristics.lua.html">heuristics.lua</a></li>
-  <li><a href="../examples/minimal.lua.html">minimal.lua</a></li>
+  <li><a href="../examples/annotatedpathing.lua.html">annotatedpathing.lua</a></li>
+  <li><a href="../examples/customheuristics.lua.html">customheuristics.lua</a></li>
+  <li><a href="../examples/makeclearance.lua.html">makeclearance.lua</a></li>
+  <li><a href="../examples/simpleexample.lua.html">simpleexample.lua</a></li>
 </ul>
 
 </div>
@@ -156,7 +157,7 @@
 	<td class="summary">Returns tunnelling feature state.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Pathfinder:getPath">Pathfinder:getPath&nbsp;(startX, startY, endX, endY)</a></td>
+	<td class="name" nowrap><a href="#Pathfinder:getPath">Pathfinder:getPath&nbsp;(startX, startY, endX, endY, clearance)</a></td>
 	<td class="summary">Calculates a <code>path</code>.</td>
 	</tr>
 	<tr>
@@ -180,6 +181,7 @@
 
 <p> <li><a href="http://en.wikipedia.org/wiki/A*_search_algorithm">A*</a></li>
  <li><a href="http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra</a></li>
+ <li><a href="http://aigamedev.com/open/tutorials/theta-star-any-angle-paths/">Theta Astar</a></li>
  <li><a href="http://en.wikipedia.org/wiki/Breadth-first_search">BFS</a></li>
  <li><a href="http://en.wikipedia.org/wiki/Depth-first_search">DFS</a></li>
  <li><a href="http://harablog.wordpress.com/2011/09/07/jump-point-search/">JPS</a></li>
@@ -759,7 +761,7 @@
 </dd>
     <dt>
     <a name = "Pathfinder:getPath"></a>
-    <strong>Pathfinder:getPath&nbsp;(startX, startY, endX, endY)</strong>
+    <strong>Pathfinder:getPath&nbsp;(startX, startY, endX, endY, clearance)</strong>
     </dt>
     <dd>
     Calculates a <code>path</code>.  Returns the <code>path</code> from location <strong>[startX, startY]</strong> to location <strong>[endX, endY]</strong>.
@@ -768,34 +770,34 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">startX</span>
-            <span class="types"><span class="type">number</span></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
          the x-coordinate for the starting location</li>
         <li><span class="parameter">startY</span>
-            <span class="types"><span class="type">number</span></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
          the y-coordinate for the starting location</li>
         <li><span class="parameter">endX</span>
-            <span class="types"><span class="type">number</span></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
          the x-coordinate for the goal location</li>
         <li><span class="parameter">endY</span>
-            <span class="types"><span class="type">number</span></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
          the y-coordinate for the goal location</li>
+        <li><span class="parameter">clearance</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+         the amount of clearance (i.e the pathing agent size) to consider</li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
-        <li>
+
           <span class="types"><span class="type">path</span></span>
-        a path (array of nodes) when found, otherwise nil</li>
-        <li>
-          <span class="types"><span class="type">number</span></span>
-        the path length when found, 0 otherwise</li>
+        a path (array of nodes) when found, otherwise nil
     </ol>
 
 
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example"><span class="keyword">local</span> path, len = myFinder:getPath(<span class="number">1</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">5</span>)</pre>
+        <pre class="example"><span class="keyword">local</span> path = myFinder:getPath(<span class="number">1</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">5</span>)</pre>
     </ul>
 
 </dd>

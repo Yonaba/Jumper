@@ -177,6 +177,7 @@ if (...) then
   -- @tparam[optchain] bool allowDiagonal when __true__, allows adjacent nodes are included (8-neighbours).
 	-- Defaults to __false__ when omitted.
   -- @tparam[optchain] bool tunnel When __true__, allows the `pathfinder` to tunnel through walls when heading diagonally.
+  -- @tparam[optchain] int clearance When given, will prune for the neighbours set all nodes having a clearance value lower than the passed-in value
 	-- Defaults to __false__ when omitted.
   -- @treturn {node,...} an array of nodes neighbouring a given node
 	-- @usage

@@ -15,7 +15,7 @@ if (...) then
 
 	-- Updates G-cost
 	local function computeCost(node, neighbour, finder, clearance)
-		local mCost = Heuristics.EUCLIDIAN(neighbour._x - node._x, neighbour._y - node._y)
+		local mCost = Heuristics.EUCLIDIAN(neighbour, node)
 		if node._g + mCost < neighbour._g then
 			neighbour._parent = node
 			neighbour._g = node._g + mCost
@@ -30,9 +30,9 @@ if (...) then
 		if neighbour._g < oldG then
 			local nClearance = neighbour._clearance[finder._walkable] or finder._grid:evalClearance(neighbour, finder._walkable)
 			local pushThisNode = clearance and nClearance and (nClearance >= clearance)
-			if (clearance and pushThisNode) or (not clearance) then
+			if (clearance and pushThisNode) or (not clearance) or (neighbour == endNode) then
 				if neighbour._opened then neighbour._opened = false end				
-				neighbour._h = heuristic(endNode._x - neighbour._x, endNode._y - neighbour._y)
+				neighbour._h = heuristic(endNode, neighbour)
 				neighbour._f = neighbour._g + neighbour._h
 				openList:push(neighbour)
 				neighbour._opened = true
@@ -47,7 +47,7 @@ if (...) then
 		local heuristic = overrideHeuristic or finder._heuristic
 		local openList = Heap()
 		startNode._g = 0
-		startNode._h = heuristic(endNode._x - startNode._x, endNode._y - startNode._y)
+		startNode._h = heuristic(endNode, startNode)
 		startNode._f = startNode._g + startNode._h
 		openList:push(startNode)
 		toClear[startNode] = true

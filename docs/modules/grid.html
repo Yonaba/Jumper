@@ -47,9 +47,10 @@
 </ul>
 <h2>Examples</h2>
 <ul>
-  <li><a href="../examples/clearance.lua.html">clearance.lua</a></li>
-  <li><a href="../examples/heuristics.lua.html">heuristics.lua</a></li>
-  <li><a href="../examples/minimal.lua.html">minimal.lua</a></li>
+  <li><a href="../examples/annotatedpathing.lua.html">annotatedpathing.lua</a></li>
+  <li><a href="../examples/customheuristics.lua.html">customheuristics.lua</a></li>
+  <li><a href="../examples/makeclearance.lua.html">makeclearance.lua</a></li>
+  <li><a href="../examples/simpleexample.lua.html">simpleexample.lua</a></li>
 </ul>
 
 </div>
@@ -97,7 +98,7 @@
 	<td class="summary">Returns the <a href="../modules/grid.html#">grid</a>  bounds.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Grid:getNeighbours">Grid:getNeighbours&nbsp;(node [, walkable [, allowDiagonal [, tunnel]]])</a></td>
+	<td class="name" nowrap><a href="#Grid:getNeighbours">Grid:getNeighbours&nbsp;(node [, walkable [, allowDiagonal [, tunnel [, clearance]]]])</a></td>
 	<td class="summary">Returns neighbours.</td>
 	</tr>
 	<tr>
@@ -366,7 +367,7 @@
 </dd>
     <dt>
     <a name = "Grid:getNeighbours"></a>
-    <strong>Grid:getNeighbours&nbsp;(node [, walkable [, allowDiagonal [, tunnel]]])</strong>
+    <strong>Grid:getNeighbours&nbsp;(node [, walkable [, allowDiagonal [, tunnel [, clearance]]]])</strong>
     </dt>
     <dd>
     Returns neighbours.  The returned value is an array of <strong>walkable</strong> nodes neighbouring a given <code>node</code>.
@@ -386,7 +387,10 @@
  Defaults to <strong>false</strong> when omitted.</li>
         <li><span class="parameter">tunnel</span>
             <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
-         When <strong>true</strong>, allows the <a href="../modules/pathfinder.html#">pathfinder</a>  to tunnel through walls when heading diagonally.
+         When <strong>true</strong>, allows the <a href="../modules/pathfinder.html#">pathfinder</a>  to tunnel through walls when heading diagonally.</li>
+        <li><span class="parameter">clearance</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+         When given, will prune for the neighbours set all nodes having a clearance value lower than the passed-in value
  Defaults to <strong>false</strong> when omitted.</li>
     </ul>
 

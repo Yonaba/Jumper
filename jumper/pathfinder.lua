@@ -310,10 +310,11 @@ if (...) then
   --- Calculates a `path`. Returns the `path` from location __[startX, startY]__ to location __[endX, endY]__.
   -- Both locations must exist on the collision map. The starting location can be unwalkable.
   -- @class function
-  -- @tparam number startX the x-coordinate for the starting location
-  -- @tparam number startY the y-coordinate for the starting location
-  -- @tparam number endX the x-coordinate for the goal location
-  -- @tparam number endY the y-coordinate for the goal location
+  -- @tparam int startX the x-coordinate for the starting location
+  -- @tparam int startY the y-coordinate for the starting location
+  -- @tparam int endX the x-coordinate for the goal location
+  -- @tparam int endY the y-coordinate for the goal location
+  -- @tparam int clearance the amount of clearance (i.e the pathing agent size) to consider
   -- @treturn path a path (array of nodes) when found, otherwise nil
 	-- @usage local path = myFinder:getPath(1,1,5,5)
   function Pathfinder:getPath(startX, startY, endX, endY, clearance)
@@ -341,6 +342,7 @@ if (...) then
 		return self
 	end
 
+	
   -- Returns Pathfinder class
 	Pathfinder._VERSION = _VERSION
 	Pathfinder._RELEASEDATE = _RELEASEDATE

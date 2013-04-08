@@ -34,10 +34,10 @@
 
 <h2>Examples</h2>
 <ul>
-  <li><a href="../examples/clearancebasedpathfinding.lua.html">clearancebasedpathfinding.lua</a></li>
-  <li><a href="../examples/heuristics.lua.html">heuristics.lua</a></li>
+  <li><a href="../examples/annotatedpathing.lua.html">annotatedpathing.lua</a></li>
+  <li><a href="../examples/customheuristics.lua.html">customheuristics.lua</a></li>
   <li><a href="../examples/makeclearance.lua.html">makeclearance.lua</a></li>
-  <li><strong>minimal.lua</strong></li>
+  <li><strong>simpleexample.lua</strong></li>
 </ul>
 <h2>Modules</h2>
 <ul>
@@ -53,7 +53,7 @@
 
 <div id="content">
 
-<h1>Example <code>minimal.lua</code></h1>
+<h1>Example <code>simpleexample.lua</code></h1>
 
     <pre>
 <span class="comment">--- Very minimal usage example for Jumper
@@ -85,13 +85,13 @@
 <span class="keyword">local</span> endx, endy = <span class="number">5</span>,<span class="number">1</span>
 
 <span class="comment">-- Calculates the path, and its length
-</span><span class="keyword">local</span> path, length = myFinder:getPath(startx, starty, endx, endy)
+</span><span class="keyword">local</span> path = myFinder:getPath(startx, starty, endx, endy)
 
 <span class="comment">-- Pretty-printing the results
 </span><span class="keyword">if</span> path <span class="keyword">then</span>
-  <span class="global">print</span>((<span class="string">'Path found! Length: %.2f'</span>):format(length))
+  <span class="global">print</span>((<span class="string">'Path found! Length: %.2f'</span>):format(path:getLength()))
 	<span class="keyword">for</span> node, count <span class="keyword">in</span> path:nodes() <span class="keyword">do</span>
-	  <span class="global">print</span>((<span class="string">'Step: %d - x: %d - y: %d'</span>):format(count, node.x, node.y))
+	  <span class="global">print</span>((<span class="string">'Step: %d - x: %d - y: %d'</span>):format(count, node:getX(), node:getY()))
 	<span class="keyword">end</span>
 <span class="keyword">end</span></pre>
 

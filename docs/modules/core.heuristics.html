@@ -47,9 +47,10 @@
 </ul>
 <h2>Examples</h2>
 <ul>
-  <li><a href="../examples/clearance.lua.html">clearance.lua</a></li>
-  <li><a href="../examples/heuristics.lua.html">heuristics.lua</a></li>
-  <li><a href="../examples/minimal.lua.html">minimal.lua</a></li>
+  <li><a href="../examples/annotatedpathing.lua.html">annotatedpathing.lua</a></li>
+  <li><a href="../examples/customheuristics.lua.html">customheuristics.lua</a></li>
+  <li><a href="../examples/makeclearance.lua.html">makeclearance.lua</a></li>
+  <li><a href="../examples/simpleexample.lua.html">simpleexample.lua</a></li>
 </ul>
 
 </div>
@@ -67,7 +68,7 @@
 
 <p> Distance functions are internally used by the <a href="../modules/pathfinder.html#">pathfinder</a>  to evaluate the optimal path
  from the start location to the goal. These functions share the same prototype:</p>
-<pre><code> local function myHeuristic(dx, dy)
+<pre><code> local function myHeuristic(nodeA, nodeB)
    -- function body
  end
 </code></pre>
@@ -78,19 +79,19 @@
 <h2><a href="#Functions">Functions</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#Heuristics.MANHATTAN">Heuristics.MANHATTAN&nbsp;(dx, dy)</a></td>
+	<td class="name" nowrap><a href="#Heuristics.MANHATTAN">Heuristics.MANHATTAN&nbsp;(nodeA, nodeB)</a></td>
 	<td class="summary">Manhattan distance.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Heuristics.EUCLIDIAN">Heuristics.EUCLIDIAN&nbsp;(dx, dy)</a></td>
+	<td class="name" nowrap><a href="#Heuristics.EUCLIDIAN">Heuristics.EUCLIDIAN&nbsp;(nodeA, nodeB)</a></td>
 	<td class="summary">Euclidian distance.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Heuristics.DIAGONAL">Heuristics.DIAGONAL&nbsp;(dx, dy)</a></td>
+	<td class="name" nowrap><a href="#Heuristics.DIAGONAL">Heuristics.DIAGONAL&nbsp;(nodeA, nodeB)</a></td>
 	<td class="summary">Diagonal distance.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Heuristics.CARDINTCARD">Heuristics.CARDINTCARD&nbsp;(dx, dy)</a></td>
+	<td class="name" nowrap><a href="#Heuristics.CARDINTCARD">Heuristics.CARDINTCARD&nbsp;(nodeA, nodeB)</a></td>
 	<td class="summary">Cardinal/Intercardinal distance.</td>
 	</tr>
 </table>
@@ -103,7 +104,7 @@
     <dl class="function">
     <dt>
     <a name = "Heuristics.MANHATTAN"></a>
-    <strong>Heuristics.MANHATTAN&nbsp;(dx, dy)</strong>
+    <strong>Heuristics.MANHATTAN&nbsp;(nodeA, nodeB)</strong>
     </dt>
     <dd>
     Manhattan distance.
@@ -112,19 +113,19 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">dx</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endX-startX</li>
-        <li><span class="parameter">dy</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endY-startY</li>
+        <li><span class="parameter">nodeA</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         a node</li>
+        <li><span class="parameter">nodeB</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         another node</li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
           <span class="types"><span class="type">number</span></span>
-        the distance from location <strong>[startX, startY]</strong> to location <strong>[endX, endY]</strong>
+        the distance from <strong>nodeA</strong> to <strong>nodeB</strong>
     </ol>
 
 
@@ -142,7 +143,7 @@
 </dd>
     <dt>
     <a name = "Heuristics.EUCLIDIAN"></a>
-    <strong>Heuristics.EUCLIDIAN&nbsp;(dx, dy)</strong>
+    <strong>Heuristics.EUCLIDIAN&nbsp;(nodeA, nodeB)</strong>
     </dt>
     <dd>
     Euclidian distance.
@@ -150,19 +151,19 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">dx</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endX-startX</li>
-        <li><span class="parameter">dy</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endY-startY</li>
+        <li><span class="parameter">nodeA</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         a node</li>
+        <li><span class="parameter">nodeB</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         another node</li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
           <span class="types"><span class="type">number</span></span>
-        the distance from location <strong>[startX, startY]</strong> to location <strong>[endX, endY]</strong>
+        the distance from <strong>nodeA</strong> to <strong>nodeB</strong>
     </ol>
 
 
@@ -180,7 +181,7 @@
 </dd>
     <dt>
     <a name = "Heuristics.DIAGONAL"></a>
-    <strong>Heuristics.DIAGONAL&nbsp;(dx, dy)</strong>
+    <strong>Heuristics.DIAGONAL&nbsp;(nodeA, nodeB)</strong>
     </dt>
     <dd>
     Diagonal distance.
@@ -188,19 +189,19 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">dx</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endX-startX</li>
-        <li><span class="parameter">dy</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endY-startY</li>
+        <li><span class="parameter">nodeA</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         a node</li>
+        <li><span class="parameter">nodeB</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         another node</li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
           <span class="types"><span class="type">number</span></span>
-        the distance from location <strong>[startX, startY]</strong> to location <strong>[endX, endY]</strong>
+        the distance from <strong>nodeA</strong> to <strong>nodeB</strong>
     </ol>
 
 
@@ -218,7 +219,7 @@
 </dd>
     <dt>
     <a name = "Heuristics.CARDINTCARD"></a>
-    <strong>Heuristics.CARDINTCARD&nbsp;(dx, dy)</strong>
+    <strong>Heuristics.CARDINTCARD&nbsp;(nodeA, nodeB)</strong>
     </dt>
     <dd>
     Cardinal/Intercardinal distance.
@@ -226,19 +227,19 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">dx</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endX-startX</li>
-        <li><span class="parameter">dy</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the difference endY-startY</li>
+        <li><span class="parameter">nodeA</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         a node</li>
+        <li><span class="parameter">nodeB</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         another node</li>
     </ul>
 
     <h3>Returns:</h3>
     <ol>
 
           <span class="types"><span class="type">number</span></span>
-        the distance from location <strong>[startX, startY]</strong> to location <strong>[endX, endY]</strong>
+        the distance from <strong>nodeA</strong> to <strong>nodeB</strong>
     </ol>
 
 

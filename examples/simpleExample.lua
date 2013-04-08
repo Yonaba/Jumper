@@ -12,7 +12,7 @@ local walkable = 0
 
 -- Library setup
 -- Calls the grid class
-local Grid = require ("jumper.grid") 
+local Grid = require ("jumper.grid")
 -- Calls the pathfinder class
 local Pathfinder = require ("jumper.pathfinder")
 
@@ -27,12 +27,12 @@ local startx, starty = 1,1
 local endx, endy = 5,1
 
 -- Calculates the path, and its length
-local path, length = myFinder:getPath(startx, starty, endx, endy)
+local path = myFinder:getPath(startx, starty, endx, endy)
 
 -- Pretty-printing the results
 if path then
-  print(('Path found! Length: %.2f'):format(length))
+  print(('Path found! Length: %.2f'):format(path:getLength()))
 	for node, count in path:nodes() do
-	  print(('Step: %d - x: %d - y: %d'):format(count, node.x, node.y))
+	  print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
 	end
 end

@@ -219,13 +219,13 @@ end
       if jumpNode and not skip then
         -- Update the jump node and move it in the closed list if it wasn't there
         if not jumpNode._closed then			
-					local extraG = Heuristics.EUCLIDIAN(jumpNode._x-node._x,jumpNode._y-node._y)
+					local extraG = Heuristics.EUCLIDIAN(jumpNode, node)
 					local newG = node._g + extraG
 					if not jumpNode._opened or newG < jumpNode._g then
 						toClear[jumpNode] = true -- Records this node to reset its properties later.
 						jumpNode._g = newG
 						jumpNode._h = jumpNode._h or
-							(finder._heuristic(jumpNode._x-endNode._x,jumpNode._y-endNode._y))
+							(finder._heuristic(jumpNode, endNode))
 						jumpNode._f = jumpNode._g+jumpNode._h
 						jumpNode._parent = node
 						if not jumpNode._opened then
