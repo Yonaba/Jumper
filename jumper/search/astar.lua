@@ -30,7 +30,7 @@ if (...) then
 		if neighbour._g < oldG then
 			local nClearance = neighbour._clearance[finder._walkable] or finder._grid:evalClearance(neighbour, finder._walkable)
 			local pushThisNode = clearance and nClearance and (nClearance >= clearance)
-			if (clearance and pushThisNode) or (not clearance) or (neighbour == endNode) then
+			if (clearance and pushThisNode) or (not clearance) then
 				if neighbour._opened then neighbour._opened = false end				
 				neighbour._h = heuristic(endNode, neighbour)
 				neighbour._f = neighbour._g + neighbour._h
