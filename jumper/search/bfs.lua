@@ -9,7 +9,7 @@ if (...) then
     for i = 1,#neighbours do
       local neighbour = neighbours[i]
       if not neighbour._closed and not neighbour._opened then
-				local nClearance = neighbour._clearance[finder._walkable] or finder._grid:evalClearance(neighbour, finder._walkable)
+				local nClearance = neighbour._clearance[finder._walkable]
 				local pushThisNode = clearance and nClearance and (nClearance >= clearance)			
         if (clearance and pushThisNode) or (not clearance) then
 					openList[#openList+1] = neighbour
