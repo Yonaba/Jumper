@@ -98,28 +98,45 @@ if (...) then
     return newPathfinder
   end
 
-	--- Evaluates [true clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric) 
-	-- values for the entire `grid`. It should be called only once, unless the collision map or the
+	--- Evaluates [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric) 
+	-- for the whole `grid`. It should be called only once, unless the collision map or the
 	-- __walkable__ attribute changes. The clearance values are calculated and cached within the grid nodes.
   -- @class function
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
-	-- @usage myFinder:evalGridClearance()
-	function Pathfinder:evalGridClearance()
+	-- @usage myFinder:annotateGrid()
+	function Pathfinder:annotateGrid()
 		assert(self._walkable, 'Finder must implement a walkable value')
-		for node in self._grid:iter() do
-			self._grid:evalClearance(node, self._walkable)
+		for x=self._grid._max_x,self._grid._min_x,-1 do
+			for y=self._grid._max_y,self._grid._min_y,-1 do
+				local node = self._grid:getNodeAt(x,y)
+				if self._grid:isWalkableAt(x,y,self._walkable) then
+					local nr = self._grid:getNodeAt(node._x+1, node._y)
+					local nrd = self._grid:getNodeAt(node._x+1, node._y+1)
+					local nd = self._grid:getNodeAt(node._x, node._y+1)
+					if nr and nrd and nd then
+						local m = nrd._clearance[self._walkable] or 0
+						m = (nd._clearance[self._walkable] or 0)<m and (nd._clearance[self._walkable] or 0) or m
+						m = (nr._clearance[self._walkable] or 0)<m and (nr._clearance[self._walkable] or 0) or m
+						node._clearance[self._walkable] = m+1
+					else
+						node._clearance[self._walkable] = 1
+					end
+				else node._clearance[self._walkable] = 0
+				end
+			end
 		end
 		return self
 	end
-
-	--- Clears all true clearance values
-	-- @class function
+	
+	--- Removes [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric)values.
+	-- Clears cached clearance values for the current __walkable__.
+  -- @class function
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
-	-- @usage myFinder:clearGridClearance()	
-	function Pathfinder:removeClearance()
+	-- @usage myFinder:clearAnnotations()	
+	function Pathfinder:clearAnnotations()
 		assert(self._walkable, 'Finder must implement a walkable value')
 		for node in self._grid:iter() do
-			self._grid:removeClearance(node, self._walkable)
+			node:removeClearance(walkable)
 		end
 		return self
 	end
@@ -331,8 +348,8 @@ if (...) then
     return nil
   end
 
-  --- Resets the `pathfinder` for new pathfinding calls. It is normally called internally, so one is not supposed
-	-- to call it explicitely, unless under specific circumstances.
+  --- Resets the `pathfinder`. This function is called internally between successive pathfinding calls, so you should not
+	-- use it explicitely, unless under specific circumstances.
   -- @class function
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
 	-- @usage local path, len = myFinder:getPath(1,1,5,5)
