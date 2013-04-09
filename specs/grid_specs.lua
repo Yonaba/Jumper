@@ -169,15 +169,7 @@ context('Module Grid', function()
 					end
 				end
 			end)
-			
-			test('Handles clearance', function()
-				local map = {{0,0,0},{0,1,0},{0,0,0}}
-				local grid = Grid(map)
-				local bigAgentClearance = 2
-				local littleAgentClearance = 1
-				assert_false(grid:isWalkableAt(1,2,0,bigAgentClearance))
-				assert_true(grid:isWalkableAt(1,2,0,littleAgentClearance))
-			end)
+	
 	end)
 		
 	context('Grid:getMap()', function()
@@ -505,35 +497,5 @@ context('Module Grid', function()
 			end)
 		
 	end)		
-	
-	context('Grid:evalClearance()', function()
-		
-		test('returns the amount of clearance for the given node', function()
-			local map = {{0,0,0,0},{1,0,0,0},{0,0,0,0}}
-			local grid = Grid(map)
-			local walkable = 0
-			local NodeA = grid:getNodeAt(1,1)
-			local NodeB = grid:getNodeAt(1,2)
-			local NodeC = grid:getNodeAt(2,2)
-			local NodeD = grid:getNodeAt(3,2)
-			assert_equal(grid:evalClearance(NodeA,walkable),1)
-			assert_equal(grid:evalClearance(NodeB,walkable),1)
-			assert_equal(grid:evalClearance(NodeC,walkable),2)
-			assert_equal(grid:evalClearance(NodeD,walkable),2)
-		end)
-	end)
-
-	context('Grid:removeClearance()', function()
-		
-		test('clears the cached clearance value', function()
-			local map = {{0,0,0,0},{1,0,0,0},{0,0,0,0}}
-			local grid = Grid(map)
-			local walkable = 0
-			local NodeA = grid:getNodeAt(1,1)
-			assert_equal(grid:evalClearance(NodeA,walkable),1)
-			grid:removeClearance(NodeA,walkable)
-			assert_nil(NodeA:getClearance(walkable))
-		end)
-	end)
 	
 end)
