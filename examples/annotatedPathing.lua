@@ -19,7 +19,7 @@ local map = {
 local grid = Grid(map)
 local walkable = function(v) return v~=2 end
 local finder = PF(grid, 'ASTAR',walkable)
-finder:evalGridClearance()
+finder:annotateGrid()
 local finderNames = PF:getFinders()
 
 local sx, sy = 1,1

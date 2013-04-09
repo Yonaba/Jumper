@@ -17,26 +17,26 @@ local map = {
 local grid = Grid(map)
 local walkable = function(v) return v~=2 end
 local finder = PF(grid, 'ASTAR',walkable)
-finder:evalGridClearance()
+finder:annotateGrid()
 
 for y = 1, #map do
 	local s = ''
 	for x = 1, #map[y] do
 	  local node = grid:getNodeAt(x,y)
-		s = s .. node:getClearance(walkable)
+		s = (s .. ' ' .. node:getClearance(walkable))
 	end
 	print(s)
 end
 
--- Output 
--- 6 6 5 5 4 4 4 3 2 1
--- 6 5 5 4 4 3 3 3 2 1
--- 6 5 4 4 3 3 2 2 2 1
--- 6 5 4 3 3 2 2 1 1 1
--- 6 5 4 3 2 2 1 1 1 1
--- 5 5 4 3 2 1 1 1 1 1
--- 4 4 4 3 2 1 1 2 1 1
--- 3 3 3 3 3 3 3 2 1 1
--- 2 2 2 2 2 2 2 2 2 1
--- 1 1 1 1 1 1 1 1 1 1
+-- Expected output
+--  6 6 5 5 4 4 4 3 2 1
+--  6 5 5 4 4 3 3 3 2 1
+--  6 5 4 4 3 3 2 2 2 1
+--  6 5 4 3 3 2 2 1 1 1
+--  6 5 4 3 2 2 1 1 0 1
+--  5 5 4 3 2 1 1 0 1 1
+--  4 4 4 3 2 1 0 2 1 0
+--  3 3 3 3 3 3 3 2 1 0
+--  2 2 2 2 2 2 2 2 2 1
+--  1 1 1 1 1 1 1 1 1 1
 
