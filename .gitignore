@@ -6,3 +6,5 @@ test*
 ldoc*
 telescope*
 hkl
+debug*
+profiler*
