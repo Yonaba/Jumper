@@ -52,7 +52,7 @@ if (...) then
 	-- @usage local x, y = node:getPos()		
 	function Node:getPos() return self._x, self._y end
 	
-  --- Returns the amount of [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric) 
+  --- Returns the amount of true [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric) 
 	-- for a given `node`
   -- @class function
   -- @tparam string|int|func walkable the value for walkable locations in the collision map array.
@@ -64,8 +64,21 @@ if (...) then
 		return self._clearance[walkable]
 	end
 	
+  --- Removes the clearance value for a given walkable.
+  -- @class function
+  -- @tparam string|int|func walkable the value for walkable locations in the collision map array.
+	-- @treturn node self (the calling `node` itself, can be chained)
+	-- @usage
+	--  -- Assuming walkable is defined	
+	-- node:removeClearance(walkable)	
+	function Node:removeClearance(walkable)
+		self._clearance[walkable] = nil
+		return self
+	end
+	
 	--- Clears temporary cached attributes of a `node`.
 	-- Deletes the attributes cached within a given node after a pathfinding call.
+	-- This function is internally used by the search algorithms, so you should not use it explicitely.
 	-- @class function
 	-- @treturn node self (the calling `node` itself, can be chained)
 	-- @usage
