@@ -115,8 +115,9 @@ if (...) then
     end
 		local hasEnoughClearance = not clearance and true or false
 		if not hasEnoughClearance then
+			if not self._isAnnotated[walkable] then return false end
 			local node = self:getNodeAt(x,y)
-			local nodeClearance = node:getClearance(walkable) or self:evalClearance(node, walkable)
+			local nodeClearance = node:getClearance(walkable)
 			hasEnoughClearance = (nodeClearance >= clearance)
 		end
     if self._eval then
@@ -368,6 +369,7 @@ if (...) then
     newGrid._nodes, newGrid._min_x, newGrid._max_x, newGrid._min_y, newGrid._max_y = Utils.arrayToNodes(newGrid._map)
     newGrid._width = (newGrid._max_x-newGrid._min_x)+1
     newGrid._height = (newGrid._max_y-newGrid._min_y)+1
+		newGrid._isAnnotated = {}
     return setmetatable(newGrid,PreProcessGrid)
   end
 
@@ -379,6 +381,7 @@ if (...) then
     newGrid._min_x, newGrid._max_x, newGrid._min_y, newGrid._max_y = Utils.getArrayBounds(newGrid._map)
     newGrid._width = (newGrid._max_x-newGrid._min_x)+1
     newGrid._height = (newGrid._max_y-newGrid._min_y)+1
+		newGrid._isAnnotated = {}		
     return setmetatable(newGrid,PostProcessGrid)
   end
 

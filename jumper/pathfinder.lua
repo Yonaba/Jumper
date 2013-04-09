@@ -125,6 +125,7 @@ if (...) then
 				end
 			end
 		end
+		self._grid._isAnnotated[self._walkable] = true
 		return self
 	end
 	
@@ -136,8 +137,9 @@ if (...) then
 	function Pathfinder:clearAnnotations()
 		assert(self._walkable, 'Finder must implement a walkable value')
 		for node in self._grid:iter() do
-			node:removeClearance(walkable)
+			node:removeClearance(self._walkable)
 		end
+		self._grid._isAnnotated[self._walkable] = false
 		return self
 	end
 	
