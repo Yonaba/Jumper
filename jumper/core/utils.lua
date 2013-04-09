@@ -109,23 +109,6 @@ if (...) then
 		return coroutine.create(iterf)
 	end
 
-	-- Returns a set of pairs for nodes lying along 
-	-- the lower-right corner of a given position
-	local function drAround(x0, y0, s)
-		local coords = {}
-		local x, y = x0+s, y0
-		coords[#coords+1] = {x,y}
-		repeat
-			y = y + 1
-			coords[#coords+1] = {x,y}
-		until (y == y0 + s)
-		repeat
-			x = x - 1
-			coords[#coords+1] = {x,y}
-		until (x == x0)
-		return coords
-	end
-
 	-- Extract a path from a given start/end position
   local function traceBackPath(finder, node, startNode)
     local path = Path:new()
