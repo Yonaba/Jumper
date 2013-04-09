@@ -88,13 +88,13 @@
 	<td class="summary">Inits a new <a href="../modules/pathfinder.html#">pathfinder</a> </td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Pathfinder:evalGridClearance">Pathfinder:evalGridClearance&nbsp;()</a></td>
-	<td class="summary">Evaluates <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">true clearance</a>
- values for the entire <a href="../modules/grid.html#">grid</a> .</td>
+	<td class="name" nowrap><a href="#Pathfinder:annotateGrid">Pathfinder:annotateGrid&nbsp;()</a></td>
+	<td class="summary">Evaluates <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>
+ for the whole <a href="../modules/grid.html#">grid</a> .</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Pathfinder:removeClearance">Pathfinder:removeClearance&nbsp;()</a></td>
-	<td class="summary">Clears all true clearance values</td>
+	<td class="name" nowrap><a href="#Pathfinder:clearAnnotations">Pathfinder:clearAnnotations&nbsp;()</a></td>
+	<td class="summary">Removes <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>values.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Pathfinder:setGrid">Pathfinder:setGrid&nbsp;(grid)</a></td>
@@ -162,7 +162,7 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Pathfinder:reset">Pathfinder:reset&nbsp;()</a></td>
-	<td class="summary">Resets the <a href="../modules/pathfinder.html#">pathfinder</a>  for new pathfinding calls.</td>
+	<td class="summary">Resets the <a href="../modules/pathfinder.html#">pathfinder</a> .</td>
 	</tr>
 </table>
 
@@ -274,12 +274,12 @@
 
 </dd>
     <dt>
-    <a name = "Pathfinder:evalGridClearance"></a>
-    <strong>Pathfinder:evalGridClearance&nbsp;()</strong>
+    <a name = "Pathfinder:annotateGrid"></a>
+    <strong>Pathfinder:annotateGrid&nbsp;()</strong>
     </dt>
     <dd>
-    Evaluates <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">true clearance</a>
- values for the entire <a href="../modules/grid.html#">grid</a> .  It should be called only once, unless the collision map or the
+    Evaluates <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>
+ for the whole <a href="../modules/grid.html#">grid</a> .  It should be called only once, unless the collision map or the
  <strong>walkable</strong> attribute changes. The clearance values are calculated and cached within the grid nodes.
 
 
@@ -294,16 +294,17 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">myFinder:evalGridClearance()</pre>
+        <pre class="example">myFinder:annotateGrid()</pre>
     </ul>
 
 </dd>
     <dt>
-    <a name = "Pathfinder:removeClearance"></a>
-    <strong>Pathfinder:removeClearance&nbsp;()</strong>
+    <a name = "Pathfinder:clearAnnotations"></a>
+    <strong>Pathfinder:clearAnnotations&nbsp;()</strong>
     </dt>
     <dd>
-    Clears all true clearance values
+    Removes <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>values.
+ Clears cached clearance values for the current <strong>walkable</strong>.
 
 
     <h3>Returns:</h3>
@@ -317,7 +318,7 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">myFinder:clearGridClearance()</pre>
+        <pre class="example">myFinder:clearAnnotations()</pre>
     </ul>
 
 </dd>
@@ -806,8 +807,8 @@
     <strong>Pathfinder:reset&nbsp;()</strong>
     </dt>
     <dd>
-    Resets the <a href="../modules/pathfinder.html#">pathfinder</a>  for new pathfinding calls.  It is normally called internally, so one is not supposed
- to call it explicitely, unless under specific circumstances.
+    Resets the <a href="../modules/pathfinder.html#">pathfinder</a> .  This function is called internally between successive pathfinding calls, so you should not
+ use it explicitely, unless under specific circumstances.
 
 
     <h3>Returns:</h3>

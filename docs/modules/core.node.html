@@ -90,8 +90,12 @@
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Node:getClearance">Node:getClearance&nbsp;(walkable)</a></td>
-	<td class="summary">Returns the amount of <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>
+	<td class="summary">Returns the amount of true <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>
  for a given <a href="../modules/core.node.html">node</a> </td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Node:removeClearance">Node:removeClearance&nbsp;(walkable)</a></td>
+	<td class="summary">Removes the clearance value for a given walkable.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Node:reset">Node:reset&nbsp;()</a></td>
@@ -217,7 +221,7 @@
     <strong>Node:getClearance&nbsp;(walkable)</strong>
     </dt>
     <dd>
-    Returns the amount of <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>
+    Returns the amount of true <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">clearance</a>
  for a given <a href="../modules/core.node.html">node</a>
 
     <h3>Parameters:</h3>
@@ -245,12 +249,44 @@
 
 </dd>
     <dt>
+    <a name = "Node:removeClearance"></a>
+    <strong>Node:removeClearance&nbsp;(walkable)</strong>
+    </dt>
+    <dd>
+    Removes the clearance value for a given walkable.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">walkable</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+         the value for walkable locations in the collision map array.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+        self (the calling <a href="../modules/core.node.html">node</a>  itself, can be chained)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+  <span class="comment">-- Assuming walkable is defined
+</span> node:removeClearance(walkable)	</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "Node:reset"></a>
     <strong>Node:reset&nbsp;()</strong>
     </dt>
     <dd>
     Clears temporary cached attributes of a <a href="../modules/core.node.html">node</a> .
  Deletes the attributes cached within a given node after a pathfinding call.
+ This function is internally used by the search algorithms, so you should not use it explicitely.
 
 
     <h3>Returns:</h3>

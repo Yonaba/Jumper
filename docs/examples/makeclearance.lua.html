@@ -75,28 +75,28 @@
 <span class="keyword">local</span> grid = Grid(map)
 <span class="keyword">local</span> walkable = <span class="keyword">function</span>(v) <span class="keyword">return</span> v~=<span class="number">2</span> <span class="keyword">end</span>
 <span class="keyword">local</span> finder = PF(grid, <span class="string">'ASTAR'</span>,walkable)
-finder:evalGridClearance()
+finder:annotateGrid()
 
 <span class="keyword">for</span> y = <span class="number">1</span>, #map <span class="keyword">do</span>
 	<span class="keyword">local</span> s = <span class="string">''</span>
 	<span class="keyword">for</span> x = <span class="number">1</span>, #map[y] <span class="keyword">do</span>
 	  <span class="keyword">local</span> node = grid:getNodeAt(x,y)
-		s = s .. node:getClearance(walkable)
+		s = (s .. <span class="string">' '</span> .. node:getClearance(walkable))
 	<span class="keyword">end</span>
 	<span class="global">print</span>(s)
 <span class="keyword">end</span>
 
-<span class="comment">-- Output
-</span><span class="comment">-- 6 6 5 5 4 4 4 3 2 1
-</span><span class="comment">-- 6 5 5 4 4 3 3 3 2 1
-</span><span class="comment">-- 6 5 4 4 3 3 2 2 2 1
-</span><span class="comment">-- 6 5 4 3 3 2 2 1 1 1
-</span><span class="comment">-- 6 5 4 3 2 2 1 1 1 1
-</span><span class="comment">-- 5 5 4 3 2 1 1 1 1 1
-</span><span class="comment">-- 4 4 4 3 2 1 1 2 1 1
-</span><span class="comment">-- 3 3 3 3 3 3 3 2 1 1
-</span><span class="comment">-- 2 2 2 2 2 2 2 2 2 1
-</span><span class="comment">-- 1 1 1 1 1 1 1 1 1 1
+<span class="comment">-- Expected output
+</span><span class="comment">--  6 6 5 5 4 4 4 3 2 1
+</span><span class="comment">--  6 5 5 4 4 3 3 3 2 1
+</span><span class="comment">--  6 5 4 4 3 3 2 2 2 1
+</span><span class="comment">--  6 5 4 3 3 2 2 1 1 1
+</span><span class="comment">--  6 5 4 3 2 2 1 1 0 1
+</span><span class="comment">--  5 5 4 3 2 1 1 0 1 1
+</span><span class="comment">--  4 4 4 3 2 1 0 2 1 0
+</span><span class="comment">--  3 3 3 3 3 3 3 2 1 0
+</span><span class="comment">--  2 2 2 2 2 2 2 2 2 1
+</span><span class="comment">--  1 1 1 1 1 1 1 1 1 1
 </span></pre>
 
 

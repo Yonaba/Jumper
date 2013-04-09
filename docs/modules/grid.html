@@ -126,14 +126,6 @@
 	<td class="summary">Map in range transformation.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Grid:evalClearance">Grid:evalClearance&nbsp;(node, walkable)</a></td>
-	<td class="summary">Sets the clearance.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#Grid:removeClearance">Grid:removeClearance&nbsp;(node, walkable)</a></td>
-	<td class="summary">Clears a true clearance value</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#Grid:getNodeAt">Grid:getNodeAt&nbsp;(x, y)</a></td>
 	<td class="summary">Returns the <code>node</code> at location [x,y].</td>
 	</tr>
@@ -664,74 +656,6 @@
    <span class="keyword">return</span> node
  <span class="keyword">end</span>
  myGrid:imap(<span class="number">1</span>,<span class="number">1</span>,<span class="number">6</span>,<span class="number">6</span>,nothing)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "Grid:evalClearance"></a>
-    <strong>Grid:evalClearance&nbsp;(node, walkable)</strong>
-    </dt>
-    <dd>
-    Sets the clearance.
- See <a href="http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric">Clearance metrics</a>
- for more details.
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">node</span>
-            <span class="types"><span class="type">node</span></span>
-         a node</li>
-        <li><span class="parameter">walkable</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         the value for walkable locations in the collision map array.</li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-        the amount of clearance of the given node
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> node = Node(<span class="number">1</span>,<span class="number">1</span>)
- <span class="keyword">local</span> clearance = myGrid:evalClearance(node, walkable)</pre>
-    </ul>
-
-</dd>
-    <dt>
-    <a name = "Grid:removeClearance"></a>
-    <strong>Grid:removeClearance&nbsp;(node, walkable)</strong>
-    </dt>
-    <dd>
-    Clears a true clearance value
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">node</span>
-            <span class="types"><span class="type">node</span></span>
-         a node</li>
-        <li><span class="parameter">walkable</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         the value for walkable locations in the collision map array.</li>
-    </ul>
-
-    <h3>Returns:</h3>
-    <ol>
-
-          <span class="types"><a class="type" href="../modules/grid.html#">grid</a></span>
-        self (the calling <a href="../modules/grid.html#">grid</a>  itself, can be chained)
-    </ol>
-
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">myGrid:removeClearance(node, walkable)</pre>
     </ul>
 
 </dd>

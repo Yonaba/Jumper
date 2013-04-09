@@ -77,7 +77,7 @@
 <span class="keyword">local</span> grid = Grid(map)
 <span class="keyword">local</span> walkable = <span class="keyword">function</span>(v) <span class="keyword">return</span> v~=<span class="number">2</span> <span class="keyword">end</span>
 <span class="keyword">local</span> finder = PF(grid, <span class="string">'ASTAR'</span>,walkable)
-finder:evalGridClearance()
+finder:annotateGrid()
 <span class="keyword">local</span> finderNames = PF:getFinders()
 
 <span class="keyword">local</span> sx, sy = <span class="number">1</span>,<span class="number">1</span>
