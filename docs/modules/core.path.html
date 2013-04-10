@@ -86,6 +86,10 @@
 	<td class="summary">Evaluates the <a href="../modules/core.path.html">path</a>  length</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Path:addNode">Path:addNode&nbsp;(node [, index])</a></td>
+	<td class="summary">Counts the number of steps.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Path:fill">Path:fill&nbsp;()</a></td>
 	<td class="summary"><a href="../modules/core.path.html#Class_Path">Path</a>  filling modifier.</td>
 	</tr>
@@ -219,6 +223,39 @@
 
 </dd>
     <dt>
+    <a name = "Path:addNode"></a>
+    <strong>Path:addNode&nbsp;(node [, index])</strong>
+    </dt>
+    <dd>
+    Counts the number of steps.
+ Returns the number of waypoints (nodes) in the current path.
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">node</span>
+            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+         a node to be added to the path</li>
+        <li><span class="parameter">index</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+         the index at which the node will be inserted. If omitted, the node will be appended after the last node in the path.</li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+        self (the calling <a href="../modules/core.path.html">path</a>  itself, can be chained)
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> nSteps = p:countSteps()</pre>
+    </ul>
+
+</dd>
+    <dt>
     <a name = "Path:fill"></a>
     <strong>Path:fill&nbsp;()</strong>
     </dt>
@@ -228,6 +265,12 @@
  Does the opposite of <a href="../modules/core.path.html#Path:filter">Path:filter</a>
 
 
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+        self (the calling <a href="../modules/core.path.html">path</a>  itself, can be chained)
+    </ol>
 
 
     <h3>see also:</h3>
@@ -250,6 +293,12 @@
  consisting of straight moves. Does the opposite of <a href="../modules/core.path.html#Path:fill">Path:fill</a>
 
 
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+        self (the calling <a href="../modules/core.path.html">path</a>  itself, can be chained)
+    </ol>
 
 
     <h3>see also:</h3>

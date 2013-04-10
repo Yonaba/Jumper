@@ -10,8 +10,9 @@
 if (...) then
 	
   -- Dependencies
-  local Heuristic = require ((...):gsub('%.path$','.heuristics'))
-
+	local _PATH = (...):match('(.+)%.path$')
+  local Heuristic = require (_PATH .. '.heuristics')
+	
 	 -- Local references
   local abs, max = math.abs, math.max
 	local t_insert, t_remove = table.insert, table.remove
@@ -54,7 +55,7 @@ if (...) then
   --- Iterates on each single `node` along a `path`. At each step of iteration,
   -- returns a `node` plus a count value. Alias for @{Path:iter}
   -- @class function
-  -- @name Path:nodes
+	-- @name Path:nodes
   -- @treturn node a `node`
   -- @treturn int the count for the number of nodes
 	-- @see Path:iter	
@@ -75,11 +76,26 @@ if (...) then
     end
     return len
   end
-
+	
+	--- Counts the number of steps.
+	-- Returns the number of waypoints (nodes) in the current path.
+	-- @class function
+	-- @tparam node node a node to be added to the path
+	-- @tparam[opt] int index the index at which the node will be inserted. If omitted, the node will be appended after the last node in the path.
+	-- @treturn path self (the calling `path` itself, can be chained)
+	-- @usage local nSteps = p:countSteps()
+	function Path:addNode(node, index)
+		index = index or #self._nodes+1
+		t_insert(self._nodes, index, node)
+		return self
+	end
+	
+	
   --- `Path` filling modifier. Interpolates between non contiguous nodes along a `path`
   -- to build a fully continuous `path`. This maybe useful when using search algorithms such as Jump Point Search.
   -- Does the opposite of @{Path:filter}
   -- @class function
+	-- @treturn path self (the calling `path` itself, can be chained)	
   -- @see Path:filter
 	-- @usage p:fill()
   function Path:fill()
@@ -99,11 +115,13 @@ if (...) then
       end
       if i>N then break end
     end
+		return self
   end
 
   --- `Path` compression modifier. Given a `path`, eliminates useless nodes to return a lighter `path` 
 	-- consisting of straight moves. Does the opposite of @{Path:fill}
   -- @class function
+	-- @treturn path self (the calling `path` itself, can be chained)	
   -- @see Path:fill
 	-- @usage p:filter()
   function Path:filter()
@@ -123,6 +141,7 @@ if (...) then
         end
       else break end
     end
+		return self
   end
 
   return setmetatable(Path,
