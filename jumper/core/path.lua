@@ -182,6 +182,16 @@ if (...) then
 		return self
 	end	
 
+  --- Appends a given `path` to self.
+  -- @class function
+	-- @tparam path p a path
+	-- @treturn path self (the calling `path` itself, can be chained)
+	-- @usage myPath:append(anotherPath)		
+	function Path:append(p)
+		for node in p:nodes() do self:addNode(node)	end
+		return self
+	end
+	
   return setmetatable(Path,
     {__call = function(self,...)
       return Path:new(...)
