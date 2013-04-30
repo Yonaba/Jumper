@@ -23,31 +23,6 @@ if (...) then
 	-- @type Path
   local Path = {}
   Path.__index = Path
-	
-  --- Clones a `path`.
-  -- @class function
-  -- @treturn path a `path`
-	-- @usage local p = path:clone()	
-	function Path:clone()
-		local p = Path:new()
-		for node in self:nodes() do p:addNode(node) end
-		return p
-	end
-	
-  --- Checks if a `path` is equal to another. It also supports filtered paths(see @{Path:filter}).
-  -- @class function
-  -- @treturn boolean a boolean
-	-- @usage print(path:isEqualTo(path2))
-	function Path:isEqualTo(p2)
-		local p1 = self:clone():filter()
-		local p2 = p2:clone():filter()
-		for node, count in p1:nodes() do
-			if not p2._nodes[count] then return false end
-			local n = p2._nodes[count]
-			if n._x~=node._x or n._y~=node._y then return false end
-		end	
-		return true
-	end	
 
   --- Inits a new `path`.
   -- @class function
@@ -168,6 +143,44 @@ if (...) then
     end
 		return self
   end
+	
+  --- Clones a `path`.
+  -- @class function
+  -- @treturn path a `path`
+	-- @usage local p = path:clone()	
+	function Path:clone()
+		local p = Path:new()
+		for node in self:nodes() do p:addNode(node) end
+		return p
+	end
+	
+  --- Checks if a `path` is equal to another. It also supports filtered paths(see @{Path:filter}).
+  -- @class function
+  -- @treturn boolean a boolean
+	-- @usage print(path:isEqualTo(path2))
+	function Path:isEqualTo(p2)
+		local p1 = self:clone():filter()
+		local p2 = p2:clone():filter()
+		for node, count in p1:nodes() do
+			if not p2._nodes[count] then return false end
+			local n = p2._nodes[count]
+			if n._x~=node._x or n._y~=node._y then return false end
+		end	
+		return true
+	end
+	
+  --- Reverses a `path`.
+  -- @class function
+	-- @treturn path self (the calling `path` itself, can be chained)
+	-- @usage myPath:reverse()	
+	function Path:reverse()
+		local _nodes = {}
+		for i = #self._nodes,1,-1 do
+			_nodes[#_nodes+1] = self._nodes[i]		
+		end
+		self._nodes = _nodes
+		return self
+	end	
 
   return setmetatable(Path,
     {__call = function(self,...)
