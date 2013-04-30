@@ -154,10 +154,11 @@ if (...) then
 		return p
 	end
 	
-  --- Checks if a `path` is equal to another. It also supports filtered paths(see @{Path:filter}).
+  --- Checks if a `path` is equal to another. It also supports *filtered paths* (see @{Path:filter}).
   -- @class function
+	-- @tparam path p2 a path
   -- @treturn boolean a boolean
-	-- @usage print(path:isEqualTo(path2))
+	-- @usage print(myPath:isEqualTo(anotherPath))
 	function Path:isEqualTo(p2)
 		local p1 = self:clone():filter()
 		local p2 = p2:clone():filter()
