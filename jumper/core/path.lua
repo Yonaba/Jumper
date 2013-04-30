@@ -23,6 +23,16 @@ if (...) then
 	-- @type Path
   local Path = {}
   Path.__index = Path
+	
+  --- Clones a `path`.
+  -- @class function
+  -- @treturn path a `path`
+	-- @usage local p = path:clone()	
+	function Path:clone()
+		local p = Path:new()
+		for node in self:nodes() do p:addNode(node) end
+		return p
+	end
 
   --- Inits a new `path`.
   -- @class function
