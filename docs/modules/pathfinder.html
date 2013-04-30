@@ -66,7 +66,6 @@
 
 </p>
 
-
 <h2><a href="#Finders">Finders</a></h2>
 <table class="function_list">
 	<tr>
@@ -171,6 +170,7 @@
 
 
     <h2><a name="Finders"></a>Finders</h2>
+
     <dl class="function">
     <dt>
     <a name = "Finders"></a>
@@ -189,15 +189,15 @@
 
 
 
+
     <h3>see also:</h3>
     <ul>
          <a href="../modules/pathfinder.html#Pathfinder:getFinders">Pathfinder:getFinders</a>
     </ul>
-
-
 </dd>
 </dl>
     <h2><a name="Modes"></a>Modes</h2>
+
     <dl class="function">
     <dt>
     <a name = "Modes"></a>
@@ -214,16 +214,15 @@
 
 
 
+
     <h3>see also:</h3>
     <ul>
          <a href="../modules/pathfinder.html#Pathfinder:getModes">Pathfinder:getModes</a>
     </ul>
-
-
 </dd>
 </dl>
     <h2><a name="Class_Pathfinder_"></a>Class Pathfinder </h2>
-        The <a href="../modules/pathfinder.html#Class_Pathfinder">Pathfinder</a>  class.<br/>
+    The <a href="../modules/pathfinder.html#Class_Pathfinder">Pathfinder</a>  class.<br/>
  This class is callable.
  Therefore,_ <code>Pathfinder(...)</code> <em>acts as a shortcut to</em> <code>Pathfinder:new(...)</code>.
     <dl class="function">
@@ -236,18 +235,31 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">grid</span>
-            <span class="types"><a class="type" href="../modules/grid.html#">grid</a></span>
-         a <a href="../modules/grid.html#">grid</a> </li>
-        <li><span class="parameter">finderName</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         the name of the <code>Finder</code> (search algorithm) to be used for search.
+      <li><span class="parameter">grid</span>
+        <span class="types"><a class="type" href="../modules/grid.html#">grid</a></span>
+       a <a href="../modules/grid.html#">grid</a> </li>
+      <li><span class="parameter">finderName</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       the name of the <code>Finder</code> (search algorithm) to be used for search.
  Defaults to <code>ASTAR</code> when not given (see <a href="../modules/pathfinder.html#Pathfinder:getFinders">Pathfinder:getFinders</a>).</li>
-        <li><span class="parameter">walkable</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         the value for <strong>walkable</strong> nodes.
+      <li><span class="parameter">walkable</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       the value for <strong>walkable</strong> nodes.
  If this parameter is a function, it should be prototyped as <strong>f(value)</strong>, returning a boolean:
  <strong>true</strong> when value matches a <strong>walkable</strong> <code>node</code>, <strong>false</strong> otherwise.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ -- Example one
+ local finder = Pathfinder:new(myGrid, 'ASTAR', 0)
+
+ -- Example two
+ local function walkable(value)
+   return value > 0
+ end
+ local finder = Pathfinder(myGrid, 'JPS', walkable)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -257,20 +269,6 @@
         a new <a href="../modules/pathfinder.html#">pathfinder</a>  instance
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="comment">-- Example one
-</span> <span class="keyword">local</span> finder = Pathfinder:new(myGrid, <span class="string">'ASTAR'</span>, <span class="number">0</span>)
-
- <span class="comment">-- Example two
-</span> <span class="keyword">local</span> <span class="keyword">function</span> walkable(value)
-   <span class="keyword">return</span> value &gt; <span class="number">0</span>
- <span class="keyword">end</span>
- <span class="keyword">local</span> finder = Pathfinder(myGrid, <span class="string">'JPS'</span>, walkable)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -283,6 +281,11 @@
  <strong>walkable</strong> attribute changes. The clearance values are calculated and cached within the grid nodes.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:annotateGrid()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -290,12 +293,6 @@
         self (the calling <a href="../modules/pathfinder.html#">pathfinder</a>  itself, can be chained)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">myFinder:annotateGrid()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -307,6 +304,11 @@
  Clears cached clearance values for the current <strong>walkable</strong>.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:clearAnnotations()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -314,12 +316,6 @@
         self (the calling <a href="../modules/pathfinder.html#">pathfinder</a>  itself, can be chained)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">myFinder:clearAnnotations()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -331,9 +327,14 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">grid</span>
-            <span class="types"><a class="type" href="../modules/grid.html#">grid</a></span>
-         a <a href="../modules/grid.html#">grid</a> </li>
+      <li><span class="parameter">grid</span>
+        <span class="types"><a class="type" href="../modules/grid.html#">grid</a></span>
+       a <a href="../modules/grid.html#">grid</a> </li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:setGrid(myGrid)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -344,12 +345,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">myFinder:setGrid(myGrid)</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getGrid"></a>
@@ -359,6 +354,11 @@
     Returns the <a href="../modules/grid.html#">grid</a> .  This is a reference to the actual <a href="../modules/grid.html#">grid</a>  used by the <a href="../modules/pathfinder.html#">pathfinder</a> .
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local myGrid = myFinder:getGrid()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -366,12 +366,6 @@
         the <a href="../modules/grid.html#">grid</a>
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> myGrid = myFinder:getGrid()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -383,9 +377,21 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">walkable</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         the value for walkable nodes.</li>
+      <li><span class="parameter">walkable</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       the value for walkable nodes.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ -- Value '0' is walkable
+ myFinder:setWalkable(0)
+
+ -- Any value greater than 0 is walkable
+ myFinder:setWalkable(function(n)
+   return n>0
+ end</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -396,19 +402,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="comment">-- Value '0' is walkable
-</span> myFinder:setWalkable(<span class="number">0</span>)
-
- <span class="comment">-- Any value greater than 0 is walkable
-</span> myFinder:setWalkable(<span class="keyword">function</span>(n)
-   <span class="keyword">return</span> n&gt;<span class="number">0</span>
- <span class="keyword">end</span></pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getWalkable"></a>
@@ -418,6 +411,11 @@
     Gets the <strong>walkable</strong> value or function.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local walkable = myFinder:getWalkable()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -425,12 +423,6 @@
         the <code>walkable</code> value or function
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> walkable = myFinder:getWalkable()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -443,9 +435,16 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">finderName</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         the name of the <code>finder</code> to be used for further searches.</li>
+      <li><span class="parameter">finderName</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       the name of the <code>finder</code> to be used for further searches.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ --To use Breadth-First-Search
+ myFinder:setFinder('BFS')</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -460,14 +459,6 @@
     <ul>
          <a href="../modules/pathfinder.html#Pathfinder:getFinders">Pathfinder:getFinders</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="comment">--To use Breadth-First-Search
-</span> myFinder:setFinder(<span class="string">'BFS'</span>)</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getFinder"></a>
@@ -477,6 +468,11 @@
     Returns the name of the <code>finder</code> being used.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local finderName = myFinder:getFinder()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -484,12 +480,6 @@
         the name of the <code>finder</code> to be used for further searches.
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> finderName = myFinder:getFinder()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -500,6 +490,15 @@
     Returns the list of all available finders names.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ local finders = myFinder:getFinders()
+ for i, finderName in ipairs(finders) do
+   print(i, finderName)
+ end</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -507,16 +506,6 @@
         array of built-in finders names.
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> finders = myFinder:getFinders()
- <span class="keyword">for</span> i, finderName <span class="keyword">in</span> <span class="global">ipairs</span>(finders) <span class="keyword">do</span>
-   <span class="global">print</span>(i, finderName)
- <span class="keyword">end</span></pre>
-    </ul>
 
 </dd>
     <dt>
@@ -530,9 +519,14 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">heuristic</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         <code>heuristic</code> function, prototyped as <strong>f(dx,dy)</strong> or as a <a href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a> .</li>
+      <li><span class="parameter">heuristic</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       <code>heuristic</code> function, prototyped as <strong>f(dx,dy)</strong> or as a <a href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a> .</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:setHeuristic('MANHATTAN')</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -548,12 +542,6 @@
          <li><a href="../modules/pathfinder.html#Pathfinder:getHeuristics">Pathfinder:getHeuristics</a></li>
          <li><a href="../modules/core.heuristics.html#">core.heuristics</a></li>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">myFinder:setHeuristic(<span class="string">'MANHATTAN'</span>)</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getHeuristic"></a>
@@ -562,6 +550,11 @@
     <dd>
     Returns the <code>heuristic</code> used.  Returns the function itself.
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local h = myFinder:getHeuristic()</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -575,12 +568,6 @@
     <ul>
          <a href="../modules/core.heuristics.html#">core.heuristics</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> h = myFinder:getHeuristic()</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getHeuristics"></a>
@@ -589,6 +576,15 @@
     <dd>
     Gets the list of all available <code>heuristics</code>.
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ local heur = myFinder:getHeuristic()
+ for i, heuristicName in ipairs(heur) do
+   ...
+ end</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -602,16 +598,6 @@
     <ul>
          <a href="../modules/core.heuristics.html#">core.heuristics</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> heur = myFinder:getHeuristic()
- <span class="keyword">for</span> i, heuristicName <span class="keyword">in</span> <span class="global">ipairs</span>(heur) <span class="keyword">do</span>
-   ...
- <span class="keyword">end</span></pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:setMode"></a>
@@ -625,9 +611,14 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">mode</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         the new search <code>mode</code>.</li>
+      <li><span class="parameter">mode</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       the new search <code>mode</code>.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:setMode('ORTHOGNAL')</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -643,12 +634,6 @@
          <li><a href="../modules/pathfinder.html#Pathfinder:getModes">Pathfinder:getModes</a></li>
          <li><a href="../modules/pathfinder.html#Modes">Modes</a></li>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">myFinder:setMode(<span class="string">'ORTHOGNAL'</span>)</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getMode"></a>
@@ -657,6 +642,11 @@
     <dd>
     Returns the search mode.
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local mode = myFinder:getMode()</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -670,12 +660,6 @@
     <ul>
          <a href="../modules/pathfinder.html#Modes">Modes</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> mode = myFinder:getMode()</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getModes"></a>
@@ -684,6 +668,14 @@
     <dd>
     Gets the list of all available search modes.
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"> local modes = myFinder:getModes()
+ for modeName in ipairs(modes) do
+   ...
+ end</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -697,15 +689,6 @@
     <ul>
          <a href="../modules/pathfinder.html#Modes">Modes</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"> <span class="keyword">local</span> modes = myFinder:getModes()
- <span class="keyword">for</span> modeName <span class="keyword">in</span> <span class="global">ipairs</span>(modes) <span class="keyword">do</span>
-   ...
- <span class="keyword">end</span></pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:setTunnelling"></a>
@@ -717,9 +700,14 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">bool</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
-         a boolean</li>
+      <li><span class="parameter">bool</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
+       a boolean</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myFinder:setTunnelling(true)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -730,12 +718,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">myFinder:setTunnelling(<span class="keyword">true</span>)</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Pathfinder:getTunnelling"></a>
@@ -745,6 +727,11 @@
     Returns tunnelling feature state.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local isTunnellingEnabled = myFinder:getTunnelling()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -752,12 +739,6 @@
         tunnelling feature actual state
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> isTunnellingEnabled = myFinder:getTunnelling()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -770,21 +751,26 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">startX</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the x-coordinate for the starting location</li>
-        <li><span class="parameter">startY</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the y-coordinate for the starting location</li>
-        <li><span class="parameter">endX</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the x-coordinate for the goal location</li>
-        <li><span class="parameter">endY</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the y-coordinate for the goal location</li>
-        <li><span class="parameter">clearance</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the amount of clearance (i.e the pathing agent size) to consider</li>
+      <li><span class="parameter">startX</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the x-coordinate for the starting location</li>
+      <li><span class="parameter">startY</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the y-coordinate for the starting location</li>
+      <li><span class="parameter">endX</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the x-coordinate for the goal location</li>
+      <li><span class="parameter">endY</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the y-coordinate for the goal location</li>
+      <li><span class="parameter">clearance</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the amount of clearance (i.e the pathing agent size) to consider</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local path = myFinder:getPath(1,1,5,5)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -794,12 +780,6 @@
         a path (array of nodes) when found, otherwise nil
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> path = myFinder:getPath(<span class="number">1</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">5</span>)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -811,6 +791,11 @@
  use it explicitely, unless under specific circumstances.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local path, len = myFinder:getPath(1,1,5,5)</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -819,12 +804,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> path, len = myFinder:getPath(<span class="number">1</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">5</span>)</pre>
-    </ul>
-
 </dd>
 </dl>
 
@@ -832,7 +811,7 @@
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

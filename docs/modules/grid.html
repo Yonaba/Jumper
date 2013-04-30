@@ -66,7 +66,6 @@
  During a search, the <a href="../modules/pathfinder.html#">pathfinder</a>  object needs to save some critical values. These values are cached within each <code>node</code>
  object, and the whole set of nodes are tight inside the <a href="../modules/grid.html#">grid</a>  object itself.</p>
 
-
 <h2><a href="#Class_Grid_">Class Grid </a></h2>
 <table class="function_list">
 	<tr>
@@ -136,7 +135,7 @@
 
 
     <h2><a name="Class_Grid_"></a>Class Grid </h2>
-        The <a href="../modules/grid.html#Class_Grid">Grid</a>  class.<br/>
+    The <a href="../modules/grid.html#Class_Grid">Grid</a>  class.<br/>
  This class is callable.
  Therefore,_ <code>Grid(...)</code> <em>acts as a shortcut to</em> <code>Grid:new(...)</code>.
     <dl class="function">
@@ -149,16 +148,26 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">map</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
-         A collision map - (2D array) with consecutive indices (starting at 0 or 1)
+      <li><span class="parameter">map</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+       A collision map - (2D array) with consecutive indices (starting at 0 or 1)
  or a <a href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>  with line-break chars (<code>\n</code> or <code>\r</code>) as row delimiters.</li>
-        <li><span class="parameter">cacheNodeAtRuntime</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
-         When <strong>true</strong>, returns an empty <a href="../modules/grid.html#">grid</a>  instance, so that
+      <li><span class="parameter">cacheNodeAtRuntime</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
+       When <strong>true</strong>, returns an empty <a href="../modules/grid.html#">grid</a>  instance, so that
  later on, indexing a non-cached <code>node</code> will cause it to be created and cache within the <a href="../modules/grid.html#">grid</a>  on purpose (i.e, when needed).
  This is a <strong>memory-safe</strong> option, in case your dealing with some tight memory constraints.
  Defaults to <strong>false</strong> when omitted.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ -- A simple 3x3 grid
+ local myGrid = Grid:new({{0,0,0},{0,0,0},{0,0,0}})
+
+ -- A memory-safe 3x3 grid
+ myGrid = Grid('000\n000\n000', true)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -168,17 +177,6 @@
         a new <a href="../modules/grid.html#">grid</a>  instance
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="comment">-- A simple 3x3 grid
-</span> <span class="keyword">local</span> myGrid = Grid:new({{<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>},{<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>},{<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>}})
-
- <span class="comment">-- A memory-safe 3x3 grid
-</span> myGrid = Grid(<span class="string">'000\n000\n000'</span>, <span class="keyword">true</span>)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -191,22 +189,36 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the x-location of the node</li>
-        <li><span class="parameter">y</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the y-location of the node</li>
-        <li><span class="parameter">walkable</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         the value for walkable locations in the collision map array (see <a href="../modules/grid.html#Grid:new">Grid:new</a>).
+      <li><span class="parameter">x</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the x-location of the node</li>
+      <li><span class="parameter">y</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the y-location of the node</li>
+      <li><span class="parameter">walkable</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       the value for walkable locations in the collision map array (see <a href="../modules/grid.html#Grid:new">Grid:new</a>).
  Defaults to <strong>false</strong> when omitted.
  If this parameter is a function, it should be prototyped as <strong>f(value)</strong> and return a <a href="http://www.lua.org/manual/5.1/manual.html#2.2">boolean</a> :
  <strong>true</strong> when value matches a <strong>walkable</strong> <code>node</code>, <strong>false</strong> otherwise. If this parameter is not given
  while location [x,y] <strong>is valid</strong>, this actual function returns <strong>true</strong>.</li>
-        <li><span class="parameter">clearance</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the amount of clearance needed. Defaults to 1 (normal clearance) when not given.</li>
+      <li><span class="parameter">clearance</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the amount of clearance needed. Defaults to 1 (normal clearance) when not given.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ -- Always true
+ print(myGrid:isWalkableAt(2,3))
+
+ -- True if node at [2,3] collision map value is 0
+ print(myGrid:isWalkableAt(2,3,0))
+
+ -- True if node at [2,3] collision map value is 0 and has a clearance higher or equal to 2
+ print(myGrid:isWalkableAt(2,3,0,2))
+</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -217,20 +229,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="comment">-- Always true
-</span> <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>))
-
- <span class="comment">-- True if node at [2,3] collision map value is 0
-</span> <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>,<span class="number">0</span>))
-
- <span class="comment">-- True if node at [2,3] collision map value is 0 and has a clearance higher or equal to 2
-</span> <span class="global">print</span>(myGrid:isWalkableAt(<span class="number">2</span>,<span class="number">3</span>,<span class="number">0</span>,<span class="number">2</span>))</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Grid:getWidth"></a>
@@ -240,6 +238,11 @@
     Returns the <a href="../modules/grid.html#">grid</a>  width.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">print(myGrid:getWidth())</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -247,12 +250,6 @@
         the <a href="../modules/grid.html#">grid</a>  width
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="global">print</span>(myGrid:getWidth())</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -263,6 +260,11 @@
     Returns the <a href="../modules/grid.html#">grid</a>  height.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">print(myGrid:getHeight())</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -270,12 +272,6 @@
         the <a href="../modules/grid.html#">grid</a>  height
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="global">print</span>(myGrid:getHeight())</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -286,6 +282,11 @@
     Returns the collision map.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local map = myGrid:getMap()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -293,12 +294,6 @@
         the collision map (see <a href="../modules/grid.html#Grid:new">Grid:new</a>)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> map = myGrid:getMap()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -309,6 +304,11 @@
     Returns the set of nodes.
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local nodes = myGrid:getNodes()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -316,12 +316,6 @@
         an array of nodes
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> nodes = myGrid:getNodes()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -332,6 +326,11 @@
     Returns the <a href="../modules/grid.html#">grid</a>  bounds.  Returned values corresponds to the upper-left
  and lower-right coordinates (in tile units) of the actual <a href="../modules/grid.html#">grid</a>  instance.
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local left_x, left_y, right_x, right_y = myGrid:getBounds()</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -350,12 +349,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> left_x, left_y, right_x, right_y = myGrid:getBounds()</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Grid:getNeighbours"></a>
@@ -366,24 +359,31 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">node</span>
-            <span class="types"><span class="type">node</span></span>
-         a given <code>node</code></li>
-        <li><span class="parameter">walkable</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         the value for walkable locations in the collision map array (see <a href="../modules/grid.html#Grid:new">Grid:new</a>).
+      <li><span class="parameter">node</span>
+        <span class="types"><span class="type">node</span></span>
+       a given <code>node</code></li>
+      <li><span class="parameter">walkable</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a>, <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a> or <a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       the value for walkable locations in the collision map array (see <a href="../modules/grid.html#Grid:new">Grid:new</a>).
  Defaults to <strong>false</strong> when omitted.</li>
-        <li><span class="parameter">allowDiagonal</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
-         when <strong>true</strong>, allows adjacent nodes are included (8-neighbours).
+      <li><span class="parameter">allowDiagonal</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
+       when <strong>true</strong>, allows adjacent nodes are included (8-neighbours).
  Defaults to <strong>false</strong> when omitted.</li>
-        <li><span class="parameter">tunnel</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
-         When <strong>true</strong>, allows the <a href="../modules/pathfinder.html#">pathfinder</a>  to tunnel through walls when heading diagonally.</li>
-        <li><span class="parameter">clearance</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         When given, will prune for the neighbours set all nodes having a clearance value lower than the passed-in value
+      <li><span class="parameter">tunnel</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">bool</a></span>
+       When <strong>true</strong>, allows the <a href="../modules/pathfinder.html#">pathfinder</a>  to tunnel through walls when heading diagonally.</li>
+      <li><span class="parameter">clearance</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       When given, will prune for the neighbours set all nodes having a clearance value lower than the passed-in value
  Defaults to <strong>false</strong> when omitted.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ local aNode = myGrid:getNodeAt(5,6)
+ local neighbours = myGrid:getNeighbours(aNode, 0, true)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -393,14 +393,6 @@
         an array of nodes neighbouring a given node
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> aNode = myGrid:getNodeAt(<span class="number">5</span>,<span class="number">6</span>)
- <span class="keyword">local</span> neighbours = myGrid:getNeighbours(aNode, <span class="number">0</span>, <span class="keyword">true</span>)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -414,18 +406,26 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">lx</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the leftmost x-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  leftmost x-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
-        <li><span class="parameter">ly</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the topmost y-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  topmost y-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
-        <li><span class="parameter">ex</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the rightmost x-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  rightmost x-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
-        <li><span class="parameter">ey</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the bottom-most y-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  bottom-most y-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
+      <li><span class="parameter">lx</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the leftmost x-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  leftmost x-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
+      <li><span class="parameter">ly</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the topmost y-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  topmost y-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
+      <li><span class="parameter">ex</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the rightmost x-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  rightmost x-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
+      <li><span class="parameter">ey</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the bottom-most y-coordinate of the rectangle. Default to the <a href="../modules/grid.html#">grid</a>  bottom-most y-coordinate (see <a href="../modules/grid.html#Grid:getBounds">Grid:getBounds</a>).</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ for node, count in myGrid:iter() do
+   print(node:getX(), node:getY(), count)
+ end</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -439,15 +439,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">for</span> node, count <span class="keyword">in</span> myGrid:iter() <span class="keyword">do</span>
-   <span class="global">print</span>(node:getX(), node:getY(), count)
- <span class="keyword">end</span></pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Grid:around"></a>
@@ -459,12 +450,20 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">node</span>
-            <span class="types"><span class="type">node</span></span>
-         a given <code>node</code></li>
-        <li><span class="parameter">radius</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the area radius (half-length). Defaults to <strong>1</strong> when not given.</li>
+      <li><span class="parameter">node</span>
+        <span class="types"><span class="type">node</span></span>
+       a given <code>node</code></li>
+      <li><span class="parameter">radius</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the area radius (half-length). Defaults to <strong>1</strong> when not given.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ for node in myGrid:around(node, 2) do
+   ...
+ end</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -474,15 +473,6 @@
         a <code>node</code> at each iteration step
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">for</span> node <span class="keyword">in</span> myGrid:around(node, <span class="number">2</span>) <span class="keyword">do</span>
-   ...
- <span class="keyword">end</span></pre>
-    </ul>
 
 </dd>
     <dt>
@@ -495,12 +485,21 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">f</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         a function prototyped as <strong>f(node,...)</strong></li>
-        <li><span class="parameter">...</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
-         args to be passed to function <strong>f</strong></li>
+      <li><span class="parameter">f</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       a function prototyped as <strong>f(node,...)</strong></li>
+      <li><span class="parameter">...</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
+       args to be passed to function <strong>f</strong></li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ local function printNode(node)
+   print(node:getX(), node:getY())
+ end
+ myGrid:each(printNode)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -510,16 +509,6 @@
         self (the calling <a href="../modules/grid.html#">grid</a>  itself, can be chained)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> <span class="keyword">function</span> printNode(node)
-   <span class="global">print</span>(node:getX(), node:getY())
- <span class="keyword">end</span>
- myGrid:each(printNode)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -532,24 +521,33 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">lx</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the leftmost x-coordinate coordinate of the rectangle</li>
-        <li><span class="parameter">ly</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the topmost y-coordinate of the rectangle</li>
-        <li><span class="parameter">ex</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the rightmost x-coordinate of the rectangle</li>
-        <li><span class="parameter">ey</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the bottom-most y-coordinate of the rectangle</li>
-        <li><span class="parameter">f</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         a function prototyped as <strong>f(node,...)</strong></li>
-        <li><span class="parameter">...</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
-         args to be passed to function <strong>f</strong></li>
+      <li><span class="parameter">lx</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the leftmost x-coordinate coordinate of the rectangle</li>
+      <li><span class="parameter">ly</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the topmost y-coordinate of the rectangle</li>
+      <li><span class="parameter">ex</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the rightmost x-coordinate of the rectangle</li>
+      <li><span class="parameter">ey</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the bottom-most y-coordinate of the rectangle</li>
+      <li><span class="parameter">f</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       a function prototyped as <strong>f(node,...)</strong></li>
+      <li><span class="parameter">...</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
+       args to be passed to function <strong>f</strong></li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ local function printNode(node)
+   print(node:getX(), node:getY())
+ end
+ myGrid:eachRange(1,1,8,8,printNode)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -559,16 +557,6 @@
         self (the calling <a href="../modules/grid.html#">grid</a>  itself, can be chained)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> <span class="keyword">function</span> printNode(node)
-   <span class="global">print</span>(node:getX(), node:getY())
- <span class="keyword">end</span>
- myGrid:eachRange(<span class="number">1</span>,<span class="number">1</span>,<span class="number">8</span>,<span class="number">8</span>,printNode)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -582,12 +570,21 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">f</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         a function prototyped as <strong>f(node,...)</strong></li>
-        <li><span class="parameter">...</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
-         args to be passed to function <strong>f</strong></li>
+      <li><span class="parameter">f</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       a function prototyped as <strong>f(node,...)</strong></li>
+      <li><span class="parameter">...</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
+       args to be passed to function <strong>f</strong></li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ local function nothing(node)
+   return node
+ end
+ myGrid:imap(nothing)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -597,16 +594,6 @@
         self (the calling <a href="../modules/grid.html#">grid</a>  itself, can be chained)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> <span class="keyword">function</span> nothing(node)
-   <span class="keyword">return</span> node
- <span class="keyword">end</span>
- myGrid:imap(nothing)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -620,24 +607,33 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">lx</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the leftmost x-coordinate coordinate of the rectangle</li>
-        <li><span class="parameter">ly</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the topmost y-coordinate of the rectangle</li>
-        <li><span class="parameter">ex</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the rightmost x-coordinate of the rectangle</li>
-        <li><span class="parameter">ey</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the bottom-most y-coordinate of the rectangle</li>
-        <li><span class="parameter">f</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
-         a function prototyped as <strong>f(node,...)</strong></li>
-        <li><span class="parameter">...</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
-         args to be passed to function <strong>f</strong></li>
+      <li><span class="parameter">lx</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the leftmost x-coordinate coordinate of the rectangle</li>
+      <li><span class="parameter">ly</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the topmost y-coordinate of the rectangle</li>
+      <li><span class="parameter">ex</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the rightmost x-coordinate of the rectangle</li>
+      <li><span class="parameter">ey</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the bottom-most y-coordinate of the rectangle</li>
+      <li><span class="parameter">f</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">func</a></span>
+       a function prototyped as <strong>f(node,...)</strong></li>
+      <li><span class="parameter">...</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.5">vararg</a></span>
+       args to be passed to function <strong>f</strong></li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ local function nothing(node)
+   return node
+ end
+ myGrid:imap(1,1,6,6,nothing)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -647,16 +643,6 @@
         self (the calling <a href="../modules/grid.html#">grid</a>  itself, can be chained)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">local</span> <span class="keyword">function</span> nothing(node)
-   <span class="keyword">return</span> node
- <span class="keyword">end</span>
- myGrid:imap(<span class="number">1</span>,<span class="number">1</span>,<span class="number">6</span>,<span class="number">6</span>,nothing)</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -668,12 +654,17 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the x-coordinate coordinate</li>
-        <li><span class="parameter">y</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the y-coordinate coordinate</li>
+      <li><span class="parameter">x</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the x-coordinate coordinate</li>
+      <li><span class="parameter">y</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the y-coordinate coordinate</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local aNode = myGrid:getNodeAt(2,2)</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -684,12 +675,6 @@
     </ol>
 
 
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> aNode = myGrid:getNodeAt(<span class="number">2</span>,<span class="number">2</span>)</pre>
-    </ul>
-
 </dd>
 </dl>
 
@@ -697,7 +682,7 @@
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

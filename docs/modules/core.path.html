@@ -66,7 +66,6 @@
 <p> This module is internally used by the library on purpose.
  It should normally not be used explicitely, yet it remains fully accessible.</p>
 
-
 <h2><a href="#Class_Path_">Class Path </a></h2>
 <table class="function_list">
 	<tr>
@@ -97,6 +96,22 @@
 	<td class="name" nowrap><a href="#Path:filter">Path:filter&nbsp;()</a></td>
 	<td class="summary"><a href="../modules/core.path.html#Class_Path">Path</a>  compression modifier.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:clone">Path:clone&nbsp;()</a></td>
+	<td class="summary">Clones a <a href="../modules/core.path.html">path</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:isEqualTo">Path:isEqualTo&nbsp;(p2)</a></td>
+	<td class="summary">Checks if a <a href="../modules/core.path.html">path</a>  is equal to another.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:reverse">Path:reverse&nbsp;()</a></td>
+	<td class="summary">Reverses a <a href="../modules/core.path.html">path</a> .</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Path:append">Path:append&nbsp;(p)</a></td>
+	<td class="summary">Appends a given <a href="../modules/core.path.html">path</a>  to self.</td>
+	</tr>
 </table>
 
 <br/>
@@ -104,7 +119,7 @@
 
 
     <h2><a name="Class_Path_"></a>Class Path </h2>
-        The <a href="../modules/core.path.html#Class_Path">Path</a>  class.<br/>
+    The <a href="../modules/core.path.html#Class_Path">Path</a>  class.<br/>
  This class is callable.
  Therefore,_ <code>Path(...)</code> <em>acts as a shortcut to</em> <code>Path:new(...)</code>.
     <dl class="function">
@@ -116,6 +131,11 @@
     Inits a new <a href="../modules/core.path.html">path</a> .
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local p = Path()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -123,12 +143,6 @@
         a <a href="../modules/core.path.html">path</a>
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> p = Path()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -139,6 +153,14 @@
     Iterates on each single <a href="../modules/core.node.html">node</a>  along a <a href="../modules/core.path.html">path</a> .  At each step of iteration,
  returns the <a href="../modules/core.node.html">node</a>  plus a count value. Aliased as <a href="../modules/core.path.html#Path:nodes">Path:nodes</a>
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ for node, count in p:iter() do
+   ...
+ end</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -155,15 +177,6 @@
     <ul>
          <a href="../modules/core.path.html#Path:nodes">Path:nodes</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">for</span> node, count <span class="keyword">in</span> p:iter() <span class="keyword">do</span>
-   ...
- <span class="keyword">end</span></pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Path:nodes"></a>
@@ -173,6 +186,14 @@
     Iterates on each single <a href="../modules/core.node.html">node</a>  along a <a href="../modules/core.path.html">path</a> .  At each step of iteration,
  returns a <a href="../modules/core.node.html">node</a>  plus a count value. Alias for <a href="../modules/core.path.html#Path:iter">Path:iter</a>
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+ for node, count in p:nodes() do
+   ...
+ end	</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -189,15 +210,6 @@
     <ul>
          <a href="../modules/core.path.html#Path:iter">Path:iter</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">
- <span class="keyword">for</span> node, count <span class="keyword">in</span> p:nodes() <span class="keyword">do</span>
-   ...
- <span class="keyword">end</span>	</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Path:getLength"></a>
@@ -207,6 +219,11 @@
     Evaluates the <a href="../modules/core.path.html">path</a>  length
 
 
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local len = p:getLength()</pre>
+    </ul>
+
     <h3>Returns:</h3>
     <ol>
 
@@ -214,12 +231,6 @@
         the <a href="../modules/core.path.html">path</a>  length
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> len = p:getLength()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -232,12 +243,17 @@
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">node</span>
-            <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
-         a node to be added to the path</li>
-        <li><span class="parameter">index</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
-         the index at which the node will be inserted. If omitted, the node will be appended after the last node in the path.</li>
+      <li><span class="parameter">node</span>
+        <span class="types"><a class="type" href="../modules/core.node.html">node</a></span>
+       a node to be added to the path</li>
+      <li><span class="parameter">index</span>
+        <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">int</a></span>
+       the index at which the node will be inserted. If omitted, the node will be appended after the last node in the path.</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">local nSteps = p:countSteps()</pre>
     </ul>
 
     <h3>Returns:</h3>
@@ -247,12 +263,6 @@
         self (the calling <a href="../modules/core.path.html">path</a>  itself, can be chained)
     </ol>
 
-
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example"><span class="keyword">local</span> nSteps = p:countSteps()</pre>
-    </ul>
 
 </dd>
     <dt>
@@ -264,6 +274,11 @@
  to build a fully continuous <a href="../modules/core.path.html">path</a> . This maybe useful when using search algorithms such as Jump Point Search.
  Does the opposite of <a href="../modules/core.path.html#Path:filter">Path:filter</a>
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">p:fill()</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -277,12 +292,6 @@
     <ul>
          <a href="../modules/core.path.html#Path:filter">Path:filter</a>
     </ul>
-
-    <h3>Usage:</h3>
-    <ul>
-        <pre class="example">p:fill()</pre>
-    </ul>
-
 </dd>
     <dt>
     <a name = "Path:filter"></a>
@@ -292,6 +301,11 @@
     <a href="../modules/core.path.html#Class_Path">Path</a>  compression modifier.  Given a <a href="../modules/core.path.html">path</a> , eliminates useless nodes to return a lighter <a href="../modules/core.path.html">path</a> <br/>
  consisting of straight moves. Does the opposite of <a href="../modules/core.path.html#Path:fill">Path:fill</a>
 
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">p:filter()</pre>
+    </ul>
 
     <h3>Returns:</h3>
     <ol>
@@ -305,11 +319,105 @@
     <ul>
          <a href="../modules/core.path.html#Path:fill">Path:fill</a>
     </ul>
+</dd>
+    <dt>
+    <a name = "Path:clone"></a>
+    <strong>Path:clone&nbsp;()</strong>
+    </dt>
+    <dd>
+    Clones a <a href="../modules/core.path.html">path</a> .
+
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">p:filter()</pre>
+        <pre class="example">local p = path:clone()</pre>
     </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+        a <a href="../modules/core.path.html">path</a>
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Path:isEqualTo"></a>
+    <strong>Path:isEqualTo&nbsp;(p2)</strong>
+    </dt>
+    <dd>
+    Checks if a <a href="../modules/core.path.html">path</a>  is equal to another.  It also supports <em>filtered paths</em> (see <a href="../modules/core.path.html#Path:filter">Path:filter</a>).
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">p2</span>
+        <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+       a path</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">print(myPath:isEqualTo(anotherPath))</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#2.2">boolean</a></span>
+        a boolean
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Path:reverse"></a>
+    <strong>Path:reverse&nbsp;()</strong>
+    </dt>
+    <dd>
+    Reverses a <a href="../modules/core.path.html">path</a> .
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myPath:reverse()</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+        self (the calling <a href="../modules/core.path.html">path</a>  itself, can be chained)
+    </ol>
+
+
+</dd>
+    <dt>
+    <a name = "Path:append"></a>
+    <strong>Path:append&nbsp;(p)</strong>
+    </dt>
+    <dd>
+    Appends a given <a href="../modules/core.path.html">path</a>  to self.
+
+    <h3>Parameters:</h3>
+    <ul>
+      <li><span class="parameter">p</span>
+        <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+       a path</li>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myPath:append(anotherPath)</pre>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+          <span class="types"><a class="type" href="../modules/core.path.html">path</a></span>
+        self (the calling <a href="../modules/core.path.html">path</a>  itself, can be chained)
+    </ol>
+
 
 </dd>
 </dl>
@@ -318,7 +426,7 @@
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
-<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.3</a></i>
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.2</a></i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
