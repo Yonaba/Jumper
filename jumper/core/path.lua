@@ -19,7 +19,7 @@ if (...) then
 	
 	--- The `Path` class.<br/>
 	-- This class is callable.
-	-- Therefore,_ <code>Path(...)</code> _acts as a shortcut to_ <code>Path:new(...)</code>.
+	-- Therefore, <em><code>Path(...)</code></em> acts as a shortcut to <em><code>Path:new(...)</code></em>.
 	-- @type Path
   local Path = {}
   Path.__index = Path
