@@ -76,9 +76,9 @@ local startx, starty = 1,1
 local endx, endy = 5,1
 
 -- Calculates the path, and its length
-local path, length = myFinder:getPath(startx, starty, endx, endy)
+local path = myFinder:getPath(startx, starty, endx, endy)
 if path then
-  print(('Path found! Length: %.2f'):format(length))
+  print(('Path found! Length: %.2f'):format(path:getLength()))
 	for node, count in path:iter() do
 	  print(('Step: %d - x: %d - y: %d'):format(count, node.x, node.y))
 	end
