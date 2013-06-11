@@ -69,7 +69,7 @@ local path = myFinder:getPath(startx, starty, endx, endy)
 if path then
   print(('Path found! Length: %.2f'):format(path:getLength()))
 	for node, count in path:nodes() do
-	  print(('Step: %d - x: %d - y: %d'):format(count, node.x, node.y))
+	  print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
 	end
 end
 
