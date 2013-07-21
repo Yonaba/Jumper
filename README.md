@@ -23,6 +23,8 @@ It is actually a simple Lua table with references to all submodules of the Jumpe
 * `Jumper.Grid refers` to the `Grid` submodule
 * `Jumper.Pathfinder` refers to the `Pathfinder` submodule
 
+See also the [documentation](http://yonaba.github.io/Jumper/docs/)
+
 ##A Simple Example of Use
 Here is a simple example explaining how to use Jumper:
 
