@@ -11,7 +11,7 @@ the whole module into the global environment for an easier embedding (in sandbox
 
 ##Installing Jumper##
 Put this single file named [jumper.lua](https://raw.github.com/Yonaba/Jumper/global/jumper.lua) inside your projet.
-Use *require* function (or `dofile`) to import the library.
+Use `require` function (or `dofile`) to import the library.
 It will add a global namespace named `Jumper`  into the global environment.
 
 ## The Jumper namespace
@@ -22,8 +22,6 @@ It is actually a simple Lua table with references to all submodules of the Jumpe
 * `Jumper.Path refers` to the `Path` submodule
 * `Jumper.Grid refers` to the `Grid` submodule
 * `Jumper.Pathfinder` refers to the `Pathfinder` submodule
-
-Each submodules has its own API of methods.
 
 ##A Simple Example of Use
 Here is a simple example explaining how to use Jumper:
