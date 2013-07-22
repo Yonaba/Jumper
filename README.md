@@ -7,15 +7,15 @@ chaining features which makes it __very friendly and easy to use__.<br/>
 
 This is a modified version of Jumper, based on the latest stable ([1.8.1](https://github.com/Yonaba/Jumper/tree/jumper-1.8.1-1)). 
 It is actually an attempt to bundle the whole source of Jumper into a single file, returning 
-the whole module into the global environment for an easier embedding (in sandboxed environment, for instance).
+the whole module into the global environment for an easier embedding (in a sandboxed environment, for instance).
 
 ##Installing Jumper##
-Put this single file named [jumper.lua](https://raw.github.com/Yonaba/Jumper/global/jumper.lua) inside your projet.
-Use `require` function (or `dofile`) to import the library.
-It will add a global namespace named `Jumper`  into the global environment.
+Place the file named [jumper.lua](https://raw.github.com/Yonaba/Jumper/global/jumper.lua) inside your projet.
+<br/> Use `require` function (or `dofile`) to import the library.
+It will add the namespace `Jumper`  into the global environment.
 
-## The Jumper namespace
-It is actually a simple Lua table with references to all submodules of the Jumper library.
+## The `Jumper` namespace
+It is a Lua table with references to all the submodules of the Jumper library.
 
 * `Jumper.Node` refers to the `Node` submodule
 * `Jumper.Heuristics` refers to the `Heuristics` submodule
@@ -23,7 +23,17 @@ It is actually a simple Lua table with references to all submodules of the Jumpe
 * `Jumper.Grid refers` to the `Grid` submodule
 * `Jumper.Pathfinder` refers to the `Pathfinder` submodule
 
-See also the [documentation](http://yonaba.github.io/Jumper/docs/)
+See also the [documentation](http://yonaba.github.io/Jumper/docs/).
+
+__Note:__ All submodule are functions (not classes) returning an object.
+Therefore, the call to `new(...)` method is no longer featured and should be replaced by `parenthesis` (function call).
+
+```lua
+require ('jumper')
+Grid = Jumper.Grid -- Alias to the Grid submodule
+local grid = Grid(map) -- is valid
+local grid = Grid:new(map) -- is no longer valid.
+````
 
 ##A Simple Example of Use
 Here is a simple example explaining how to use Jumper:
@@ -31,8 +41,16 @@ Here is a simple example explaining how to use Jumper:
 ```lua
 require ('jumper') -- or dofile('jumper.lua')
 
--- Simple check to assert if Jumper was successfully imported
-assert(Jumper and type(Jumper) == 'table', 'Error loading the Jumper module')
+-- Simple check to assert if Jumper was successfully imported and highlight all its submodules
+do
+	if not (Jumper) then 
+		error('Error Loading Module Jumper') 
+	end
+	print(('Module Jumper loaded successfully (@ %s)'):format(tostring(Jumper)))
+	for k,v in pairs(Jumper) do
+		print(('\t>> Submodule %s (@ %s)'):format(k,tostring(v)))
+	end
+end
 
 -- Usage Example
 -- First, set a collision map
@@ -66,15 +84,24 @@ if path then
 	  print(('Step: %d - x: %d - y: %d'):format(count, node.x, node.y))
 	end
 end
+````
 
---> Output:
---> Path found! Length: 8.83
---> Step: 1 - x: 1 - y: 1
---> Step: 2 - x: 1 - y: 3
---> Step: 3 - x: 2 - y: 4
---> Step: 4 - x: 4 - y: 4
---> Step: 5 - x: 5 - y: 3
---> Step: 6 - x: 5 - y: 1
+The output:
+
+````
+Module Jumper loaded successfully (@ table: 005B6190)
+  >> Submodule Path (@ function: 005BE5D0)
+  >> Submodule Pathfinder (@ function: 005D5E10)
+  >> Submodule Grid (@ function: 005C3B90)
+  >> Submodule Node (@ function: 005D3AC8)
+  >> Submodule Heuristics (@ table: 005D4688)
+Path found! Length: 8.83
+Step: 1 - x: 1 - y: 1
+Step: 2 - x: 1 - y: 3
+Step: 3 - x: 2 - y: 4
+Step: 4 - x: 4 - y: 4
+Step: 5 - x: 5 - y: 3
+Step: 6 - x: 5 - y: 1
 ````
 
 ##License##

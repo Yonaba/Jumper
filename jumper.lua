@@ -1,7 +1,6 @@
+-- Raw source, to be prettified later
+
 -- Defining core modules
-
-local setmetatable, getmetatable = setmetatable, getmetatable
-
 ------------------------------  Binary Heaps (local) ------------------------------
 
 local floor = math.floor
@@ -56,66 +55,65 @@ local function percolate_down(heap,index)
   end
 end
 
--- Produces a new heap
-local function newHeap(template,comp)
-  return setmetatable({__heap = {},
-    sort = comp or f_min, size = 0},
-  template)
-end
+local Heap = function()
 
-local Heap = setmetatable({},
-  {__call = function(self,...)
-    return newHeap(self,...)
-  end})
-Heap.__index = Heap
+	local newHeap = {
+		__heap = {},
+		size = 0,
+		sort = comp or f_min,
+	}
 
-function Heap:empty()
-  return (self.size==0)
-end
-
-function Heap:clear()
-  self.__heap = {}
-  self.size = 0
-  self.sort = self.sort or f_min
-  return self
-end
-
-function Heap:push(item)
-	if item then
-		self.size = self.size + 1
-		self.__heap[self.size] = item
-		percolate_up(self, self.size)
+	function newHeap:empty()
+		return (self.size==0)
 	end
-  return self
-end
+	
+	function newHeap:clear()
+		self.__heap = {}
+		self.size = 0
+		self.sort = self.sort or f_min
+		return self
+	end
 
-function Heap:pop()
-  local root
-  if self.size > 0 then
-    root = self.__heap[1]
-    self.__heap[1] = self.__heap[self.size]
-    self.__heap[self.size] = nil
-    self.size = self.size-1
-    if self.size>1 then
-      percolate_down(self, 1)
-    end
-  end
-  return root
-end
+	function newHeap:push(item)
+		if item then
+			self.size = self.size + 1
+			self.__heap[self.size] = item
+			percolate_up(self, self.size)
+		end
+		return self
+	end
 
-function Heap:heapify(item)
-  if item then
-    local i = indexOf(self.__heap,item)
-    if i then 
-      percolate_down(self, i)
-      percolate_up(self, i)
-    end
-    return
-  end
-  for i = floor(self.size/2),1,-1 do
-    percolate_down(self,i)
-  end
-  return self
+	function newHeap:pop()
+		local root
+		if self.size > 0 then
+			root = self.__heap[1]
+			self.__heap[1] = self.__heap[self.size]
+			self.__heap[self.size] = nil
+			self.size = self.size-1
+			if self.size>1 then
+				percolate_down(self, 1)
+			end
+		end
+		return root
+	end
+
+	function newHeap:heapify(item)
+		if item then
+			local i = indexOf(self.__heap,item)
+			if i then 
+				percolate_down(self, i)
+				percolate_up(self, i)
+			end
+			return
+		end
+		for i = floor(self.size/2),1,-1 do
+			percolate_down(self,i)
+		end
+		return self
+	end	
+	
+	return newHeap
+	
 end
 
 ------------------------------  Heuristics (global) ------------------------------
@@ -137,99 +135,80 @@ end
 
 ------------------------------  Node (global) ------------------------------
 
-local assert = assert
-
-Node = {}
-Node.__index = Node
-
-function Node:new(x,y)
-	return setmetatable({x = x, y = y}, Node)
+local Node = function(x,y)
+	local newNode = {x = x, y = y}
+	return newNode
 end
-
-function Node.__lt(A,B) return (A.f < B.f) end
-
-setmetatable(Node,
-	{__call = function(self,...) 
-		return Node:new(...) 
-	end}
-)
 
 ------------------------------  Path (global) ------------------------------
 
 local t_insert, t_remove = table.insert, table.remove
 
-local Path = {}
-Path.__index = Path
+local Path = function()
+	local newPath = {}
 
-function Path:new()
-	return setmetatable({}, Path)
-end
-
-function Path:iter()
-	local i,pathLen = 1,#self
-	return function()
-		if self[i] then
-			i = i+1
-			return self[i-1],i-1
-		end
-	end
-end
-
-Path.nodes = Path.iter
-
-function Path:getLength()
-	local len = 0
-	for i = 2,#self do
-		local dx = self[i].x - self[i-1].x
-		local dy = self[i].y - self[i-1].y
-		len = len + Heuristics.EUCLIDIAN(dx, dy)
-	end
-	return len
-end
-
-function Path:fill()
-	local i = 2
-	local xi,yi,dx,dy
-	local N = #self
-	local incrX, incrY
-	while true do
-		xi,yi = self[i].x,self[i].y
-		dx,dy = xi-self[i-1].x,yi-self[i-1].y
-		if (abs(dx) > 1 or abs(dy) > 1) then
-			incrX = dx/max(abs(dx),1)
-			incrY = dy/max(abs(dy),1)
-			t_insert(self, i, self.grid:getNodeAt(self[i-1].x + incrX, self[i-1].y +incrY))
-			N = N+1
-		else i=i+1
-		end
-		if i>N then break end
-	end
-end
-
-function Path:filter()
-	local i = 2
-	local xi,yi,dx,dy, olddx, olddy
-	xi,yi = self[i].x, self[i].y
-	dx, dy = xi - self[i-1].x, yi-self[i-1].y
-	while true do
-		olddx, olddy = dx, dy
-		if self[i+1] then
-			i = i+1
-			xi, yi = self[i].x, self[i].y
-			dx, dy = xi - self[i-1].x, yi - self[i-1].y
-			if olddx == dx and olddy == dy then
-				t_remove(self, i-1)
-				i = i - 1
+	function newPath:iter()
+		local i,pathLen = 1,#self
+		return function()
+			if self[i] then
+				i = i+1
+				return self[i-1],i-1
 			end
-		else break end
+		end
+	end	
+	
+	newPath.nodes = newPath.iter
+	
+	function newPath:getLength()
+		local len = 0
+		for i = 2,#self do
+			local dx = self[i].x - self[i-1].x
+			local dy = self[i].y - self[i-1].y
+			len = len + Heuristics.EUCLIDIAN(dx, dy)
+		end
+		return len
 	end
-end
 
-setmetatable(Path,
-	{__call = function(self,...)
-		return Path:new(...)
+	function newPath:fill()
+		local i = 2
+		local xi,yi,dx,dy
+		local N = #self
+		local incrX, incrY
+		while true do
+			xi,yi = self[i].x,self[i].y
+			dx,dy = xi-self[i-1].x,yi-self[i-1].y
+			if (abs(dx) > 1 or abs(dy) > 1) then
+				incrX = dx/max(abs(dx),1)
+				incrY = dy/max(abs(dy),1)
+				t_insert(self, i, self.grid:getNodeAt(self[i-1].x + incrX, self[i-1].y +incrY))
+				N = N+1
+			else i=i+1
+			end
+			if i>N then break end
+		end
 	end
-})
+
+	function newPath:filter()
+		local i = 2
+		local xi,yi,dx,dy, olddx, olddy
+		xi,yi = self[i].x, self[i].y
+		dx, dy = xi - self[i-1].x, yi-self[i-1].y
+		while true do
+			olddx, olddy = dx, dy
+			if self[i+1] then
+				i = i+1
+				xi, yi = self[i].x, self[i].y
+				dx, dy = xi - self[i-1].x, yi - self[i-1].y
+				if olddx == dx and olddy == dy then
+					t_remove(self, i-1)
+					i = i - 1
+				end
+			else break end
+		end
+	end
+		
+	return newPath
+end
 
 -- Search algorithms
 
@@ -391,22 +370,6 @@ end
 	
 ------------------------------  JPS ------------------------------
 local step_first = false
-local function testFirstStep(finder, jNode, node)
-	local is_reachable = true
-	local jx, jy = jNode.x, jNode.y
-	local dx,dy = jx-node.x, jy-node.y
-	if dx <= -1 then
-		if not finder.grid:isWalkableAt(jx+1,jy,finder.walkable) then is_reachable = false end
-	elseif dx >= 1 then
-		if not finder.grid:isWalkableAt(jx-1,jy,finder.walkable) then is_reachable = false end
-	end
-	if dy <= -1 then
-		if not finder.grid:isWalkableAt(jx,jy+1,finder.walkable) then is_reachable = false end
-	elseif dy >= 1 then
-		if not finder.grid:isWalkableAt(jx,jy-1,finder.walkable) then is_reachable = false end
-	end
-	return not is_reachable
-end
 
 local function findNeighbours(finder,node, tunnel)
 
@@ -630,6 +593,7 @@ end
 local pairs = pairs
 local next = next
 local otype = type
+local _grids = {}
 	
 -- Local helpers
 
@@ -698,7 +662,9 @@ local function parseStringMap(str)
 	for line in str:gmatch('[^\n\r]+') do
 		if line then
 			w = not w and #line or w
-			assert(#line == w, 'Error parsing map, rows must have the same size!')
+			if not (#line == w) then 
+				error('Error parsing map, rows must have the same size!') 
+			end
 			h = (h or 0) + 1
 			map[h] = {}
 			for char in line:gmatch('.') do 
@@ -738,7 +704,7 @@ local function buildGrid(map)
 			for x in pairs(map[y]) do
 				min_bound_x = not min_bound_x and x or (x<min_bound_x and x or min_bound_x)
 				max_bound_x = not max_bound_x and x or (x>max_bound_x and x or max_bound_x)
-				nodes[y][x] = Node:new(x,y)
+				nodes[y][x] = Node(x,y)
 			end
 		end
 	return nodes,
@@ -763,182 +729,170 @@ local diagonalOffsets = {
 	{x = -1, y =  1} --[[SW]], {x = 1, y =  1}, --[[SE]]
 }
 
-local Grid = {}
-Grid.__index = Grid
-
--- Specialized grids
-local PreProcessGrid = setmetatable({},Grid)
-local PostProcessGrid = setmetatable({},Grid)
-
-PreProcessGrid.__index = PreProcessGrid
-PostProcessGrid.__index = PostProcessGrid
-
-PreProcessGrid.__call = function (self,x,y)
-	return self:getNodeAt(x,y)
-end
-
-PostProcessGrid.__call = function (self,x,y,create)
-	if create then return self:getNodeAt(x,y) end
-	return self.nodes[y] and self.nodes[y][x]
-end
-
-function Grid:new(map, processOnDemand)
-	map = type(map)=='string' and parseStringMap(map) or map
-	assert(isMap(map) or isStringMap(map),('Bad argument #1. Not a valid map'))
-	assert(type(processOnDemand) == 'boolean' or not processOnDemand,
-		('Bad argument #2. Expected \'boolean\', got %s.'):format(type(processOnDemand)))
-
-	if processOnDemand then
-		return PostProcessGrid:new(map,walkable)
-	end
-	return PreProcessGrid:new(map,walkable)
-end
-
-function Grid:isWalkableAt(x, y, walkable)
-	local nodeValue = self.map[y] and self.map[y][x]
-	if nodeValue then
-		if not walkable then return true end
-	else 
-		return false
-	end
-	if self.__eval then return walkable(nodeValue) end
-	return (nodeValue == walkable)
-end
-
-function Grid:getWidth() return self.width end
-
-function Grid:getHeight() return self.height end
-
-function Grid:getMap() return self.map end
-
-function Grid:getNodes() return self.nodes end
-
-function Grid:getNeighbours(node, walkable, allowDiagonal, tunnel)
-	local neighbours = {}
-	for i = 1,#straightOffsets do
-		local n = self:getNodeAt(
-			node.x + straightOffsets[i].x,
-			node.y + straightOffsets[i].y
-		)
-		if n and self:isWalkableAt(n.x, n.y, walkable) then
-			neighbours[#neighbours+1] = n
-		end
-	end
-
-	if not allowDiagonal then return neighbours end
-	
-	tunnel = not not tunnel
-	for i = 1,#diagonalOffsets do
-		local n = self:getNodeAt(
-			node.x + diagonalOffsets[i].x,
-			node.y + diagonalOffsets[i].y
-		)
-		if n and self:isWalkableAt(n.x, n.y, walkable) then
-			if tunnel then
-				neighbours[#neighbours+1] = n
-			else
-				local skipThisNode = false
-				local n1 = self:getNodeAt(node.x+diagonalOffsets[i].x, node.y)
-				local n2 = self:getNodeAt(node.x, node.y+diagonalOffsets[i].y)
-				if ((n1 and n2) and not self:isWalkableAt(n1.x, n1.y, walkable) and not self:isWalkableAt(n2.x, n2.y, walkable)) then
-					skipThisNode = true
-				end
-				if not skipThisNode then neighbours[#neighbours+1] = n end
-			end
-		end
-	end
-
-	return neighbours
-end
-
-function Grid:iter(lx,ly,ex,ey)
-	local min_x = lx or self.min_bound_x
-	local min_y = ly or self.min_bound_y
-	local max_x = ex or self.max_bound_x
-	local max_y = ey or self.max_bound_y
-
-	local x, y
-	y = min_y
-	return function()
-		x = not x and min_x or x+1
-		if x>max_x then
-			x = min_x
-			y = y+1
-		end
-		if y > max_y then
-			y = nil
-		end
-		return self.nodes[y] and self.nodes[y][x] or self:getNodeAt(x,y)
-	end
-end
-
-function Grid:each(f,...)
-	for node in self:iter() do f(node,...) end
-end
-
-function Grid:eachRange(lx,ly,ex,ey,f,...)
-	for node in self:iter(lx,ly,ex,ey) do f(node,...) end
-end
-
-function Grid:imap(f,...)
-	for node in self:iter() do
-		node = f(node,...)
-	end
-end
-
-function Grid:imapRange(lx,ly,ex,ey,f,...)
-	for node in self:iter(lx,ly,ex,ey) do
-		node = f(node,...)
-	end
-end
-
 -- Specialized grids
 -- Inits a preprocessed grid
-function PreProcessGrid:new(map)
-	local newGrid = {}
+local function PreProcessGrid(newGrid, map)
 	newGrid.map = map
 	newGrid.nodes, newGrid.min_bound_x, newGrid.max_bound_x, newGrid.min_bound_y, newGrid.max_bound_y = buildGrid(newGrid.map)
 	newGrid.width = (newGrid.max_bound_x-newGrid.min_bound_x)+1
 	newGrid.height = (newGrid.max_bound_y-newGrid.min_bound_y)+1
-	return setmetatable(newGrid,PreProcessGrid)
+
+	function newGrid:getNodeAt(x,y)
+		return self.nodes[y] and self.nodes[y][x] or nil
+	end
+	
+	return newGrid
+	
 end
 
 -- Inits a postprocessed grid
-function PostProcessGrid:new(map)
-	local newGrid = {}
+local function PostProcessGrid(newGrid, map)
 	newGrid.map = map
 	newGrid.nodes = {}
 	newGrid.min_bound_x, newGrid.max_bound_x, newGrid.min_bound_y, newGrid.max_bound_y = getBounds(newGrid.map)
 	newGrid.width = (newGrid.max_bound_x-newGrid.min_bound_x)+1
 	newGrid.height = (newGrid.max_bound_y-newGrid.min_bound_y)+1
-	return setmetatable(newGrid,PostProcessGrid)
-end
 
-function PreProcessGrid:getNodeAt(x,y)
-	return self.nodes[y] and self.nodes[y][x] or nil
-end
-
-function PostProcessGrid:getNodeAt(x,y)
-	if not x or not y then return end
-	if outOfRange(x,self.min_bound_x,self.max_bound_x) then return end
-	if outOfRange(y,self.min_bound_y,self.max_bound_y) then return end
-	if not self.nodes[y] then self.nodes[y] = {} end
-	if not self.nodes[y][x] then self.nodes[y][x] = Node:new(x,y) end
-	return self.nodes[y][x]
-end
-
-setmetatable(Grid,{
-	__call = function(self,...)
-		return self:new(...)
+	function newGrid:getNodeAt(x,y)
+		if not x or not y then return end
+		if outOfRange(x,self.min_bound_x,self.max_bound_x) then return end
+		if outOfRange(y,self.min_bound_y,self.max_bound_y) then return end
+		if not self.nodes[y] then self.nodes[y] = {} end
+		if not self.nodes[y][x] then self.nodes[y][x] = Node(x,y) end
+		return self.nodes[y][x]
 	end
-})
+	
+	return newGrid
+	
+end
+
+local Grid = function(map, processOnDemand)
+
+	map = type(map)=='string' and parseStringMap(map) or map
+	if not (isMap(map) or isStringMap(map)) then
+		error('Bad argument #1. Not a valid map')
+	end
+	if not (type(processOnDemand) == 'boolean' or not processOnDemand) then
+		error(('Bad argument #2. Expected \'boolean\', got %s.'):format(type(processOnDemand)))
+	end
+	
+	local newGrid = {}
+	
+	function newGrid:isWalkableAt(x, y, walkable)
+		local nodeValue = self.map[y] and self.map[y][x]
+		if nodeValue then
+			if not walkable then return true end
+		else 
+			return false
+		end
+		if self.__eval then return walkable(nodeValue) end
+		return (nodeValue == walkable)
+	end
+	
+	function newGrid:getWidth() return self.width end
+
+	function newGrid:getHeight() return self.height end
+
+	function newGrid:getMap() return self.map end
+
+	function newGrid:getNodes() return self.nodes end
+	
+	function newGrid:getNeighbours(node, walkable, allowDiagonal, tunnel)
+		local neighbours = {}
+		for i = 1,#straightOffsets do
+			local n = self:getNodeAt(
+				node.x + straightOffsets[i].x,
+				node.y + straightOffsets[i].y
+			)
+			if n and self:isWalkableAt(n.x, n.y, walkable) then
+				neighbours[#neighbours+1] = n
+			end
+		end
+
+		if not allowDiagonal then return neighbours end
+		
+		tunnel = not not tunnel
+		for i = 1,#diagonalOffsets do
+			local n = self:getNodeAt(
+				node.x + diagonalOffsets[i].x,
+				node.y + diagonalOffsets[i].y
+			)
+			if n and self:isWalkableAt(n.x, n.y, walkable) then
+				if tunnel then
+					neighbours[#neighbours+1] = n
+				else
+					local skipThisNode = false
+					local n1 = self:getNodeAt(node.x+diagonalOffsets[i].x, node.y)
+					local n2 = self:getNodeAt(node.x, node.y+diagonalOffsets[i].y)
+					if ((n1 and n2) and not self:isWalkableAt(n1.x, n1.y, walkable) and not self:isWalkableAt(n2.x, n2.y, walkable)) then
+						skipThisNode = true
+					end
+					if not skipThisNode then neighbours[#neighbours+1] = n end
+				end
+			end
+		end
+
+		return neighbours
+	end
+
+	function newGrid:iter(lx,ly,ex,ey)
+		local min_x = lx or self.min_bound_x
+		local min_y = ly or self.min_bound_y
+		local max_x = ex or self.max_bound_x
+		local max_y = ey or self.max_bound_y
+
+		local x, y
+		y = min_y
+		return function()
+			x = not x and min_x or x+1
+			if x>max_x then
+				x = min_x
+				y = y+1
+			end
+			if y > max_y then
+				y = nil
+			end
+			return self.nodes[y] and self.nodes[y][x] or self:getNodeAt(x,y)
+		end
+	end
+
+	function newGrid:each(f,...)
+		for node in self:iter() do f(node,...) end
+	end
+
+	function newGrid:eachRange(lx,ly,ex,ey,f,...)
+		for node in self:iter(lx,ly,ex,ey) do f(node,...) end
+	end
+
+	function newGrid:imap(f,...)
+		for node in self:iter() do
+			node = f(node,...)
+		end
+	end
+
+	function newGrid:imapRange(lx,ly,ex,ey,f,...)
+		for node in self:iter(lx,ly,ex,ey) do
+			node = f(node,...)
+		end
+	end
+	
+	_grids[newGrid] = true
+	
+	if processOnDemand then
+		return PostProcessGrid(newGrid,map)
+	end
+	
+	return PreProcessGrid(newGrid,map)
+	
+end
+
 	
 ------------------------------  Pathfinder Module (global) ------------------------------	
 local _VERSION = "1.8.1"
 local _RELEASEDATE = "03/01/2013"
 
 local function isAGrid(grid)
-	return getmetatable(grid) and getmetatable(getmetatable(grid)) == Grid
+	return _grids[grid] or false
 end
 	
 local Finders = {
@@ -973,7 +927,7 @@ local lastPathCost = 0
 local searchModes = {['DIAGONAL'] = true, ['ORTHOGONAL'] = true}
 
 local function traceBackPath(finder, node, startNode)
-	local path = Path:new()
+	local path = Path()
 	path.grid = finder.grid
 	lastPathCost = node.f or path:getLength()
 
@@ -988,117 +942,128 @@ local function traceBackPath(finder, node, startNode)
 	end
 end
 
-local Pathfinder = {}
-Pathfinder.__index = Pathfinder
-
-function Pathfinder:new(grid, finderName, walkable)
+local Pathfinder = function(grid, finderName, walkable)
 	local newPathfinder = {}
-	setmetatable(newPathfinder, Pathfinder)
+
+	function newPathfinder:setGrid(grid)
+		if not (isAGrid(grid)) then
+			error('Bad argument #1. Expected a \'grid\' object')
+		end
+		self.grid = grid
+		self.grid.__eval = self.walkable and type(self.walkable) == 'function'
+		return self
+	end	
+	
+	function newPathfinder:getGrid()
+		return self.grid
+	end
+
+	function newPathfinder:setWalkable(walkable)
+		if not (('stringintfunctionnil'):match(type(walkable))) then
+			error(('Bad argument #2. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
+		end
+		self.walkable = walkable
+		self.grid.__eval = type(self.walkable) == 'function'
+		return self
+	end
+
+	function newPathfinder:getWalkable()
+		return self.walkable
+	end
+
+	function newPathfinder:setFinder(finderName)
+		local finderName = finderName
+		if not finderName then
+			if not self.finder then 
+				finderName = 'ASTAR' 
+			else return 
+			end
+		end
+		if not (Finders[finderName]) then 
+			error('Not a valid finder name!')
+		end
+		self.finder = finderName
+		return self
+	end
+
+	function newPathfinder:getFinder()
+		return self.finder
+	end
+
+	function newPathfinder:getFinders()
+		return collect_keys(Finders)
+	end
+
+	function newPathfinder:setHeuristic(heuristic)
+		if not (Heuristics[heuristic] or (type(heuristic) == 'function')) then
+			error('Not a valid heuristic!')
+		end
+		self.heuristic = Heuristics[heuristic] or heuristic
+		return self
+	end
+
+	function newPathfinder:getHeuristic()
+		return self.heuristic
+	end
+
+	function newPathfinder:getHeuristics()
+		return collect_keys(Heuristics)
+	end
+
+	function newPathfinder:setMode(mode)
+		if not (searchModes[mode]) then
+			error('Invalid mode')
+		end
+		self.allowDiagonal = (mode == 'DIAGONAL')
+		return self
+	end
+
+	function newPathfinder:getMode()
+		return (self.allowDiagonal and 'DIAGONAL' or 'ORTHOGONAL')
+	end
+
+	function newPathfinder:getModes()
+		return collect_keys(searchModes)
+	end
+
+	function newPathfinder:version()
+		return _VERSION, _RELEASEDATE
+	end
+
+	function newPathfinder:getPath(startX, startY, endX, endY, tunnel)
+		reset()
+		local startNode = self.grid:getNodeAt(startX, startY)
+		local endNode = self.grid:getNodeAt(endX, endY)
+		if not (startNode) then 
+			error(('Invalid location [%d, %d]'):format(startX, startY))
+		end
+		if not (endNode and self.grid:isWalkableAt(endX, endY)) then
+			error(('Invalid or unreachable location [%d, %d]'):format(endX, endY))
+		end
+		local _endNode = Finders[self.finder](self, startNode, endNode, toClear, tunnel)
+		if _endNode then 
+			return traceBackPath(self, _endNode, startNode), lastPathCost
+		end
+		lastPathCost = 0
+		return nil, lastPathCost
+	end
+	
 	newPathfinder:setGrid(grid)
 	newPathfinder:setFinder(finderName)
 	newPathfinder:setWalkable(walkable)
 	newPathfinder:setMode('DIAGONAL')
 	newPathfinder:setHeuristic('MANHATTAN')
 	newPathfinder.openList = Heap()
+	
 	return newPathfinder
+	
 end
 
-function Pathfinder:setGrid(grid)
-	assert(isAGrid(grid), 'Bad argument #1. Expected a \'grid\' object')
-	self.grid = grid
-	self.grid.__eval = self.walkable and type(self.walkable) == 'function'
-	return self
-end
 
-function Pathfinder:getGrid()
-	return self.grid
-end
 
-function Pathfinder:setWalkable(walkable)
-	assert(('stringintfunctionnil'):match(type(walkable)),
-		('Bad argument #2. Expected \'string\', \'number\' or \'function\', got %s.'):format(type(walkable)))
-	self.walkable = walkable
-	self.grid.__eval = type(self.walkable) == 'function'
-	return self
-end
 
-function Pathfinder:getWalkable()
-	return self.walkable
-end
 
-function Pathfinder:setFinder(finderName)
-	local finderName = finderName
-	if not finderName then
-		if not self.finder then 
-			finderName = 'ASTAR' 
-		else return 
-		end
-	end
-	assert(Finders[finderName],'Not a valid finder name!')
-	self.finder = finderName
-	return self
-end
 
-function Pathfinder:getFinder()
-	return self.finder
-end
-
-function Pathfinder:getFinders()
-	return collect_keys(Finders)
-end
-
-function Pathfinder:setHeuristic(heuristic)
-	assert(Heuristics[heuristic] or (type(heuristic) == 'function'),'Not a valid heuristic!')
-	self.heuristic = Heuristics[heuristic] or heuristic
-	return self
-end
-
-function Pathfinder:getHeuristic()
-	return self.heuristic
-end
-
-function Pathfinder:getHeuristics()
-	return collect_keys(Heuristics)
-end
-
-function Pathfinder:setMode(mode)
-	assert(searchModes[mode],'Invalid mode')
-	self.allowDiagonal = (mode == 'DIAGONAL')
-	return self
-end
-
-function Pathfinder:getMode()
-	return (self.allowDiagonal and 'DIAGONAL' or 'ORTHOGONAL')
-end
-
-function Pathfinder:getModes()
-	return collect_keys(searchModes)
-end
-
-function Pathfinder:version()
-	return _VERSION, _RELEASEDATE
-end
-
-function Pathfinder:getPath(startX, startY, endX, endY, tunnel)
-	reset()
-	local startNode = self.grid:getNodeAt(startX, startY)
-	local endNode = self.grid:getNodeAt(endX, endY)
-	assert(startNode, ('Invalid location [%d, %d]'):format(startX, startY))
-	assert(endNode and self.grid:isWalkableAt(endX, endY),
-		('Invalid or unreachable location [%d, %d]'):format(endX, endY))
-	local _endNode = Finders[self.finder](self, startNode, endNode, toClear, tunnel)
-	if _endNode then 
-		return traceBackPath(self, _endNode, startNode), lastPathCost
-	end
-	lastPathCost = 0
-	return nil, lastPathCost
-end
-
-setmetatable(Pathfinder,{
-	__call = function(self,...)
-		return self:new(...)
-	end
-})
 
 ------------------------------  Spawns module into the global env ------------------------------
 Jumper = {
