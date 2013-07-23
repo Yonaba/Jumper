@@ -15,7 +15,7 @@ end
 
 -- Default comparison function
 local function f_min(a,b) 
-  return a < b 
+  return a.f < b.f
 end
 
 -- Percolates up
