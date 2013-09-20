@@ -123,9 +123,9 @@ Copyright (c) 2012-2013 Roland Yonaba.
 
 [Jump Point Search]: http://harablog.wordpress.com/2011/09/07/jump-point-search/
 [Lua]: http://lua.org
-[Löve]: http://love2d.org
-[Löve2d]: http://love2d.org
-[Löve 0.8.0 Framework]: http://love2d.org
+[Lï¿½ve]: http://love2d.org
+[Lï¿½ve2d]: http://love2d.org
+[Lï¿½ve 0.8.0 Framework]: http://love2d.org
 [Dragon Age : Origins]: http://dragonage.bioware.com
 [Moving AI]: http://movingai.com
 [Nathan Witmer]: http://github.com/aniero
@@ -136,3 +136,5 @@ Copyright (c) 2012-2013 Roland Yonaba.
 [the algorithm and the technical papers]: http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf
 [MIT-LICENSE]: http://www.opensource.org/licenses/mit-license.php
 [heuristics.lua]: http://github.com/Yonaba/Jumper/blob/master/Jumper/core/heuristics.lua
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Yonaba/jumper/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
