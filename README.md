@@ -137,4 +137,5 @@ Copyright (c) 2012-2013 Roland Yonaba.
 [MIT-LICENSE]: http://www.opensource.org/licenses/mit-license.php
 [heuristics.lua]: http://github.com/Yonaba/Jumper/blob/master/Jumper/core/heuristics.lua
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Yonaba/jumper/trend.png)](https://bitdeli.com/free "Bitdeli Badge") [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/5165385288dcb27776c96dce1a82e33d "githalytics.com")](http://githalytics.com/Yonaba/Jumper)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Yonaba/jumper/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/5165385288dcb27776c96dce1a82e33d "githalytics.com")](http://githalytics.com/Yonaba/Jumper)
