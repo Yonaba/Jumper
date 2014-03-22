@@ -102,7 +102,7 @@ chaining features which makes it <strong>very friendly and easy to use</strong>.
 <span class="k">if</span> <span class="n">path</span> <span class="k">then</span>
   <span class="nb">print</span><span class="p">((</span><span class="s1">'</span><span class="s">Path found! Length: %.2f'</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">length</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">count</span> <span class="k">in</span> <span class="n">path</span><span class="p">:</span><span class="n">iter</span><span class="p">()</span> <span class="k">do</span>
-      <span class="nb">print</span><span class="p">((</span><span class="s1">'</span><span class="s">Step: %d - x: %d - y: %d'</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">x</span><span class="p">,</span> <span class="n">node</span><span class="p">.</span><span class="n">y</span><span class="p">))</span>
+      <span class="nb">print</span><span class="p">((</span><span class="s1">'</span><span class="s">Step: %d - x: %d - y: %d'</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span><span class="n">getX()</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span><span class="n">getY()</span><span class="p">))</span>
     <span class="k">end</span>
 <span class="k">end</span>
 
