@@ -52,7 +52,7 @@ if (...) then
 	-- including North, East, West, South. In DIAGONAL mode, 8-directions are possible when moving,
 	-- including North, East, West, South and adjacent directions.
 	--
-	-- <li>ORTHOGNAL</li>
+	-- <li>ORTHOGNOAL</li>
 	-- <li>DIAGONAL</li>
 	-- @mode Modes
 	-- @see Pathfinder:getModes
@@ -278,7 +278,7 @@ if (...) then
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
   -- @see Pathfinder:getModes
 	-- @see Modes
-	-- @usage myFinder:setMode('ORTHOGNAL')
+	-- @usage myFinder:setMode('ORTHOGONAL')
   function Pathfinder:setMode(mode)
     assert(searchModes[mode],'Invalid mode')
     self._allowDiagonal = (mode == 'DIAGONAL')
