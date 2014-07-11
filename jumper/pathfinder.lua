@@ -98,7 +98,7 @@ if (...) then
     return newPathfinder
   end
 
-	--- Evaluates [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric) 
+	--- Evaluates [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric)
 	-- for the whole `grid`. It should be called only once, unless the collision map or the
 	-- __walkable__ attribute changes. The clearance values are calculated and cached within the grid nodes.
   -- @class function
@@ -128,12 +128,12 @@ if (...) then
 		self._grid._isAnnotated[self._walkable] = true
 		return self
 	end
-	
+
 	--- Removes [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric)values.
 	-- Clears cached clearance values for the current __walkable__.
   -- @class function
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
-	-- @usage myFinder:clearAnnotations()	
+	-- @usage myFinder:clearAnnotations()
 	function Pathfinder:clearAnnotations()
 		assert(self._walkable, 'Finder must implement a walkable value')
 		for node in self._grid:iter() do
@@ -142,7 +142,7 @@ if (...) then
 		self._grid._isAnnotated[self._walkable] = false
 		return self
 	end
-	
+
   --- Sets the `grid`. Defines the given `grid` as the one on which the `pathfinder` will perform the search.
   -- @class function
   -- @tparam grid grid a `grid`
@@ -341,7 +341,7 @@ if (...) then
     local startNode = self._grid:getNodeAt(startX, startY)
     local endNode = self._grid:getNodeAt(endX, endY)
     assert(startNode, ('Invalid location [%d, %d]'):format(startX, startY))
-    assert(endNode and self._grid:isWalkableAt(endX, endY),
+    assert(endNode and self._grid:isWalkableAt(endX, endY, self._walkable),
       ('Invalid or unreachable location [%d, %d]'):format(endX, endY))
     local _endNode = Finders[self._finder](self, startNode, endNode, clearance, toClear)
     if _endNode then
@@ -361,7 +361,7 @@ if (...) then
 		return self
 	end
 
-	
+
   -- Returns Pathfinder class
 	Pathfinder._VERSION = _VERSION
 	Pathfinder._RELEASEDATE = _RELEASEDATE
