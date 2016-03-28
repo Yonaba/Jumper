@@ -67,12 +67,15 @@ if (...) then
 	
   --- Evaluates the `path` length
   -- @class function
+  -- @tparam function heuristic Optional heuristic function for determining.
+  -- distance between nodes. Default: @{Heuristic.EUCLIDIAN}.
   -- @treturn number the `path` length
 	-- @usage local len = p:getLength()
-  function Path:getLength()
+  function Path:getLength(heuristic)
+    local heuristic = heuristic or Heuristic.EUCLIDIAN
     local len = 0
     for i = 2,#self._nodes do
-      len = len + Heuristic.EUCLIDIAN(self._nodes[i], self._nodes[i-1])
+      len = len + heuristic(self._nodes[i], self._nodes[i-1])
     end
     return len
   end

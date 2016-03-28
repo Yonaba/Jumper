@@ -43,6 +43,12 @@ context('Module Path', function()
 			p = Path()
 			for i = 1,10 do p._nodes[#p._nodes+1] = Node(i,i) end
 			assert_less_than(p:getLength()-9*math.sqrt(2),1e-6)			
+			
+			--Test with diagonal distance
+			local Heuristics = require ('jumper.core.heuristics')
+			p = Path()
+			for i = 1,10 do p._nodes[#p._nodes+1] = Node(i,i) end
+			assert_equal(p:getLength(Heuristics.DIAGONAL), 9)
 		end)
 		
 		test('Path:fill() interpolates a path', function()
