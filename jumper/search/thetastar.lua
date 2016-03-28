@@ -47,14 +47,14 @@ if (...) then
 	-- Theta star cost evaluation
 	local function computeCost(node, neighbour, finder, clearance)
 		local parent = node._parent or node
-		local mpCost = Heuristics.EUCLIDIAN(neighbour, parent)
+		local mpCost = Heuristics.EUCLIDEAN(neighbour, parent)
 		if lineOfSight(parent, neighbour, finder, clearance) then
 			if parent._g + mpCost < neighbour._g then
 				neighbour._parent = parent
 				neighbour._g = parent._g + mpCost
 			end
 		else
-			local mCost = Heuristics.EUCLIDIAN(neighbour, node)
+			local mCost = Heuristics.EUCLIDEAN(neighbour, node)
 			if node._g + mCost < neighbour._g then
 				neighbour._parent = node
 				neighbour._g = node._g + mCost

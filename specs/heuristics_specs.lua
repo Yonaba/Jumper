@@ -28,24 +28,24 @@ context('Module Heuristics', function()
 		
   end)
 
-  context('EUCLIDIAN distance', function()
+  context('EUCLIDEAN distance', function()
 	
     test('is a function',function()
-			assert_type(H.EUCLIDIAN, 'function')
+			assert_type(H.EUCLIDEAN, 'function')
     end)
 	
 		test('evaluates as SQUAREROOT(dx*dx + dy*dy)', function()
-			assert_equal(H.EUCLIDIAN(Node(0,0), Node(0,0)), 0)
-			assert_equal(H.EUCLIDIAN(Node(0,0), Node(2,2)), math.sqrt(8))
-			assert_equal(H.EUCLIDIAN(Node(0,0), Node(5,3)), math.sqrt(34))		
+			assert_equal(H.EUCLIDEAN(Node(0,0), Node(0,0)), 0)
+			assert_equal(H.EUCLIDEAN(Node(0,0), Node(2,2)), math.sqrt(8))
+			assert_equal(H.EUCLIDEAN(Node(0,0), Node(5,3)), math.sqrt(34))		
 		end)
 		
 		test('calling the function with one arg raises an error', function()
-			assert_error(pcall(H.EUCLIDIAN,Node(0,0)))	
+			assert_error(pcall(H.EUCLIDEAN,Node(0,0)))	
 		end)	
 		
 		test('calling the function with no args raises an error', function()
-			assert_error(pcall(H.EUCLIDIAN))
+			assert_error(pcall(H.EUCLIDEAN))
 		end)		
 		
   end)

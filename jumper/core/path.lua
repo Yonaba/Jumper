@@ -72,7 +72,7 @@ if (...) then
   function Path:getLength()
     local len = 0
     for i = 2,#self._nodes do
-      len = len + Heuristic.EUCLIDIAN(self._nodes[i], self._nodes[i-1])
+      len = len + Heuristic.EUCLIDEAN(self._nodes[i], self._nodes[i-1])
     end
     return len
   end
