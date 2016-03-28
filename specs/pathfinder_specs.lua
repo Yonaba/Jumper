@@ -140,7 +140,7 @@ context('Module Pathfinder', function()
 			assert_equal(pf:getFinder(), 'ASTAR')
 		end)
 
-		test('Passing nil sets \'ASTAR\` as the finder if no previous finder was set, is \'ASTAR\'', function()
+		test('Passing nil sets \'ASTAR\' as the finder if no previous finder was set, is \'ASTAR\'', function()
 			local pf = PF(grid)
 			pf:setFinder()
 			assert_equal(pf:getFinder(), 'ASTAR')
