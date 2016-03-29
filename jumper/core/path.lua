@@ -196,6 +196,18 @@ if (...) then
 		return self
 	end
 	
+
+  --- Return a simplified form of the path.
+  -- @treturn table Array of `{x, y}` values in the path.
+  -- @usage x1, y1 = unpack(path:simplify()[1])
+  function Path:simplify()
+      local simple = {}
+      for node in self:iter() do
+          simple[#simple + 1] = {node._x, node._y}
+      end
+      return simple
+  end
+
   return setmetatable(Path,
     {__call = function(self,...)
       return Path:new(...)
