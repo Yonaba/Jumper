@@ -3,7 +3,7 @@
 if (...) then
 
   -- Dependancies
-  local _PATH = (...):match('(.+)%.search.jps$')
+  local _PATH = (...):match('(.+)%.search%.jps$')
   local Heuristics = require (_PATH .. '.core.heuristics')
 	local Heap = require (_PATH.. '.core.bheap')
 
