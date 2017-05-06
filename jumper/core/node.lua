@@ -25,8 +25,8 @@ if (...) then
   -- @tparam int y the y-coordinate of the node on the collision map
   -- @treturn node a new `node`
 	-- @usage local node = Node(3,4)
-  function Node:new(x,y)
-    return setmetatable({_x = x, _y = y, _clearance = {}}, Node)
+  function Node:new(x,y,c)
+    return setmetatable({_x = x, _y = y, _c=c,_clearance = {}}, Node)
   end
 
   -- Enables the use of operator '<' to compare nodes.
@@ -45,6 +45,8 @@ if (...) then
 	-- @usage local y = node:getY()		
 	function Node:getY() return self._y end
 	
+	function Node:getCost() return self._c end
+
   --- Returns x and y coordinates of a `node`
   -- @class function
   -- @treturn number the x-coordinate of the `node`

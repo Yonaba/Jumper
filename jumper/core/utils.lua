@@ -75,7 +75,7 @@ if (...) then
         for x in pairs(map[y]) do
           min_x = not min_x and x or (x<min_x and x or min_x)
           max_x = not max_x and x or (x>max_x and x or max_x)
-          nodes[y][x] = Node:new(x,y)
+          nodes[y][x] = Node:new(x,y,map[y][x])
         end
       end
     return nodes,
