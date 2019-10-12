@@ -11,34 +11,34 @@ chaining features which makes it __very friendly and easy to use__.<br/>
 
 __Jumper__ is written in pure [Lua][]. Thus, it is not __framework-related__ and can be used in any project embedding [Lua][] code.
 
-##Installation
+## Installation
 The current repository can be retrieved locally on your computer via:
 
-###Bash
+### Bash
 ```bash
 git clone git://github.com/Yonaba/Jumper.git
 ````
 
-###Download (latest)
+### Download (latest)
 * __Development version__: [zip](http://github.com/Yonaba/Jumper/zipball/master) | [tar.gz](http://github.com/Yonaba/Jumper/tarball/master) ( __please do not use this!__ )
 * __Latest stable release (1.8.1)__: [zip](http://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.zip) | [tar.gz](http://github.com/Yonaba/Jumper/archive/jumper-1.8.1-1.tar.gz) ( __Recommended!__ )
 * __All stable releases__: [tags](http://github.com/Yonaba/Jumper/tags)
 
 
-###LuaRocks
+### LuaRocks
 ```bash
 luarocks install jumper
 ````
 
-###MoonRocks
+### MoonRocks
 ```bash
 luarocks install --server=http://rocks.moonscript.org/manifests/Yonaba jumper
 ````
 
-##Installing Jumper##
+## Installing Jumper
 Copy the contents of the folder named [jumper](http://github.com/Yonaba/Jumper/blob/master/jumper) and its contents and place it inside your projet. Use *require* function to import any module of the library.
 
-##A Simple Example of Use
+## A Simple Example of Use
 Here is a simple example explaining how to use Jumper:
 
 ```lua
@@ -85,7 +85,7 @@ end
 --> Step: 6 - x: 5 - y: 1
 ````
 
-##Specs
+## Specs
 Specs tests have been included.<br/>
 You can run them using [Telescope](http://github.com/norman/telescope) with the following command 
 from the [root](http://github.com/Yonaba/Jumper/blob/master/jumper) folder:
@@ -94,14 +94,14 @@ from the [root](http://github.com/Yonaba/Jumper/blob/master/jumper) folder:
 tsc -f specs/*
 ```
 
-##Credits and Thanks##
+## Credits and Thanks
 
 * [Daniel Harabor][], [Alban Grastien][] : for the [Jump Point Search](http://harablog.wordpress.com/2011/09/07/jump-point-search/) algorithm.<br/>
 * [XueXiao Xu][], [Nathan Witmer][]: for the [JavaScript port][] of the algorithm.<br/>
 * [Steve Donovan](http://github.com/stevedonovan): for the awesome documentation generator tool [LDoc](http://github.com/stevedonovan/ldoc/).
 * [Srdjan Markovic](http://github.com/srdjan-m), for his tremendous feedback.
 
-##License##
+## License
 This work is under [MIT-LICENSE][]<br/>
 Copyright (c) 2012-2013 Roland Yonaba.
 
