@@ -85,7 +85,7 @@ end
 --> Step: 6 - x: 5 - y: 1
 ````
 
-##Specs
+## Specs
 Specs tests have been included.<br/>
 You can run them using [Telescope](http://github.com/norman/telescope) with the following command 
 from the [root](http://github.com/Yonaba/Jumper/blob/master/jumper) folder:
