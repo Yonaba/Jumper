@@ -247,6 +247,12 @@ if (...) then
     return self
   end
 
+  function Pathfinder:setCostEval(costEval)
+    assert((type(costEval) == 'function'),'Not a valid heuristic!')
+    self._costEval = costEval
+    return self
+  end
+
   --- Returns the `heuristic` used. Returns the function itself.
   -- @class function
   -- @treturn func the `heuristic` function being used by the `pathfinder`
