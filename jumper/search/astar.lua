@@ -15,7 +15,7 @@ if (...) then
 
 	-- Updates G-cost
 	local function computeCost(node, neighbour, finder, clearance)
-		local mCost = Heuristics.EUCLIDIAN(neighbour, node)
+		local mCost = Heuristics.EUCLIDEAN(neighbour, node)
 		if node._g + mCost < neighbour._g then
 			neighbour._parent = node
 			neighbour._g = node._g + mCost

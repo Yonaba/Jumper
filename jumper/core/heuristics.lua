@@ -10,7 +10,7 @@
 --     local function myHeuristic(nodeA, nodeB)
 --       -- function body
 --     end
--- Jumper features some built-in distance heuristics, namely `MANHATTAN`, `EUCLIDIAN`, `DIAGONAL`, `CARDINTCARD`.
+-- Jumper features some built-in distance heuristics, namely `MANHATTAN`, `EUCLIDEAN`, `DIAGONAL`, `CARDINTCARD`.
 -- You can also supply your own heuristic function, following the same template as above.
 
 
@@ -39,7 +39,7 @@ local Heuristics = {}
 		return (dx + dy) 
 	end
   
-  --- Euclidian distance.
+  --- Euclidean distance.
   -- <br/>Evaluates as <code>distance = squareRoot(dx*dx+dy*dy)</code>
   -- @class function
   -- @tparam node nodeA a node
@@ -47,15 +47,23 @@ local Heuristics = {}
   -- @treturn number the distance from __nodeA__ to __nodeB__
 	-- @usage
   -- -- First method
-  -- pathfinder:setHeuristic('EUCLIDIAN')
+  -- pathfinder:setHeuristic('EUCLIDEAN')
   -- -- Second method
   -- local Distance = require ('jumper.core.heuristics')
-  -- pathfinder:setHeuristic(Distance.EUCLIDIAN) 
-  function Heuristics.EUCLIDIAN(nodeA, nodeB)
+  -- pathfinder:setHeuristic(Distance.EUCLIDEAN) 
+  function Heuristics.EUCLIDEAN(nodeA, nodeB)
 		local dx = nodeA._x - nodeB._x
 		local dy = nodeA._y - nodeB._y
 		return sqrt(dx*dx+dy*dy) 
 	end
+
+  --- Euclidean distance.
+  -- <br/>Evaluates as <code>distance = squareRoot(dx*dx+dy*dy)</code>
+  -- @class function
+  -- @tparam node nodeA a node
+  -- @tparam node nodeB another node
+  -- @treturn number the distance from __nodeA__ to __nodeB__
+  Heuristics.EUCLIDIAN = Heuristics.EUCLIDEAN
   
   --- Diagonal distance.
   -- <br/>Evaluates as <code>distance = max(|dx|, abs|dy|)</code>

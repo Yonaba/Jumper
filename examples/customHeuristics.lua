@@ -15,8 +15,8 @@ local walkable = 0
 local grid = Grid(map)
 local myFinder = Pathfinder(grid, 'ASTAR', walkable)
 
--- Use Euclidian heuristic to evaluate distance
-myFinder:setHeuristic('EUCLIDIAN')
+-- Use Euclidean heuristic to evaluate distance
+myFinder:setHeuristic('EUCLIDEAN')
 myFinder:setHeuristic('DIAGONAL')
 myFinder:setHeuristic('MANHATTAN')
 
