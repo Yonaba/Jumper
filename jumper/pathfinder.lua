@@ -341,7 +341,7 @@ if (...) then
     local startNode = self._grid:getNodeAt(startX, startY)
     local endNode = self._grid:getNodeAt(endX, endY)
     assert(startNode, ('Invalid location [%d, %d]'):format(startX, startY))
-    assert(endNode and self._grid:isWalkableAt(endX, endY),
+    assert(endNode and self._grid:isWalkableAt(endX, endY, self._walkable),
       ('Invalid or unreachable location [%d, %d]'):format(endX, endY))
     local _endNode = Finders[self._finder](self, startNode, endNode, clearance, toClear)
     if _endNode then
