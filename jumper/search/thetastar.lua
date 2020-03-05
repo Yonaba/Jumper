@@ -3,7 +3,7 @@
 
 if (...) then
 	
-	local _PATH = (...):gsub('%.search.thetastar$','')
+	local _PATH = (...):gsub('%.search%.thetastar$','')
 
 	-- Depandancies
 	local Heuristics   = require (_PATH .. '.core.heuristics')
