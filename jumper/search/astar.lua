@@ -57,7 +57,7 @@ if (...) then
 			local node = openList:pop()
 			node._closed = true
 			if node == endNode then return node end
-			local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, finder._tunnel)
+			local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, finder._tunnel, clearance)
 			for i = 1,#neighbours do
 				local neighbour = neighbours[i]
 				if not neighbour._closed then

@@ -25,7 +25,7 @@ if (...) then
 		local sy = (y0 < y1) and 1 or -1		
 
 		while true do
-			if not finder._grid:isWalkableAt(x0, y0, finder._walkable, finder._tunnel, clearance) then 
+			if not finder._grid:isWalkableAt(x0, y0, finder._walkable, clearance) then
 				return false 
 			end
 			if x0 == x1 and y0 == y1 then
