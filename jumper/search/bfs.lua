@@ -5,7 +5,7 @@ if (...) then
   local t_remove = table.remove
 
   local function breadth_first_search(finder, openList, node, endNode, clearance, toClear)
-    local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, finder._tunnel)
+    local neighbours = finder._grid:getNeighbours(node, finder._walkable, finder._allowDiagonal, finder._tunnel, clearance)
     for i = 1,#neighbours do
       local neighbour = neighbours[i]
       if not neighbour._closed and not neighbour._opened then
