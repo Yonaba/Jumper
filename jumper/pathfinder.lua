@@ -101,32 +101,71 @@ if (...) then
 	--- Evaluates [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric)
 	-- for the whole `grid`. It should be called only once, unless the collision map or the
 	-- __walkable__ attribute changes. The clearance values are calculated and cached within the grid nodes.
+	-- NOTE: The original algorithm only looked at obstacles below and to the right.  If we want to look at clearance
+	-- in all directions, we need to run the original algorithm four times and take the minimum.
   -- @class function
+	-- @tparam bool allDirections Optionally look for collisions in all directions, treating the clearance as a radius.
 	-- @treturn pathfinder self (the calling `pathfinder` itself, can be chained)
 	-- @usage myFinder:annotateGrid()
-	function Pathfinder:annotateGrid()
+	function Pathfinder:annotateGrid(allDirections)
 		assert(self._walkable, 'Finder must implement a walkable value')
-		for x=self._grid._max_x,self._grid._min_x,-1 do
-			for y=self._grid._max_y,self._grid._min_y,-1 do
+		-- These indicate which way the bounding box is expanded, but the grid iteration runs in the opposite direction
+		-- in order to accumulate clearance totals.
+		local upleft = {}
+		local upright = {}
+		local downleft = {}
+		local downright = {}
+
+		-- set up the tables
+		for y = self._grid._min_y, self._grid._max_y do
+			upleft[y] = {}
+			upright[y] = {}
+			downleft[y] = {}
+			downright[y] = {}
+		end
+
+		-- expand the bounding box along as many diagonals as we need
+		if allDirections then
+			self:annotateGridOneDirection(upleft, self._grid._min_x, self._grid._max_x, 1, self._grid._min_y, self._grid._max_y, 1, -1, -1)
+			self:annotateGridOneDirection(upright, self._grid._max_x, self._grid._min_x, -1, self._grid._min_y, self._grid._max_y, 1, 1, -1)
+			self:annotateGridOneDirection(downleft, self._grid._min_x, self._grid._max_x, 1, self._grid._max_y, self._grid._min_y, -1, -1, 1)
+		end
+		self:annotateGridOneDirection(downright, self._grid._max_x, self._grid._min_x, -1, self._grid._max_y, self._grid._min_y, -1, 1, 1)
+
+		-- assign the clearance to the grid
+		for y = self._grid._min_y, self._grid._max_y do
+			for x = self._grid._min_x, self._grid._max_x do
+				local node = self._grid:getNodeAt(x, y)
+				node._clearance[self._walkable] = allDirections and math.min(upleft[y][x], upright[y][x], downleft[y][x], downright[y][x]) or downright[y][x]
+			end
+		end
+
+		self._grid._isAnnotated[self._walkable] = true
+		return self
+	end
+
+	function Pathfinder:annotateGridOneDirection(grid, x1, x2, xstep, y1, y2, ystep, xd, yd)
+		for x=x1,x2,xstep do
+			for y=y1,y2,ystep do
 				local node = self._grid:getNodeAt(x,y)
 				if self._grid:isWalkableAt(x,y,self._walkable) then
-					local nr = self._grid:getNodeAt(node._x+1, node._y)
-					local nrd = self._grid:getNodeAt(node._x+1, node._y+1)
-					local nd = self._grid:getNodeAt(node._x, node._y+1)
-					if nr and nrd and nd then
-						local m = nrd._clearance[self._walkable] or 0
-						m = (nd._clearance[self._walkable] or 0)<m and (nd._clearance[self._walkable] or 0) or m
-						m = (nr._clearance[self._walkable] or 0)<m and (nr._clearance[self._walkable] or 0) or m
-						node._clearance[self._walkable] = m+1
+					local n1 = self._grid:getNodeAt(node._x+xd, node._y)
+					local n2 = self._grid:getNodeAt(node._x+xd, node._y+yd)
+					local n3 = self._grid:getNodeAt(node._x, node._y+yd)
+
+					if n1 and n2 and n3 then
+						local m = grid[y+yd][x+xd] or 0
+						m = (grid[y][x+xd] or 0)<m and (grid[y][x+xd] or 0) or m
+						m = (grid[y+yd][x] or 0)<m and (grid[y+yd][x] or 0) or m
+						grid[y][x] = m+1
 					else
-						node._clearance[self._walkable] = 1
+						grid[y][x] = 1
 					end
-				else node._clearance[self._walkable] = 0
+				else
+					grid[y][x] = 0
 				end
 			end
 		end
-		self._grid._isAnnotated[self._walkable] = true
-		return self
 	end
 
 	--- Removes [clearance](http://aigamedev.com/open/tutorial/clearance-based-pathfinding/#TheTrueClearanceMetric)values.
