@@ -121,7 +121,7 @@ if (...) then
 			hasEnoughClearance = (nodeClearance >= clearance)
 		end
     if self._eval then
-			return walkable(nodeValue) and hasEnoughClearance
+			return walkable(nodeValue, x, y) and hasEnoughClearance
 		end
     return ((nodeValue == walkable) and hasEnoughClearance)
   end
